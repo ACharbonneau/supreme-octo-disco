@@ -1,2 +1,2 @@
 # supreme-octo-disco
-Scripts for 2016 GBS 
+In process scripts for 2016 GBS 
