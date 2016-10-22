@@ -15,8 +15,22 @@
 #Starting in one of the BT2Map folders
 cd ${PBS_O_WORKDIR} || exit
 
-
 module load stacks/1.35
+
+cd ..
+rc=`pwd`
+rc=`basename $rc`
+
+cd ${PBS_O_WORKDIR}
+
+
+filelist=(*fq) #Get a list of all sequencing files
+
+indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
+
+PBS_JOBNAME=${PBS_JOBNAME}_${indiv} #rename job to job_indiv
+
+
 
 dt=`date '+%d_%m_%Y'`
 
@@ -25,214 +39,4 @@ dt=`date '+%d_%m_%Y'`
 ref_map.pl -S -m 3 -T 8 -b ${dt} -o ../PopSTACKS/ -A F2 -X "populations:--fstats" \
 -X "populations:--treemix" -X "populations:--structure" -X "populations:--vcf" \
 -X "populations:--renz 'pstI'" -X "populations:--write_single_snp" -X "populations:--genomic" \
--s ./*14764*.sam \
--s ./*14765*.sam \
--s ./*14766*.sam \
--s ./*14767*.sam \
--s ./*14768*.sam \
--s ./*14769*.sam \
--s ./*14770*.sam \
--s ./*14771*.sam \
--s ./*14772*.sam \
--s ./*14773*.sam \
--s ./*14774*.sam \
--s ./*14775*.sam \
--s ./*14776*.sam \
--s ./*14777*.sam \
--s ./*14778*.sam \
--s ./*14779*.sam \
--s ./*14780*.sam \
--s ./*14781*.sam \
--s ./*14782*.sam \
--s ./*14783*.sam \
--s ./*14784*.sam \
--s ./*14785*.sam \
--s ./*14786*.sam \
--s ./*14787*.sam \
--s ./*14788*.sam \
--s ./*14789*.sam \
--s ./*14790*.sam \
--s ./*14791*.sam \
--s ./*14792*.sam \
--s ./*14793*.sam \
--s ./*14794*.sam \
--s ./*14795*.sam \
--s ./*14796*.sam \
--s ./*14797*.sam \
--s ./*14798*.sam \
--s ./*14799*.sam \
--s ./*14800*.sam \
--s ./*14801*.sam \
--s ./*14802*.sam \
--s ./*14803*.sam \
--s ./*14804*.sam \
--s ./*14805*.sam \
--s ./*14806*.sam \
--s ./*14807*.sam \
--s ./*14808*.sam \
--s ./*14809*.sam \
--s ./*14810*.sam \
--s ./*14811*.sam \
--s ./*14812*.sam \
--s ./*14813*.sam \
--s ./*14814*.sam \
--s ./*14815*.sam \
--s ./*14816*.sam \
--s ./*14817*.sam \
--s ./*14818*.sam \
--s ./*14819*.sam \
--s ./*14820*.sam \
--s ./*14821*.sam \
--s ./*14822*.sam \
--s ./*14823*.sam \
--s ./*14824*.sam \
--s ./*14825*.sam \
--s ./*14826*.sam \
--s ./*14827*.sam \
--s ./*14828*.sam \
--s ./*14829*.sam \
--s ./*14830*.sam \
--s ./*14831*.sam \
--s ./*14832*.sam \
--s ./*14833*.sam \
--s ./*14834*.sam \
--s ./*14835*.sam \
--s ./*14836*.sam \
--s ./*14837*.sam \
--s ./*14838*.sam \
--s ./*14839*.sam \
--s ./*14840*.sam \
--s ./*14841*.sam \
--s ./*14842*.sam \
--s ./*14843*.sam \
--s ./*14844*.sam \
--s ./*14845*.sam \
--s ./*14846*.sam \
--s ./*14847*.sam \
--s ./*14848*.sam \
--s ./*14849*.sam \
--s ./*14850*.sam \
--s ./*14851*.sam \
--s ./*14852*.sam \
--s ./*14853*.sam \
--s ./*14854*.sam \
--s ./*14855*.sam \
--s ./*14856*.sam \
--s ./*14857*.sam \
--s ./*14858*.sam \
--s ./*14859*.sam \
--s ./*14860*.sam \
--s ./*14861*.sam \
--s ./*14862*.sam \
--s ./*14863*.sam \
--s ./*14864*.sam \
--s ./*14865*.sam \
--s ./*14866*.sam \
--s ./*14867*.sam \
--s ./*14868*.sam \
--s ./*14869*.sam \
--s ./*14870*.sam \
--s ./*14871*.sam \
--s ./*14872*.sam \
--s ./*14873*.sam \
--s ./*14874*.sam \
--s ./*14875*.sam \
--s ./*14876*.sam \
--s ./*14877*.sam \
--s ./*14878*.sam \
--s ./*14879*.sam \
--s ./*14880*.sam \
--s ./*14881*.sam \
--s ./*14882*.sam \
--s ./*14883*.sam \
--s ./*14884*.sam \
--s ./*14885*.sam \
--s ./*14886*.sam \
--s ./*14887*.sam \
--s ./*14888*.sam \
--s ./*14889*.sam \
--s ./*14890*.sam \
--s ./*14891*.sam \
--s ./*14892*.sam \
--s ./*14893*.sam \
--s ./*14894*.sam \
--s ./*14895*.sam \
--s ./*14896*.sam \
--s ./*14897*.sam \
--s ./*14898*.sam \
--s ./*14899*.sam \
--s ./*14900*.sam \
--s ./*14901*.sam \
--s ./*14902*.sam \
--s ./*14903*.sam \
--s ./*14904*.sam \
--s ./*14905*.sam \
--s ./*14906*.sam \
--s ./*14907*.sam \
--s ./*14908*.sam \
--s ./*14909*.sam \
--s ./*14910*.sam \
--s ./*14911*.sam \
--s ./*14912*.sam \
--s ./*14913*.sam \
--s ./*14914*.sam \
--s ./*14915*.sam \
--s ./*14916*.sam \
--s ./*14917*.sam \
--s ./*14918*.sam \
--s ./*14919*.sam \
--s ./*14920*.sam \
--s ./*14921*.sam \
--s ./*14922*.sam \
--s ./*14923*.sam \
--s ./*14924*.sam \
--s ./*14925*.sam \
--s ./*14926*.sam \
--s ./*14927*.sam \
--s ./*14928*.sam \
--s ./*14929*.sam \
--s ./*14930*.sam \
--s ./*14931*.sam \
--s ./*14932*.sam \
--s ./*14933*.sam \
--s ./*14934*.sam \
--s ./*14935*.sam \
--s ./*14936*.sam \
--s ./*14937*.sam \
--s ./*14938*.sam \
--s ./*14940*.sam \
--s ./*14942*.sam \
--s ./*14944*.sam \
--s ./*14950*.sam \
--s ./*14953*.sam \
--s ./*14954*.sam \
--s ./*14955*.sam \
--s ./*14956*.sam \
--s ./*14957*.sam \
--s ./*14958*.sam \
--s ./*14959*.sam \
--s ./*14960*.sam \
--s ./*14961*.sam \
--s ./*14962*.sam \
--s ./*14963*.sam \
--s ./*14964*.sam \
--s ./*14965*.sam \
--s ./*14966*.sam \
--s ./*14967*.sam \
--s ./*14968*.sam \
--s ./*14985*.sam \
--s ./*14986*.sam \
--s ./*14987*.sam \
--s ./*14988*.sam \
--s ./*14989*.sam \
--s ./*14990*.sam \
--s ./*14991*.sam \
--s ./*14992*.sam \
--s ./*14993*.sam \
--s ./*14995*.sam \
--s ./*14996*.sam \
--s ./*14997*.sam \
--s ./*14998*.sam \
--s ./*14999*.sam \
--s ./*15000*.sam \
--s ./*14994*.sam 
+--samples ./ -O ../../supreme-octo-disco/${rc}.pop

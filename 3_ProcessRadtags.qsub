@@ -28,7 +28,7 @@ barcode=`basename ${lane} .fq`.barcodes
 
 PBS_JOBNAME=${PBS_JOBNAME}_${lane} #rename job to job_indiv
 
-process_radtags -f ${lane} -i fastq -o ../ProcessRadtags/ -b Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --adapter_1 'AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT' --adapter_mm 3 --retain_header
+process_radtags -f ${lane} -i fastq -o ../ProcessRadtags/ -b ../Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --adapter_1 'AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT' --adapter_mm 3 --retain_header
 
 cd ../fastQC/TrimmedFQC
 
