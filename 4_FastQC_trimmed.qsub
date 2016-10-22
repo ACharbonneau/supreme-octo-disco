@@ -42,7 +42,7 @@ cd ../SigSelection/BT2map/
 qsub ../../supreme-octo-disco/5_BT2Map.qsub -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no"
 
 
-cd ../AE_Deconvoluted/BT2map/
+cd ../../AE_Deconvoluted/BT2map/
 
 qsub ../../supreme-octo-disco/5_BT2Map.qsub -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no"
 
