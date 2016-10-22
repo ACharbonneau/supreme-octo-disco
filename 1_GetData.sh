@@ -1,7 +1,5 @@
 echo "1. Copying Files"
 
-git clone https://github.com/ACharbonneau/supreme-octo-disco.git
-
 mkdir RawFastq & cd RawFastq
 
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C6G98ANXX_8_fastq.gz > C6G98ANXX_8.fastq
