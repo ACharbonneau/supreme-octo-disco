@@ -20,11 +20,11 @@ process_radtags -v >> ../versions.txt
 #Starting in GBS/RawFastq/
 cd ${PBS_O_WORKDIR}
 
-filelist=(*.fastq) #get list of sequencing lanes
+filelist=(*.fq) #get list of sequencing lanes
 
 lane=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
-barcode=`basename ${lane} .fastq`.barcodes
+barcode=`basename ${lane} .fq`.barcodes
 
 PBS_JOBNAME=${PBS_JOBNAME}_${lane} #rename job to job_indiv
 

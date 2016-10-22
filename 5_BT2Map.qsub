@@ -18,7 +18,7 @@
 cd ${PBS_O_WORKDIR} || exit #Go to directory with sequencing files
 
 
-filelist=(*fastq) #Get a list of all sequencing files
+filelist=(*fq) #Get a list of all sequencing files
 
 
 indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
