@@ -12,6 +12,8 @@
 ##PBS -m abe     
 ### you can give your job a name for easier identification
 
+
+#Starting in GBS/fastQC/RawFQC/
 cd ${PBS_O_WORKDIR}
 
 module load FastQC/0.11.3

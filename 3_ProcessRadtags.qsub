@@ -17,6 +17,7 @@ module load stacks/1.35
 
 process_radtags -v >> ../versions.txt
 
+#Starting in GBS/RawFastq/
 cd ${PBS_O_WORKDIR}
 
 filelist=(*.fastq) #get list of sequencing lanes
@@ -27,7 +28,7 @@ barcode=`basename ${lane} .fastq`.barcodes
 
 PBS_JOBNAME=${PBS_JOBNAME}_${lane} #rename job to job_indiv
 
-process_radtags -f ${lane} -i fastq -o ProcessRadtags/ -b Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --adapter_1 'AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT' --adapter_mm 3 --retain_header
+process_radtags -f ${lane} -i fastq -o ../ProcessRadtags/ -b Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --adapter_1 'AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT' --adapter_mm 3 --retain_header
 
 cd ../fastQC/TrimmedFQC
 
