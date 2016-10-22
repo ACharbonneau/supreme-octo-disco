@@ -1,6 +1,7 @@
 echo "1. Copying Files"
 
-mkdir RawFastq & cd RawFastq
+mkdir RawFastq
+cd RawFastq
 
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C6G98ANXX_8_fastq.gz > C6G98ANXX_8.fastq
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C6P86ANXX_4_fastq.gz > C6P86ANXX_4.fastq
