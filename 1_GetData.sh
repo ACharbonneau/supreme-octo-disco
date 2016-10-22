@@ -55,6 +55,6 @@ qsub ../../supreme-octo-disco/2_FastQC.qsub
 
 cd ../../RawFastq
 
-qsub ../../supreme-octo-disco/3_ProcessRadtags.qsub
+qsub ../supreme-octo-disco/3_ProcessRadtags.qsub
 
 
