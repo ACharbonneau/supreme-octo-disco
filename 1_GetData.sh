@@ -27,7 +27,7 @@ echo "2. Getting MetaData"
 
 cd ../
 cp -r /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/Metadata/ .
-cd Metadata/
+cd Metadata/PlateInfoSeq/
 mv QTL_F2_8.txt C6G98ANXX_8.fastq.gz.keys.txt
 for i in `ls *fastq.gz.keys.txt`; do cut -f 3,4 ${i} | tail -n +2 > `echo ${i} | sed s/_fastq.gz.keys.txt/.barcodes/` ; done
 mv ../supreme-octo-disco/*.pop .

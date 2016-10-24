@@ -20,7 +20,6 @@ module load FastQC/0.11.3
 module load bowtie2/2.2.6
 
 #Run FastQC again
-fastqc -v >> ../versions.txt
 
 fastqc -o . ../../ProcessRadtags/*.fq
 

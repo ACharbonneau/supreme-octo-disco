@@ -15,8 +15,6 @@
 
 module load stacks/1.35
 
-process_radtags -v >> ../versions.txt
-
 #Starting in GBS/RawFastq/
 cd ${PBS_O_WORKDIR}
 
@@ -32,4 +30,4 @@ process_radtags -f ${lane} -i fastq -o ../ProcessRadtags/ -b ../Metadata/PlateIn
 
 cd ../fastQC/TrimmedFQC
 
-qsub 4_FastQC_trimmed.qsub
+qsub ../../supreme-octo-disco/4_FastQC_trimmed.qsub
