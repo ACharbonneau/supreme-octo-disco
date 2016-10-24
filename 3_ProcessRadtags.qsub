@@ -22,7 +22,7 @@ filelist=(*.fq) #get list of sequencing lanes
 
 lane=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
-barcode=`basename ${lane} .fq`.barcodes
+barcode=`basename ${lane} .fastq`.barcodes
 
 PBS_JOBNAME=${PBS_JOBNAME}_${lane} #rename job to job_indiv
 
