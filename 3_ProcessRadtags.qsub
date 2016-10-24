@@ -18,7 +18,7 @@ module load stacks/1.35
 #Starting in GBS/RawFastq/
 cd ${PBS_O_WORKDIR}
 
-filelist=(*.fq) #get list of sequencing lanes
+filelist=(*.fastq) #get list of sequencing lanes
 
 lane=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
