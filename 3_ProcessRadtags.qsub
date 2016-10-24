@@ -9,7 +9,8 @@
 #PBS -l feature=gbe    
 ### mem: amount of memory that the job will need
 #PBS -l mem=2gb
-##PBS -m abe     
+##PBS -m abe
+#PBS -t 0-14
 ### you can give your job a name for easier identification
 
 
