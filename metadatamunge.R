@@ -61,3 +61,14 @@ ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
 write.table(x = ForStacksSS, file = "SigSelection.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
+# Write out ChooseSigSel.sh
+
+AEcommand <- cbind("mv", select(ForStacksAE, UniqID), "AE_deconvoluted/")
+colnames(AEcommand) <- c("mv", "UniqID", "Folder")
+SScommand <- cbind("mv", select(ForStacksSS, UniqID), "SigSelection/")
+colnames(SScommand) <- c("mv", "UniqID", "Folder")
+command <- rbind(AEcommand, SScommand)
+
+write.table(x = command, file = "ChooseSigSel.sh", quote = F,
+            sep = " ", col.names = F, row.names = F)
+
