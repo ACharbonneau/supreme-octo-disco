@@ -31,4 +31,8 @@ process_radtags -f ${lane} -i fastq -o ../ProcessRadtags/ -b ../Metadata/PlateIn
 
 cd ../fastQC/TrimmedFQC
 
-qsub ../../supreme-octo-disco/4_FastQC_trimmed.qsub
+
+
+if [[ ${PBS_ARRAYID} = 14 ]] 
+then qsub ../../supreme-octo-disco/4_FastQC_trimmed.qsub
+fi
