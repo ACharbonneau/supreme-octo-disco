@@ -2,6 +2,8 @@
 # and the ID names change subtley between datasheets. This script just
 # munges the metadata into one useable format with unique IDs.
 
+#Also makes the two .pop files
+
 require(tidyr)
 require(dplyr)
 
@@ -9,7 +11,7 @@ require(dplyr)
 Pheno_data <- read.csv("../RawData/Exsertion F2 All.csv", colClasses = 
                          c(rep("factor", 7), rep("numeric", 7), "factor"))
 
-DNA_data <- read.csv("../RawData/MetadataAEall.txt", sep = "\t", header = F,
+DNA_data <- read.csv("../RawData/MetadataAll.txt", sep = "\t", header = F,
                      colClasses = "factor")
 
 
@@ -44,5 +46,18 @@ AE_F2_DNA <- left_join(AE_F2_DNA, Pheno_data)
 
 write.csv(x = AE_F2_DNA, file = "../Output/R/AE_F2_merge.csv")
 
-## Merge Parent sequencing and phenotype data
+# Write out STACKS metadata
+
+ForStacksAE <- rbind(select(AE_F2_DNA, UniqID, CrossX, Type_Year), 
+      select(AE_Parent_DNA, UniqID, CrossX, Type_Year),
+      select(AE_F1_DNA, UniqID, CrossX, Type_Year))
+
+write.table(x = ForStacksAE, file = "AE_deconvoluted.pop", 
+            quote = F, sep = "\t", col.names = F, row.names = F)
+
+ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
+  select(UniqID, CrossX, Species)
+
+write.table(x = ForStacksSS, file = "SigSelection.pop", 
+            quote = F, sep = "\t", col.names = F, row.names = F)
 
