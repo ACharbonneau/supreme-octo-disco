@@ -73,3 +73,4 @@ command <- mutate(command, UniqID=paste(UniqID, ".fq", sep=""))
 write.table(x = command, file = "ChooseSigSel.sh", quote = F,
             sep = " ", col.names = F, row.names = F)
 
+
