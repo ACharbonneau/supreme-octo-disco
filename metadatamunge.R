@@ -63,7 +63,7 @@ write.table(x = ForStacksSS, file = "SigSelection.pop",
 
 # Write out ChooseSigSel.sh
 
-AEcommand <- cbind("mv", select(ForStacksAE, UniqID), "AE_deconvoluted/")
+AEcommand <- cbind("mv", select(ForStacksAE, UniqID), "AE_Deconvoluted/")
 colnames(AEcommand) <- c("mv", "UniqID", "Folder")
 SScommand <- cbind("mv", select(ForStacksSS, UniqID), "SigSelection/")
 colnames(SScommand) <- c("mv", "UniqID", "Folder")
