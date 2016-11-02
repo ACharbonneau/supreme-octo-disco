@@ -49,12 +49,17 @@ echo "4. Launching fastqc"
 mkdir fastQC
 mkdir fastQC/RawFQC
 mkdir fastQC/TrimmedFQC
-cd fastQC/RawFQC
 
-qsub ../../supreme-octo-disco/2_FastQC.qsub
+#Build indicies for mapping
+cd ProcessRadtags/Indicies
+qsub ../../supreme-octo-disco/BT2_build.qsub
 
-cd ../../RawFastq
+cd ../../RawFastq/
 
-qsub ../supreme-octo-disco/3_ProcessRadtags.qsub
+ThisT=`ls *.fastq | wc -w`
+ThisT=`expr $ThisT - 1`
 
+qsub ../supreme-octo-disco/FastQC.qsub -t 0-${ThisT}
+
+qsub ../supreme-octo-disco/ProcessRadtags.qsub -t 0-${ThisT}
 
