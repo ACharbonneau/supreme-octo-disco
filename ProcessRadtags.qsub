@@ -1,0 +1,42 @@
+#!/bin/bash -login
+ 
+### define resources needed:
+### walltime - how long you expect the job to run
+#PBS -l walltime=04:00:00
+  
+### nodes:ppn - how many nodes & cores per node (ppn) that you require
+#PBS -l nodes=1:ppn=1
+#PBS -l feature=gbe    
+### mem: amount of memory that the job will need
+#PBS -l mem=2gb
+##PBS -m abe
+### you can give your job a name for easier identification
+
+
+module load stacks/1.35
+
+#Starting in GBS/RawFastq/
+cd ${PBS_O_WORKDIR}
+
+ThisT=`ls *.fastq | wc -w`
+
+filelist=(*.fastq) #get list of sequencing lanes
+
+lane=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
+
+barcode=`basename ${lane} .fastq`.barcodes
+
+PBS_JOBNAME=${PBS_JOBNAME}_${lane} #rename job to job_indiv
+
+process_radtags -f ${lane} -i fastq -o ../ProcessRadtags/ -b ../Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --adapter_1 'AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT' --adapter_mm 3 --retain_header
+
+cd ../ProcessRadtags/
+
+discardT=`ls *.fastq.discards | wc -w`
+
+fqT=`ls *.fq | wc -w`
+fqT=`expr ${fqT} - 1`
+
+if [[ ${discardT} = ${ThisT} ]] 
+then qsub ../supreme-octo-disco/FastQC_trimmed.qsub -t 0-${fqT}
+fi

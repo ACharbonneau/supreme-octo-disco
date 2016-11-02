@@ -1,0 +1,20 @@
+#!/bin/bash -login
+ 
+### define resources needed:
+### walltime - how long you expect the job to run
+#PBS -l walltime=04:00:00
+  
+### nodes:ppn - how many nodes & cores per node (ppn) that you require
+#PBS -l nodes=1:ppn=1
+#PBS -l feature=gbe    
+### mem: amount of memory that the job will need
+#PBS -l mem=2gb
+##PBS -m abe     
+### you can give your job a name for easier identification
+
+#Starting in GBS/ProcessRadtags/Indicies
+cd ${PBS_O_WORKDIR}
+
+module load bowtie2/2.2.6
+
+bowtie2-build /mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta Moghe2014_BT 

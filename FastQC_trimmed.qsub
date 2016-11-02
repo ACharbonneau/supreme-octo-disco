@@ -1,0 +1,56 @@
+#!/bin/bash -login
+ 
+### define resources needed:
+### walltime - how long you expect the job to run
+#PBS -l walltime=04:00:00
+  
+### nodes:ppn - how many nodes & cores per node (ppn) that you require
+#PBS -l nodes=1:ppn=1
+#PBS -l feature=gbe    
+### mem: amount of memory that the job will need
+#PBS -l mem=2gb
+##PBS -m abe     
+### you can give your job a name for easier identification
+
+#Starting in GBS/ProcessRadtags/
+cd ${PBS_O_WORKDIR}
+
+source ~/.bash_profile
+module load FastQC/0.11.3
+module load bowtie2/2.2.6
+
+#Run FastQC again
+
+ThisT=`ls *.fq | wc -w`
+
+filelist=(*.fq) #get list of sequencing lanes
+
+fastqfile=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
+
+fastqc -o ../fastQC/TrimmedFQC/ ${fastqfile}.fq
+
+fqcT=`ls ../fastQC/TrimmedFQC/*.fastq.zip | wc -w`
+
+#Start Mapper
+if [ ${ThisT} = ${fqcT} ]
+
+then sh ../supreme-octo-disco/ChooseSigSel.sh
+
+cd SigSelection/
+
+ThisT=`ls *.fastq | wc -w`
+
+ThisT=`expr ${ThisT} - 1`
+
+qsub ../../supreme-octo-disco/BT2Map.qsub -t 0-${ThisT} -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no"
+
+
+cd ../AE_Deconvoluted/
+
+ThisT=`ls *.fq | wc -w` 
+
+ThisT=`expr ${ThisT} - 1`
+
+qsub ../../supreme-octo-disco/BT2Map.qsub -t 0-${ThisT} -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no"
+
+fi
