@@ -30,6 +30,9 @@ cp -r /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/Meta
 cd Metadata/PlateInfoSeq/
 mv QTL_F2_8.txt C6G98ANXX_8_fastq.gz.keys.txt
 for i in `ls *fastq.gz.keys.txt`; do cut -f 3,4 ${i} | tail -n +2 > `echo ${i} | sed s/_fastq.gz.keys.txt/.barcodes/` ; done
+cd ../supreme-octo-disco/
+R --file=metadatamunge.R
+cd -
 
 echo "3. Setting up workspace"
 

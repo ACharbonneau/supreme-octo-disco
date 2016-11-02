@@ -14,7 +14,17 @@ TLDR;
 
 ##File Functions:
 
-###1_metadatamunge.R
+###1_GetData.sh
+Gets raw data and metadata, copies it to scratch and makes it useable. Also sets up
+workspace and launches pipeline.
+
+Calls:
+- metadatamunge.R
+- BT2_build.qsub
+- FastQC.qsub
+- ProcessRadtags.qsub
+
+###metadatamunge.R
 Creates metadata files and a script that are needed later in the analysis:
 
 - AE_F2_merge.csv
@@ -23,15 +33,6 @@ Creates metadata files and a script that are needed later in the analysis:
 - ChooseSigSel.sh
 
 Calls: nothing
-
-###2_GetData.sh
-Gets raw data and metadata, copies it to scratch and makes it useable. Also sets up
-workspace and launches pipeline.
-
-Calls:
-- BT2_build.qsub
-- FastQC.qsub
-- ProcessRadtags.qsub
 
 ###BT2_build.qsub
 Builds a Bowtie2 index for the reference

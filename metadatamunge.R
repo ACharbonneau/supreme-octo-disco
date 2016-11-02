@@ -8,10 +8,10 @@ require(tidyr)
 require(dplyr)
 
 ## Get data frames
-Pheno_data <- read.csv("../RawData/Exsertion F2 All.csv", colClasses = 
+Pheno_data <- read.csv("../Metadata/Exsertion F2 All.csv", colClasses = 
                          c(rep("factor", 7), rep("numeric", 7), "factor"))
 
-DNA_data <- read.csv("../RawData/MetadataAll.txt", sep = "\t", header = F,
+DNA_data <- read.csv("../Metadata/MetadataAll.txt", sep = "\t", header = F,
                      colClasses = "factor")
 
 
