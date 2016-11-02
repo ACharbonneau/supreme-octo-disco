@@ -44,7 +44,7 @@ AE_F2_DNA$Cross <- as.factor(CrossList[AE_F2_DNA$CrossX])
 
 AE_F2_DNA <- left_join(AE_F2_DNA, Pheno_data)
 
-write.csv(x = AE_F2_DNA, file = "../Output/R/AE_F2_merge.csv")
+write.csv(x = AE_F2_DNA, file = "../Metadata/AE_F2_merge.csv")
 
 # Write out STACKS metadata
 
@@ -52,13 +52,13 @@ ForStacksAE <- rbind(select(AE_F2_DNA, UniqID, CrossX, Type_Year),
       select(AE_Parent_DNA, UniqID, CrossX, Type_Year),
       select(AE_F1_DNA, UniqID, CrossX, Type_Year))
 
-write.table(x = ForStacksAE, file = "AE_deconvoluted.pop", 
+write.table(x = ForStacksAE, file = "../Metadata/AE_deconvoluted.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
   select(UniqID, CrossX, Species)
 
-write.table(x = ForStacksSS, file = "SigSelection.pop", 
+write.table(x = ForStacksSS, file = "../Metadata/SigSelection.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 # Write out ChooseSigSel.sh
