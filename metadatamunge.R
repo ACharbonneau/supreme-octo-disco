@@ -4,8 +4,17 @@
 
 #Also makes the two .pop files
 
-require(tidyr)
-require(dplyr)
+# Install function for packages    
+packages<-function(x){
+  x<-as.character(match.call()[[2]])
+  if (!require(x,character.only=TRUE)){
+    install.packages(pkgs=x,repos="http://cran.r-project.org")
+    require(x,character.only=TRUE)
+  }
+}
+packages(tidyr)
+packages(dplyr)
+
 
 ## Get data frames
 Pheno_data <- read.csv("../Metadata/Exsertion F2 All.csv", colClasses = 
