@@ -8,7 +8,7 @@ TLDR;
 2. Change hardcoded file paths in 1_GetData.sh, if necessary
 3. Run numbered scripts, in numerical order
 	- .sh and .qsub scripts should be run from the main directory
-	- .R and .Rmd scripts must be run from the script folder
+	- .R and .Rmd scripts must be run from the script folder (uses R 3.2.3)
 
 ##Files
 
