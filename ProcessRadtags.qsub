@@ -35,8 +35,7 @@ cd ../ProcessRadtags/
 discardT=`ls *.fastq.discards | wc -w`
 
 fqT=`ls *.fq | wc -w`
-fqT=`expr ${fqT} - 1`
 
 if [[ ${discardT} = ${ThisT} ]] 
-then qsub ../supreme-octo-disco/FastQC_trimmed.qsub -t 0-${fqT}
+then qsub ../supreme-octo-disco/FastQC_trimmed.qsub -v MAXJOBID=${fqT}
 fi

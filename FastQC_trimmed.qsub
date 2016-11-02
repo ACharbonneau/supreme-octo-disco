@@ -9,7 +9,8 @@
 #PBS -l feature=gbe    
 ### mem: amount of memory that the job will need
 #PBS -l mem=2gb
-##PBS -m abe     
+##PBS -m abe 
+#PBS -t 1-400    
 ### you can give your job a name for easier identification
 
 #Starting in GBS/ProcessRadtags/
@@ -31,6 +32,19 @@ fastqc -o ../fastQC/TrimmedFQC/ ${fastqfile}.fq
 
 fqcT=`ls ../fastQC/TrimmedFQC/*.fastq.zip | wc -w`
 
+
+# Calculate next job to run
+NEXT=$(( ${PBS_ARRAYID} + 400 ))
+JOBSCRIPT=../supreme-octo-disco/FastQC_trimmed.qsub
+
+#Check to see if next job is past the maximum job id
+if [ ${NEXT} -le ${MAXJOBID} ]
+then
+    cd ${PBS_O_WORKDIR}
+    qsub -t ${NEXT} ${JOBSCRIPT}
+fi
+
+
 #Start Mapper
 if [ ${ThisT} = ${fqcT} ]
 
@@ -42,15 +56,13 @@ ThisT=`ls *.fastq | wc -w`
 
 ThisT=`expr ${ThisT} - 1`
 
-qsub ../../supreme-octo-disco/BT2Map.qsub -t 0-${ThisT} -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no"
-
-
+qsub ../../supreme-octo-disco/BT2Map.qsub -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${ThisT}
 cd ../AE_Deconvoluted/
 
 ThisT=`ls *.fq | wc -w` 
 
 ThisT=`expr ${ThisT} - 1`
 
-qsub ../../supreme-octo-disco/BT2Map.qsub -t 0-${ThisT} -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no"
+qsub ../../supreme-octo-disco/BT2Map.qsub -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${ThisT}
 
 fi
