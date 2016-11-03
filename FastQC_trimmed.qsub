@@ -30,7 +30,7 @@ fastqfile=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
 fastqc -o ../fastQC/TrimmedFQC/ ${fastqfile}
 
-fqcT=`ls ../fastQC/TrimmedFQC/*.fastq.zip | wc -w`
+fqcT=`ls ../fastQC/TrimmedFQC/*fastqc.zip | wc -w`
 
 
 # Calculate next job to run
