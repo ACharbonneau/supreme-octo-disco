@@ -28,7 +28,7 @@ filelist=(*.fq) #get list of sequencing lanes
 
 fastqfile=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
-fastqc -o ../fastQC/TrimmedFQC/ ${fastqfile}.fq
+fastqc -o ../fastQC/TrimmedFQC/ ${fastqfile}
 
 fqcT=`ls ../fastQC/TrimmedFQC/*.fastq.zip | wc -w`
 
@@ -52,7 +52,7 @@ then sh ../supreme-octo-disco/ChooseSigSel.sh
 
 cd SigSelection/
 
-ThisT=`ls *.fastq | wc -w`
+ThisT=`ls *.fq | wc -w`
 
 ThisT=`expr ${ThisT} - 1`
 
