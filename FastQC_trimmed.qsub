@@ -41,7 +41,7 @@ JOBSCRIPT=../supreme-octo-disco/FastQC_trimmed.qsub
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR}
-    qsub -t ${NEXT} ${JOBSCRIPT}
+    qsub -t ${NEXT} ${JOBSCRIPT} -v MAXJOBID=${MAXJOBID}
 fi
 
 
