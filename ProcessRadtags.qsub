@@ -30,13 +30,11 @@ PBS_JOBNAME=${PBS_JOBNAME}_${lane} #rename job to job_indiv
 
 process_radtags -f ${lane} -i fastq -o ../ProcessRadtags/ -b ../Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --adapter_1 'AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT' --adapter_mm 3 --retain_header
 
-processedT=`ls ProcessRadtags.qsub.e* | wc -w`
-processedT=`expr $processedT + 1`
 
 cd ../ProcessRadtags/
 
 fqT=`ls *.fq | wc -w`
 
-if [[ ${processedT} = ${ThisT} ]] 
+if [[ ${fqT} = 1344 ]] 
 then qsub ../supreme-octo-disco/FastQC_trimmed.qsub -v MAXJOBID=${fqT}
 fi
