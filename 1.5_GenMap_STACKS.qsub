@@ -12,7 +12,7 @@
 # -r n : tells it not to re-run the script in the case of an error (so it doesn't overwrite any results generated$
 # -t 0-? : job numbers for array submission
 
-#Starting in one of the BT2Map folders
+#Starting in AE_Deconvoluted
 cd ${PBS_O_WORKDIR} || exit
 
 
@@ -22,7 +22,7 @@ dt=`date '+%d_%m_%Y'`
 
 # Run Stacks on the BT2 data
 
-ref_map.pl -S -m 3 -T 8 -b ${dt} -o ../GenMapSTACKS -A F2 \
+ref_map.pl -S -m 3 -T 8 -b ${dt} -o GenMapSTACKS/ -A F2 \
 -p ./*13210*.sorted.bam \
 -p ./*13211*.sorted.bam \
 -p ./*13212*.sorted.bam \

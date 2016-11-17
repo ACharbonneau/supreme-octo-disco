@@ -5,16 +5,12 @@ cd RawFastq
 
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C6G98ANXX_8_fastq.gz > C6G98ANXX_8.fastq
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C6P86ANXX_4_fastq.gz > C6P86ANXX_4.fastq
-
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C81E4ANXX_1_fastq.gz > C81E4ANXX_1.fastq
-
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C81FNANXX_1_fastq.gz > C81FNANXX_1.fastq
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C81FNANXX_2_fastq.gz > C81FNANXX_2.fastq
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C81FNANXX_3_fastq.gz > C81FNANXX_3.fastq
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C81FNANXX_4_fastq.gz > C81FNANXX_4.fastq
-
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C81KHANXX_8_fastq.gz > C81KHANXX_8.fastq
-
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C81LCANXX_2_fastq.gz > C81LCANXX_2.fastq
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C81LCANXX_3_fastq.gz > C81LCANXX_3.fastq
 gunzip -c  /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C81LCANXX_4_fastq.gz > C81LCANXX_4.fastq
@@ -31,7 +27,7 @@ cd Metadata/PlateInfoSeq/
 mv QTL_F2_8.txt C6G98ANXX_8_fastq.gz.keys.txt
 for i in `ls *fastq.gz.keys.txt`; do cut -f 3,4 ${i} | tail -n +2 > `echo ${i} | sed s/_fastq.gz.keys.txt/.barcodes/` ; done
 cd ../../supreme-octo-disco/
-R --file=metadatamunge.R
+R --file=1.1_metadatamunge.R
 cd -
 
 echo "3. Setting up workspace"
@@ -39,13 +35,12 @@ echo "3. Setting up workspace"
 cd ../
 mkdir ProcessRadtags
 mkdir ProcessRadtags/Indicies
-mkdir ProcessRadtags/SigSelection
-mkdir ProcessRadtags/AE_Deconvoluted
-mkdir ProcessRadtags/SigSelection/BT2map/
-mkdir ProcessRadtags/AE_Deconvoluted/BT2map/
-mkdir ProcessRadtags/SigSelection/popSTACKS/
-mkdir ProcessRadtags/AE_Deconvoluted/PopSTACKS/
-mkdir ProcessRadtags/AE_Deconvoluted/GenMapSTACKS
+mkdir ProcessRadtags/BT2map
+mkdir ProcessRadtags/BT2map/AE_Deconvoluted
+mkdir ProcessRadtags/BT2map/SigSelection
+mkdir ProcessRadtags/BT2map/SigSelection/PopSTACKS
+mkdir ProcessRadtags/BT2map/AE_Deconvoluted/PopSTACKS
+mkdir ProcessRadtags/BT2map/AE_Deconvoluted/GenMapSTACKS
 echo "4. Launching fastqc"
 
 mkdir fastQC
@@ -54,14 +49,14 @@ mkdir fastQC/TrimmedFQC
 
 #Build indicies for mapping
 cd ProcessRadtags/Indicies
-qsub ../../supreme-octo-disco/BT2_build.qsub
+qsub ../../supreme-octo-disco/1.1_BT2_build.qsub
 
 cd ../../RawFastq/
 
 ThisT=`ls *.fastq | wc -w`
 ThisT=`expr $ThisT - 1`
 
-qsub ../supreme-octo-disco/FastQC.qsub -t 0-${ThisT}
+qsub ../supreme-octo-disco/1.1_FastQC.qsub -t 0-${ThisT}
 
-qsub ../supreme-octo-disco/ProcessRadtags.qsub -t 0-${ThisT}
+qsub ../supreme-octo-disco/1.1_ProcessRadtags.qsub -t 0-${ThisT}
 

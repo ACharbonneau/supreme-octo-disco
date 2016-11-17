@@ -1,89 +1,95 @@
 # supreme-octo-disco
 Processing and Analysis of 2015 GBS data for **Signatures of Selection** and **AE F2 mapping** projects
+Designed to work on MSU HPCC inte16 cluster
 
 TLDR; 
 
 1. Make a main directory
-2. Clone repo onto HPC
+2. Clone repo into main directory
 2. Change hardcoded file paths in 1_GetData.sh, if necessary
-3. Run numbered scripts, in numerical order
-	- .sh and .qsub scripts should be run from the main directory
-	- .R and .Rmd scripts must be run from the script folder (uses R 3.2.3)
+3. Run numbered 1_GetData.sh, from the main directory
+
 
 ##Files
 
 ##File Functions:
 
 ###1_GetData.sh
-Gets raw data and metadata, copies it to scratch and makes it useable. Also sets up
+Gets raw data and metadata, copies it to main directory and makes it useable. Also sets up
 workspace and launches pipeline.
 
 Calls:
-- metadatamunge.R
-- BT2_build.qsub
-- FastQC.qsub
-- ProcessRadtags.qsub
+- 1.1_metadatamunge.R
+- 1.1_BT2_build.qsub
+- 1.1_FastQC.qsub
+- 1.1_ProcessRadtags.qsub
 
-###metadatamunge.R
+###1.1_metadatamunge.R
 Creates metadata files and a script that are needed later in the analysis:
 
-- AE_F2_merge.csv
-- AE_deconvoluted.pop
-- SigSelection.pop
+- ../Metadata/AE_F2_merge.csv
+- ../Metadata/AE_deconvoluted.pop
+- ../Metadata/SigSelection.pop
 - ChooseSigSel.sh
 
 Calls: nothing
 
-###BT2_build.qsub
+###1.1_BT2_build.qsub
 Builds a Bowtie2 index for the reference
 
 Calls: nothing
 
-###FastQC.qsub
+###1.1_FastQC.qsub
 Runs FastQC on untrimmed fastqs
 
 Calls: nothing
 
-###ProcessRadtags.qsub
+###1.1_ProcessRadtags.qsub
 Runs the first step of a STACKS pipeline to trim reads: remove adapters & demultiplex
 *This command changes the file extensions from fastq to fq*
 
-Calls: FastQC_trimmed.qsub
+Calls: 
+
+- 1.2_FastQC_trimmed.qsub
+- 1.2_BT2Map.qsub
 
 ###FastQC_trimmed.qsub
-Runs FastQC on trimmed and demultiplexed fastq files
-
-Calls: 
-- ChooseSigSel.sh
-- BT2Map.qsub
-
-###ChooseSigSel.sh
-Moves all the trimmed fastq files to either AE_Deconvoluted or SigSelection directory
-
-###BT2Map.qsub
-Runs Bowtie2 mapping for each individual to reference
-
-Calls: 
-- echo.qsub
-- view_samtools.qsub
-
-###echo.qsub
-A series of echo commands that write out the program versions and files used for
-a given individual for pipeline
+Slowly runs FastQC on trimmed and demultiplexed fastq files a few at a time
 
 Calls: nothing
 
-###view_samtools.qsub
+
+###1.2_BT2Map.qsub
+Runs Bowtie2 mapping for each individual to reference (simultanous with FastQC_trimmed)
+
+Calls: 
+- 1.3_echo.qsub
+- 1.3_view_samtools.qsub
+
+###1.3_echo.qsub
+A series of echo commands that write out the program versions and files used for
+a given pipeline
+
+Calls: nothing
+
+###1.3_view_samtools.qsub
 Uses samtools to get mapped reads into correct format for STACKS
 
 Calls:
-- GenMap_STACKS.qsub
-- Pop_STACKS.qsub
+- 1.4_ChooseSigSel.sh
+- 1.5_GenMap_STACKS.qsub
+- 1.5_Pop_STACKS.qsub
 
-###GenMap_STACKS.qsub
+###1.4_ChooseSigSel.sh
+Moves all the sam and bam files to either AE_Deconvoluted or SigSelection directory. Since
+two different sets of plants were sequenced together, the files need to be separated for
+downstream analysis. 
+
+
+###1.5_GenMap_STACKS.qsub
 For Anther Exsertion lines, uses STACKS pipeline to create a genetic map
 
-###Pop_STACKS.qsub
+###1.5_Pop_STACKS.qsub
 For both datasets, uses STACKS pipeline to get summary statistics 
 
 ###supreme-octo-disco.Rproj

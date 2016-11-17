@@ -1,7 +1,6 @@
 #!/bin/sh -login
 #PBS -j oe
-#PBS -l nodes=1:ppn=8,walltime=24:00:00,mem=10gb
-#PBS -m a
+#PBS -l nodes=1:ppn=1,walltime=0:30:00,mem=10gb
 
 # -o : tells it where to put output from your job
 # -j oe : specifies that output and error messages from your job can be placed in the same location
@@ -12,24 +11,23 @@
 # -r n : tells it not to re-run the script in the case of an error (so it doesn't overwrite any results generated$
 # -t 0-? : job numbers for array submission
 
-#Starting in one of the BT2Map folders
-cd ${PBS_O_WORKDIR} || exit
-
-module load stacks/1.35
-
-cd ..
-rc=`pwd`
-rc=`basename $rc`
+if [ "$PBS_JOBNAME" == "notset" ]
+then
+        echo "please set the job name"
+        exit 1
+fi
 
 cd ${PBS_O_WORKDIR}
 
+module load bowtie2/2.2.6
+module load SAMTools/1.2
+module load HTSeq/0.6.1
 
-
-dt=`date '+%d_%m_%Y'`
-
-# Run Stacks on the BT2 data
-
-ref_map.pl -S -m 3 -T 8 -b ${dt} -o ../PopSTACKS/ -A F2 -X "populations:--fstats" \
--X "populations:--treemix" -X "populations:--structure" -X "populations:--vcf" \
--X "populations:--renz 'pstI'" -X "populations:--write_single_snp" -X "populations:--genomic" \
---samples ./ -O ../../Metadata/${rc}.pop
+echo "Jobname is " ${PBS_JOBNAME}
+echo "Genome is " ${genome}
+echo "BowtieIndex is " ${index}
+echo "GFF file is " ${gff}
+echo "Basename is " ${bsname}
+echo "Mapper is " `bowtie2 --version`
+echo "Samtools is " `samtools --version`
+echo "STACKS is" `ref_map.pl -v`

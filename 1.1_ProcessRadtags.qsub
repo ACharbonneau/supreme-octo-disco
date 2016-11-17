@@ -1,0 +1,46 @@
+#!/bin/sh -login
+#PBS -j oe
+#PBS -l nodes=1:ppn=1,walltime=04:00:00,mem=20gb
+#PBS -m a
+
+# -o : tells it where to put output from your job
+# -j oe : specifies that output and error messages from your job can be placed in the same location
+# -l : resource requests (maximum amounts needed for each)
+# -M : email address to send status updates to
+# -m abe : what to send email updates about (abort, begin, end)
+# -N : names your job
+# -r n : tells it not to re-run the script in the case of an error (so it doesn't overwrite any results generated)
+# -t 0-? : job numbers for array submission
+
+
+module load stacks/1.35
+
+#Starting in GBS/RawFastq/
+cd ${PBS_O_WORKDIR}
+
+ThisT=`ls *.fastq | wc -w`
+
+filelist=(*.fastq) #get list of sequencing lanes
+
+lane=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
+
+barcode=`basename ${lane} .fastq`.barcodes
+
+PBS_JOBNAME=${PBS_JOBNAME}_${lane} #rename job to job_indiv
+
+process_radtags -f ${lane} -i fastq -o ../ProcessRadtags/ -b ../Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --adapter_1 'AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT' --adapter_mm 3 --retain_header
+
+
+cd ../ProcessRadtags/
+
+## Expect 1344 individuals after processing
+
+fqT=`ls *.fq | wc -w`
+fqT=`expr $fqT - 1`
+
+if [[ ${fqT} = 1343 ]] 
+then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -v MAXJOBID=${fqT}
+qsub ../supreme-octo-disco/1.2_BT2Map.qsub -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT}
+fi
+
+

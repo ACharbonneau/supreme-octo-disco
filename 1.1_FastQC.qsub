@@ -1,0 +1,30 @@
+#!/bin/sh -login
+#PBS -j oe
+#PBS -l nodes=1:ppn=1,walltime=04:00:00,mem=10gb
+#PBS -m a
+
+# -o : tells it where to put output from your job
+# -j oe : specifies that output and error messages from your job can be placed in the same location
+# -l : resource requests (maximum amounts needed for each)
+# -M : email address to send status updates to
+# -m abe : what to send email updates about (abort, begin, end)
+# -N : names your job
+# -r n : tells it not to re-run the script in the case of an error (so it doesn't overwrite any results generated$
+# -t 0-? : job numbers for array submission
+
+
+
+#Starting in GBS/RawFastq
+cd ${PBS_O_WORKDIR}
+
+
+module load FastQC/0.11.3
+
+
+filelist=(*.fastq) #get list of sequencing lanes
+
+fastqfile=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
+
+fastqc -o ../fastQC/RawFQC/ ${fastqfile} 
+
+

@@ -15,7 +15,7 @@
 
 module load SAMTools/1.2
 
-#Starting in one of the BT2Map folders
+#Starting in the BT2Map folder
 cd ${PBS_O_WORKDIR} || exit
 
 
@@ -31,20 +31,18 @@ samtools sort ${job}.bam ${job}.sorted
 samtools index ${job}.sorted.bam
 
 ### Send alignment to stacks
-cd ..
-ThisT=`ls *.fq | wc -w`
-rc=`pwd`
-rc=`basename $rc`
 
-cd ${PBS_O_WORKDIR}
+
+ThisT=`ls ../*.fq | wc -w`
 
 BAMdone=`ls *.sorted.bam | wc -l`
 
 if [ ${BAMdone} = ${ThisT}]
-then qsub ../../../supreme-octo-disco/Pop_STACKS.qsub -N ${bsname}.popSTACKS -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",indiv="${indiv}",job="${job}",gffi="${gffi}",exon="${exon}",stranded="${stranded}"
+then ../../supreme-octo-disco/1.4_ChooseSigSel.sh
+cd SigSelection
+qsub ../../../supreme-octo-disco/1.5_Pop_STACKS.qsub -N ${bsname}.popSTACKS -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",job="${job}",gffi="${gffi}",exon="${exon}",stranded="${stranded}"
+cd ../AE_Deconvoluted
+qsub ../../../supreme-octo-disco/1.5_GenMap_STACKS.qsub -N ${bsname}.mapSTACKS -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",job="${job}",gffi="${gffi}",exon="${exon}",stranded="${stranded}"
+qsub ../../../supreme-octo-disco/1.5_Pop_STACKS.qsub -N ${bsname}.popSTACKS -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",job="${job}",gffi="${gffi}",exon="${exon}",stranded="${stranded}"
 fi
 
-
-if [ $rc = "AE_Deconvoluted" ] && [ ${BAMdone} = ${ThisT}]
-then qsub ../../../supreme-octo-disco/GenMap_STACKS.qsub -N ${bsname}.mapSTACKS -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",indiv="${indiv}",job="${job}",gffi="${gffi}",exon="${exon}",stranded="${stranded}"
-fi

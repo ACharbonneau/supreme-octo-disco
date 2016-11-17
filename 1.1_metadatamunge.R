@@ -77,9 +77,9 @@ colnames(AEcommand) <- c("mv", "UniqID", "Folder")
 SScommand <- cbind("mv", select(ForStacksSS, UniqID), "SigSelection/")
 colnames(SScommand) <- c("mv", "UniqID", "Folder")
 command <- rbind(AEcommand, SScommand)
-command <- mutate(command, UniqID=paste(UniqID, ".fq", sep=""))
+command <- mutate(command, UniqID=paste("*",UniqID, "*", sep=""))
 
-write.table(x = command, file = "ChooseSigSel.sh", quote = F,
+write.table(x = command, file = "1.4_ChooseSigSel.sh", quote = F,
             sep = " ", col.names = F, row.names = F)
 
 
