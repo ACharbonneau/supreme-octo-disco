@@ -76,7 +76,7 @@ AE_F2_DNA$Family <- factor(gsub( "[()]", "", AE_F2_DNA$Family ))
 
 AE_F2_DNA$Cross <- as.factor(CrossList[AE_F2_DNA$CrossX])
 
-AE_F2_DNA <- left_join(AE_F2_DNA, Pheno_data)
+AE_F2_DNA <- left_join(AE_F2_DNA, F2_Pheno_data)
 
 write.csv(x = AE_F2_DNA, file = "../Metadata/AE_F2_merge.csv")
 
