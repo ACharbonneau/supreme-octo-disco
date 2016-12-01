@@ -47,7 +47,7 @@ DNA_data <- read.csv("../Metadata/MetadataAll.txt", sep = "\t", header = F,
                      colClasses = "factor")
 
 
-colnames(DNA_data) <- c("UniqID", "Type_Year", "Species", "CrossX", "Indiv", "Date", "Prep")
+colnames(DNA_data) <- c("ID", "Type_Year", "Species", "CrossX", "Indiv", "Date", "Prep")
 
 ## Filter out F2s from Parents from F1s
 
@@ -82,17 +82,22 @@ write.csv(x = AE_F2_DNA, file = "../Metadata/AE_F2_merge.csv")
 
 # Write out STACKS metadata
 
-ForStacksAE <- rbind(select(AE_F2_DNA, UniqID, CrossX, Type_Year), 
-      select(AE_Parent_DNA, UniqID, CrossX, Type_Year),
-      select(AE_F1_DNA, UniqID, CrossX, Type_Year))
+ForStacksAE <- rbind(select(AE_F2_DNA, ID, CrossX, Type_Year), 
+      select(AE_Parent_DNA, ID, CrossX, Type_Year),
+      select(AE_F1_DNA, ID, CrossX, Type_Year))
 
-write.table(x = ForStacksAE, file = "../Metadata/AE_deconvoluted.pop", 
+ForStacksAEUniq <- dplyr::left_join(ForStacksAE, All_geno_data, by=c("ID"="DNASample"))
+
+write.table(x = select(ForStacksAEUniq, UniqID, CrossX, Type_Year), file = "../Metadata/AE_deconvoluted.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
-  select(UniqID, CrossX, Species)
+  select(ID, CrossX, Species)
 
-write.table(x = ForStacksSS, file = "../Metadata/SigSelection.pop", 
+ForStacksSSUniq <- dplyr::left_join(ForStacksSS, All_geno_data, by=c("ID"="DNASample"))
+
+
+write.table(x = select(ForStacksSSUniq, UniqID, CrossX, Species.x), file = "../Metadata/SigSelection.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 # Write out ChooseSigSel.sh
