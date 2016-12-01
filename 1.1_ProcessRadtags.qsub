@@ -18,6 +18,8 @@ module load stacks/1.35
 #Starting in GBS/RawFastq/
 cd ${PBS_O_WORKDIR}
 
+for i in `ls *.unique.txt`; do cut -f 3,20 ${i} | tail -n +2 > `echo ${i} | sed s/.unique.txt/.barcodes/` ; done
+
 ThisT=`ls *.fastq | wc -w`
 
 filelist=(*.fastq) #get list of sequencing lanes

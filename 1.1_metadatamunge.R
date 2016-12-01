@@ -1,8 +1,12 @@
-# There are no unique identifiers in this project until the DNA prep, 
-# and the ID names change subtley between datasheets. This script just
-# munges the metadata into one useable format with unique IDs.
+# There are no unique identifiers in this project until the DNA prep,
+# and even in the DNA prep, the unique identifiers aren't unique because
+# ~80 samples were sequenced twice.
+# Furthermore the ID names change subtley between datasheets. 
+# This script just munges the metadata into one useable format with unique IDs.
 
-#Also makes the two .pop files
+#It also makes the two .pop files needed for STACKS
+
+rm(list = ls())
 
 # Install function for packages    
 packages<-function(x){
@@ -17,8 +21,27 @@ packages(dplyr)
 
 
 ## Get data frames
-Pheno_data <- read.csv("../Metadata/Exsertion F2 All.csv", colClasses = 
+Geno_dir <- file.path("../Metadata/PlateInfoSeq/")
+
+Geno_list <- list.files(Geno_dir, pattern = "*gz.keys.txt")
+
+All_geno_data <- list()
+
+for( X in 1:length(Geno_list)){
+  TempFile <- read.table(paste(Geno_dir, Geno_list[ X ], sep=""), sep = "\t", header = T, na.strings = "")
+  TempFile$UniqID <- paste(TempFile$DNASample, TempFile$DNA_Plate, sep="_")
+  All_geno_data[[X]] <- TempFile
+  write.table(TempFile, paste(Geno_dir, substr(Geno_list[X], 1, 11), ".unique.txt", sep=""), sep="\t", row.names=F, col.names=F, quote=F)
+}
+
+All_geno_data <- tbl_df( do.call( "rbind", All_geno_data ))
+
+
+F2_Pheno_data <- read.csv("../Metadata/Exsertion_F2_F2s.csv", colClasses = 
                          c(rep("factor", 7), rep("numeric", 7), "factor"))
+
+Parent_Pheno_data <- read.csv("../Metadata/Exsertion_F2_Parents.csv", colClasses = 
+                            c(rep("factor", 2), rep("numeric", 7), "factor"))
 
 DNA_data <- read.csv("../Metadata/MetadataAll.txt", sep = "\t", header = F,
                      colClasses = "factor")
@@ -42,6 +65,8 @@ AE_Parent_DNA <- droplevels(AE_Parent_DNA)
 AE_F1_DNA <- filter( DNA_data, Type_Year=="AS_EX_QTL_F1s_2011")
 
 AE_F1_DNA <- droplevels(AE_F1_DNA)
+
+write.csv(x = AE_F1_DNA, file = "../Metadata/AE_F1_merge.csv")
 
 ## Merge F2s sequencing and phenotype data
 

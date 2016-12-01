@@ -22,7 +22,7 @@ dt=`date '+%d_%m_%Y'`
 
 # Run Stacks on the BT2 data
 
-ref_map.pl -S -m 3 -T 8 -b ${dt} -o GenMapSTACKS/ -A F2 \
+ref_map.pl -S -m 3 -T 8 -b ${dt} -o GenMapSTACKS/ -A F2 -X "genotypes:-o 'rqtl'" -X "genotypes:-o 'genomic'" -X "genotypes:-e 'pstI'"\
 -p ./*13210*.sorted.bam \
 -p ./*13211*.sorted.bam \
 -p ./*13212*.sorted.bam \
