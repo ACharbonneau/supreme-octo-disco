@@ -102,9 +102,9 @@ write.table(x = select(ForStacksSSUniq, UniqID, CrossX, Species.x), file = "../M
 
 # Write out ChooseSigSel.sh
 
-AEcommand <- cbind("mv", select(ForStacksAE, UniqID), "AE_Deconvoluted/")
+AEcommand <- cbind("mv", select(ForStacksAEUniq, UniqID), "AE_Deconvoluted/")
 colnames(AEcommand) <- c("mv", "UniqID", "Folder")
-SScommand <- cbind("mv", select(ForStacksSS, UniqID), "SigSelection/")
+SScommand <- cbind("mv", select(ForStacksSSUniq, UniqID), "SigSelection/")
 colnames(SScommand) <- c("mv", "UniqID", "Folder")
 command <- rbind(AEcommand, SScommand)
 command <- mutate(command, UniqID=paste("*",UniqID, "*", sep=""))
