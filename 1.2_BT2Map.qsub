@@ -48,7 +48,7 @@ PBS_JOBNAME=${PBS_JOBNAME}_${indiv} #rename job to job_indiv
 cd BT2map/
 
 echo bsname="${PBS_JOBNAME}"
-bowtie2 --end-to-end --sensitive -x ${index} -U ../${indiv} -S ${PBS_JOBNAME}.sam
+bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -S ${PBS_JOBNAME}.sam
 
 #--sensitive            -D 15 -R 2 -N 0 -L 22 -i S,1,1.15 (default)
 
