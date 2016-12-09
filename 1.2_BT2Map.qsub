@@ -25,14 +25,13 @@ filelist=(*fq) #Get a list of all sequencing files
 
 indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
+bsname=${PBS_ARRAYID}_${indiv}
 
 #Then launch metadata collector, once per reference per dataset
 
 if [[ ${PBS_ARRAYID} = 0 ]] 
-then qsub ../../../supreme-octo-disco/1.3_echo.qsub -N ${PBS_JOBNAME}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${PBS_JOBNAME}",gffi="${gffi}",exon="${exon}"
+then qsub ../../../supreme-octo-disco/1.3_echo.qsub -N ${PBS_JOBNAME}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
 fi 
-
-PBS_JOBNAME=${PBS_JOBNAME}_${indiv} #rename job to job_indiv
 
 #Run bowtie2
 
@@ -47,13 +46,13 @@ PBS_JOBNAME=${PBS_JOBNAME}_${indiv} #rename job to job_indiv
 
 cd BT2map/
 
-echo bsname="${PBS_JOBNAME}"
-bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -S ${PBS_JOBNAME}.sam
+echo bsname="${bsname}}"
+bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -S ${PBS_ARRAYID}_${indiv}.sam
 
 #--sensitive            -D 15 -R 2 -N 0 -L 22 -i S,1,1.15 (default)
 
 
-if [[ ! -f ${PBS_JOBNAME}.sam ]] 
+if [[ ! -f ${bsname}.sam ]] 
 then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
 fi
 
@@ -70,6 +69,6 @@ fi
 
 #Launch samtools
 
-if [[ -f ${PBS_JOBNAME}.sam ]] 
-then qsub ../../supreme-octo-disco/1.3_view_samtools.qsub -N ${bsname}.samtools -v genome="${genome}",index="${index}",gff="${gff}",bsname="${PBS_JOBNAME}",indiv="${indiv}",job="${PBS_JOBNAME}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",index="${index}"
+if [[ -f ${PBS_ARRAYID}_${indiv}.sam ]] 
+then qsub ../../supreme-octo-disco/1.3_view_samtools.qsub -N ${bsname}.samtools -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",indiv="${indiv}",job="${PBS_JOBNAME}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",index="${index}"
 fi
