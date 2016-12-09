@@ -54,7 +54,7 @@ bowtie2 --end-to-end --sensitive -x ${index} -U ../${indiv} -S ${PBS_JOBNAME}.sa
 
 
 if [[ ! -f ${PBS_JOBNAME}.sam ]] 
-then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -t ${PBS_ARRAYID} -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no"
+then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
 fi
 
 # Calculate next job to run
@@ -65,11 +65,11 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR}
-    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -t ${NEXT} -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${MAXJOBID}
+    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
 fi
 
 #Launch samtools
 
 if [[ -f ${PBS_JOBNAME}.sam ]] 
-then qsub ../../supreme-octo-disco/1.3_view_samtools.qsub -N ${bsname}.samtools -v genome="${genome}",index="${index}",gff="${gff}",bsname="${PBS_JOBNAME}",indiv="${indiv}",job="${PBS_JOBNAME}",gffi="${gffi}",exon="${exon}",stranded="${stranded}"
+then qsub ../../supreme-octo-disco/1.3_view_samtools.qsub -N ${bsname}.samtools -v genome="${genome}",index="${index}",gff="${gff}",bsname="${PBS_JOBNAME}",indiv="${indiv}",job="${PBS_JOBNAME}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",index="${index}"
 fi
