@@ -30,7 +30,7 @@ bsname=${PBS_ARRAYID}_${indiv}
 #Then launch metadata collector, once per reference per dataset
 
 if [[ ${PBS_ARRAYID} = 0 ]] 
-then qsub ../../../supreme-octo-disco/1.3_echo.qsub -N ${PBS_JOBNAME}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
+then qsub ../supreme-octo-disco/1.3_echo.qsub -N ${PBS_JOBNAME}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
 fi 
 
 #Run bowtie2
