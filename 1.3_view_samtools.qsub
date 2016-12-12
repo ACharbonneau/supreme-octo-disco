@@ -23,12 +23,12 @@ cd ${PBS_O_WORKDIR} || exit
 # Filters out any mapping qualities less than 30
 echo ${bsname}
 
-samtools view -q 30 -b -T ${genome} ${job}.sam > ${job}.bam
+samtools view -q 30 -b -T ${genome} ${bsname}.sam > ${bsname}.bam
 
 
-samtools sort ${job}.bam ${job}.sorted
+samtools sort ${bsname}.bam ${bsname}.sorted
 
-samtools index ${job}.sorted.bam
+samtools index ${bsname}.sorted.bam
 
 ### Send alignment to stacks
 

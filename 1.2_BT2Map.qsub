@@ -69,6 +69,6 @@ fi
 
 #Launch samtools
 
-if [[ -f ${PBS_ARRAYID}_${indiv}.sam ]] 
+if [[ -f ${bsname}.sam ]] 
 then qsub ../../supreme-octo-disco/1.3_view_samtools.qsub -N ${bsname}.samtools -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",indiv="${indiv}",job="${PBS_JOBNAME}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",index="${index}"
 fi
