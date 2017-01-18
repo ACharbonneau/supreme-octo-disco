@@ -33,9 +33,9 @@ samtools index ${bsname}.sorted.bam
 ### Send alignment to stacks
 
 
-ThisT=`ls ../*.fq | wc -w`
+ThisT=$(ls ../*.fq | wc -w)
 
-BAMdone=`ls *.sorted.bam | wc -l`
+BAMdone=$(ls *.sorted.bam | wc -l)
 
 if [ ${BAMdone} = ${ThisT} ]
 then ../../supreme-octo-disco/1.4_ChooseSigSel.sh
