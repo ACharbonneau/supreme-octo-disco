@@ -40,9 +40,9 @@ BAMdone=$(ls *.sorted.bam | wc -l)
 if [ ${BAMdone} = ${ThisT} ]
 then sh ../../supreme-octo-disco/1.4_ChooseSigSel.sh
 cd SigSelection
-qsub ../../../supreme-octo-disco/1.5_Pop_STACKS.qsub -N ${bsname}.popSTACKS -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",job="${job}",gffi="${gffi}",exon="${exon}",stranded="${stranded}"
+qsub ../../../supreme-octo-disco/1.5_Pop_STACKS.qsub -N ${bsname}.popSTACKS -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",indiv="${indiv}",job="${PBS_JOBNAME}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",index="${index}"
 cd ../AE_Deconvoluted
-qsub ../../../supreme-octo-disco/1.5_GenMap_STACKS.qsub -N ${bsname}.mapSTACKS -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",job="${job}",gffi="${gffi}",exon="${exon}",stranded="${stranded}"
-qsub ../../../supreme-octo-disco/1.5_Pop_STACKS.qsub -N ${bsname}.popSTACKS -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",job="${job}",gffi="${gffi}",exon="${exon}",stranded="${stranded}"
+qsub ../../../supreme-octo-disco/1.5_GenMap_STACKS.qsub -N ${bsname}.mapSTACKS -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",indiv="${indiv}",job="${PBS_JOBNAME}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",index="${index}"
+qsub ../../../supreme-octo-disco/1.5_Pop_STACKS.qsub -N ${bsname}.popSTACKS -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",indiv="${indiv}",job="${PBS_JOBNAME}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",index="${index}"
 fi
 
