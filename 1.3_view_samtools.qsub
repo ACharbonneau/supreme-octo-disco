@@ -38,7 +38,7 @@ ThisT=$(ls ../*.fq | wc -w)
 BAMdone=$(ls *.sorted.bam | wc -l)
 
 if [ ${BAMdone} = ${ThisT} ]
-then ../../supreme-octo-disco/1.4_ChooseSigSel.sh
+then sh ../../supreme-octo-disco/1.4_ChooseSigSel.sh
 cd SigSelection
 qsub ../../../supreme-octo-disco/1.5_Pop_STACKS.qsub -N ${bsname}.popSTACKS -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",job="${job}",gffi="${gffi}",exon="${exon}",stranded="${stranded}"
 cd ../AE_Deconvoluted
