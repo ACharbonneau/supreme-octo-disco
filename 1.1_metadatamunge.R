@@ -108,10 +108,10 @@ colnames(AEcommand) <- c("cp", "UniqID", "JustFolder", "UniqRepeat", "Folder")
 
 
 SScommand <- cbind("cp", select(ForStacksSSUniq, UniqID), "SigSelection/", select(ForStacksSSUniq, UniqID))
-SScommand$Folder <- paste(SScommand[,3], SScommand[,4], ".bam", sep = "")
+SScommand$Folder <- paste(SScommand[,3], SScommand[,4], ".sam", sep = "")
 colnames(SScommand) <- c("cp", "UniqID", "JustFolder", "UniqRepeat", "Folder")
 command <- rbind(AEcommand, SScommand)
-command <- mutate(command, UniqID=paste("*",UniqID, ".fq.sorted.sam", sep=""))
+command <- mutate(command, UniqID=paste("*",UniqID, ".sam", sep=""))
 command <- select(command, cp, UniqID, Folder)
 
 write.table(x = command, file = "1.4_ChooseSigSel.sh", quote = F,
