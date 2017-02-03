@@ -103,7 +103,7 @@ write.table(x = select(ForStacksSSUniq, UniqID, CrossX, Species.x), file = "../M
 # Write out ChooseSigSel.sh
 
 AEcommand <- cbind("cp", select(ForStacksAEUniq, UniqID), "AE_Deconvoluted/", select(ForStacksAEUniq, UniqID)) 
-AEcommand$Folder <- paste(AEcommand[,3], AEcommand[,4], ".bam", sep = "")
+AEcommand$Folder <- paste(AEcommand[,3], AEcommand[,4], ".sam", sep = "")
 colnames(AEcommand) <- c("cp", "UniqID", "JustFolder", "UniqRepeat", "Folder")
 
 
@@ -111,7 +111,7 @@ SScommand <- cbind("cp", select(ForStacksSSUniq, UniqID), "SigSelection/", selec
 SScommand$Folder <- paste(SScommand[,3], SScommand[,4], ".bam", sep = "")
 colnames(SScommand) <- c("cp", "UniqID", "JustFolder", "UniqRepeat", "Folder")
 command <- rbind(AEcommand, SScommand)
-command <- mutate(command, UniqID=paste("*",UniqID, ".fq.sorted.bam", sep=""))
+command <- mutate(command, UniqID=paste("*",UniqID, ".fq.sorted.sam", sep=""))
 command <- select(command, cp, UniqID, Folder)
 
 write.table(x = command, file = "1.4_ChooseSigSel.sh", quote = F,
