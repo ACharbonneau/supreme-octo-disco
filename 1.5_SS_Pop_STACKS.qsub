@@ -25,6 +25,8 @@ dt=`date '+%d%m%Y'`
 
 # Run Stacks on the BT2 data
 
+#All sigselection plants
+
 ref_map.pl -S -m 3 -T 8 -b ${dt} -o PopSTACKS/ -X "populations:--fstats" \
 -X "populations:--treemix" -X "populations:--structure" -X "populations:--vcf" \
 -X "populations:--renz 'pstI'" -X "populations:--write_single_snp" -X "populations:--genomic" \
