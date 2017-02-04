@@ -88,7 +88,7 @@ ForStacksAE <- rbind(select(AE_F2_DNA, ID, CrossX, Type_Year),
 
 ForStacksAEUniq <- dplyr::left_join(ForStacksAE, All_geno_data, by=c("ID"="DNASample"))
 
-write.table(x = select(ForStacksAEUniq, UniqID, CrossX, Type_Year), file = "../Metadata/AE_deconvoluted.pop", 
+write.table(x = select(ForStacksAEUniq, UniqID, CrossX, Type_Year), file = "../Metadata/AE_Deconvoluted.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%

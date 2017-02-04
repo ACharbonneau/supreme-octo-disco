@@ -18,13 +18,13 @@ cd ${PBS_O_WORKDIR} || exit
 
 module load stacks/1.35
 
-dt=`date '+%d_%m_%Y'`
+dt=`date '+%d%m%Y'`
 
 # Run Stacks on the BT2 data
 
 #Parents are parents, recombs are F1s. F2s currently not included
 
-ref_map.pl -S -m 3 -T 8 -b ${dt} -o GenMapSTACKS/ -A F2 -X "genotypes:-o 'rqtl'" -X "genotypes:-o 'genomic'" -X "genotypes:-e 'pstI'"\
+ref_map.pl -S -m 3 -T 8 -b ${dt} -o GenMapSTACKS/ -A F2 -X "genotypes:-o 'rqtl'" -X "genotypes:-o 'genomic'" -X "genotypes:-e 'pstI'" \
 -p 13210_QTL_F2_11.sam \
 -p 13210_QTL_F2_12.sam \
 -p 13211_QTL_F2_11.sam \

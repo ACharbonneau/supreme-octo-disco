@@ -336,7 +336,6 @@ ref_map.pl -S -m 3 -T 8 -b ${dt} -o PopSTACKS/ -A F2 -X "populations:--fstats" \
 -s 12057_QTL_F2_4.sam \
 -s 12058_QTL_F2_4.sam \
 -s 12059_QTL_F2_4.sam \
--s 12059_QTL_F2_4.sam \
 -s 12060_QTL_F2_4.sam \
 -s 12061_QTL_F2_4.sam \
 -s 12063_QTL_F2_4.sam \
