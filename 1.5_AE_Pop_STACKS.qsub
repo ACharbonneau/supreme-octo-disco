@@ -1,6 +1,6 @@
 #!/bin/sh -login
 #PBS -j oe
-#PBS -l nodes=1:ppn=8,walltime=24:00:00,mem=10gb
+#PBS -l nodes=1:ppn=8,walltime=48:00:00,mem=10gb
 #PBS -m a
 
 # -o : tells it where to put output from your job
@@ -21,7 +21,7 @@ module load stacks/1.35
 rc=`pwd`
 rc=`basename $rc`
 
-dt=`date '+%d%m%Y'`
+dt=`date '+%Y%m%d'`
 
 # Run Stacks on the BT2 data
 
