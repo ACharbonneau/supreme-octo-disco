@@ -29,7 +29,7 @@ dt=`date '+%Y%m%d'`
 
 ref_map.pl -S -m 3 -T 8 -b ${dt} -o PopSTACKS/ -X "populations:--fstats" -X "populations:--ordered_export"\
 -X "populations:--treemix" -X "populations:--structure" -X "populations:--vcf" \
--X "populations:--renz 'pstI'" -X "populations:--write_single_snp" -X "populations:--genomic" \
+-X "populations:--renz 'pstI'" -X "populations:--write_single_snp" \
 -O ../../../Metadata/${rc}.pop \
 -s ./14764_QTL_F2_12.sam \
 -s ./14765_QTL_F2_12.sam \
