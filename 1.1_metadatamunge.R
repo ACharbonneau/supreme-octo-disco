@@ -20,7 +20,11 @@ packages(tidyr)
 packages(dplyr)
 
 
-## Get data frames
+
+## They sequenced lots of samples twice, but used the same names, which breaks
+## the deconvolution step. This loop gives each sample a unique name and writes
+## out a new sequence list file for each lane with the unique names
+
 Geno_dir <- file.path("../Metadata/PlateInfoSeq/")
 
 Geno_list <- list.files(Geno_dir, pattern = "*gz.keys.txt")
@@ -34,20 +38,62 @@ for( X in 1:length(Geno_list)){
   write.table(TempFile, paste(Geno_dir, substr(Geno_list[X], 1, 11), ".unique.txt", sep=""), sep="\t", row.names=F, col.names=F, quote=F)
 }
 
+
 All_geno_data <- tbl_df( do.call( "rbind", All_geno_data ))
 
+## Get global data frames
 
-F2_Pheno_data <- read.csv("../Metadata/Exsertion_F2_F2s.csv", colClasses = 
-                         c(rep("factor", 7), rep("numeric", 7), "factor"))
+Samfile <- read.csv("../Metadata/OriginalFiles/ID_samfile.csv", head=T, colClasses = "factor")
 
-Parent_Pheno_data <- read.csv("../Metadata/Exsertion_F2_Parents.csv", colClasses = 
-                            c(rep("factor", 2), rep("numeric", 7), "factor"))
 
 DNA_data <- read.csv("../Metadata/MetadataAll.txt", sep = "\t", header = F,
                      colClasses = "factor")
 
+colnames(DNA_data) <- c("ID", "Type_Year", "Species", "Cross", "Indiv", "Date", "Prep")
 
-colnames(DNA_data) <- c("ID", "Type_Year", "Species", "CrossX", "Indiv", "Date", "Prep")
+DNA_data <- left_join(DNA_data, Samfile)
+
+Pedigree <- read.csv("../Metadata/OriginalFiles/Pedigree.csv", colClasses = "factor")
+
+# Get F0 data and combine
+
+F0_Pheno_data <- read.csv("../Metadata/OriginalFiles/QTLParentalMeasurements.csv", colClasses = 
+                            c(rep("factor", 4), rep("numeric", 6), "factor"))
+
+F0_Pheno_data$Indiv <- paste(F0_Pheno_data$Matriline, "/", F0_Pheno_data$Offspr, sep="")
+
+AE_F0_DNA <- filter( DNA_data, Type_Year=="AS_EX_QTL_Parents_2011")
+
+AE_F0_DNA <- droplevels(AE_F0_DNA)
+
+AE_F0_DNA <- left_join(AE_F0_DNA, F0_Pheno_data)
+
+write.csv(x = AE_F0_DNA, file= "../Metadata/AE_F0_merge.csv")
+
+# Get F1 data and combine
+
+F1_Pheno_data <- read.csv("../Metadata/OriginalFiles/QTLF1measurements.csv", colClasses = 
+                            c(rep("factor", 4), rep("numeric", 6), "factor"))
+
+F1_Pheno_data$UID <- paste(F1_Pheno_data$Plant.ID, "/", F1_Pheno_data$Offspr, sep="")
+
+AE_F1_DNA <- filter( DNA_data, Type_Year=="AS_EX_QTL_F1s_2011")
+
+AE_F1_DNA$UID <- paste(AE_F1_DNA$Cross, AE_F1_DNA$Indiv, sep="")
+
+AE_F1_DNA <- left_join(AE_F1_DNA, F1_Pheno_data)
+
+AE_F1_DNA <- droplevels(AE_F1_DNA)
+
+write.csv(x = AE_F1_DNA, file = "../Metadata/AE_F1_merge.csv")
+
+
+# Get F2 data and combine
+
+F2_Pheno_data <- read.csv("../Metadata/OriginalFiles/Exsertion_F2_F2s.csv", colClasses = 
+                         c(rep("factor", 7), rep("numeric", 7), "factor"))
+
+colnames(F2_Pheno_data)[1] <- "CrossX"
 
 ## Filter out F2s from Parents from F1s
 
@@ -58,46 +104,42 @@ AE_F2_DNA <- filter( DNA_data, Type_Year != "SigSelection" &
 
 AE_F2_DNA <- droplevels(AE_F2_DNA)
 
-AE_Parent_DNA <- filter( DNA_data, Type_Year=="AS_EX_QTL_Parents_2011")
-
-AE_Parent_DNA <- droplevels(AE_Parent_DNA)
-
-AE_F1_DNA <- filter( DNA_data, Type_Year=="AS_EX_QTL_F1s_2011")
-
-AE_F1_DNA <- droplevels(AE_F1_DNA)
-
-write.csv(x = AE_F1_DNA, file = "../Metadata/AE_F1_merge.csv")
+AE_F2_DNA$F2 <- as.factor(AE_F2_DNA$F2)
 
 ## Merge F2s sequencing and phenotype data
 
-CrossList <- c(KF2="KxK", KXf2="KxR", KXF2="KxR", RF2="RxR", RXF2="RxK")
+CrossList <- c(KF2="KxK", KXF2="KxR", RF2="RxR", RXF2="RxK")
 
 AE_F2_DNA$Family <- factor(gsub( "[()]", "", AE_F2_DNA$Family ))
 
-AE_F2_DNA$Cross <- as.factor(CrossList[AE_F2_DNA$CrossX])
+AE_F2_DNA$CrossX <- as.factor(CrossList[AE_F2_DNA$Cross])
 
 AE_F2_DNA <- left_join(AE_F2_DNA, F2_Pheno_data)
+
+AE_F2_DNA$F2s.produced <- as.factor(paste(AE_F2_DNA$Cross, "(", AE_F2_DNA$Family, ")", sep = ""))
+
+AE_F2_DNA <- left_join(AE_F2_DNA, Pedigree)
 
 write.csv(x = AE_F2_DNA, file = "../Metadata/AE_F2_merge.csv")
 
 # Write out STACKS metadata
 
-ForStacksAE <- rbind(select(AE_F2_DNA, ID, CrossX, Type_Year), 
-      select(AE_Parent_DNA, ID, CrossX, Type_Year),
-      select(AE_F1_DNA, ID, CrossX, Type_Year))
+ForStacksAE <- rbind(select(AE_F2_DNA, ID, Cross, Type_Year), 
+      select(AE_F0_DNA, ID, Cross, Type_Year),
+      select(AE_F1_DNA, ID, Cross, Type_Year))
 
 ForStacksAEUniq <- dplyr::left_join(ForStacksAE, All_geno_data, by=c("ID"="DNASample"))
 
-write.table(x = select(ForStacksAEUniq, UniqID, CrossX, Type_Year), file = "../Metadata/AE_Deconvoluted.pop", 
+write.table(x = select(ForStacksAEUniq, UniqID, Cross, Type_Year), file = "../Metadata/AE_Deconvoluted.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
-  select(ID, CrossX, Species)
+  select(ID, Cross, Species)
 
 ForStacksSSUniq <- dplyr::left_join(ForStacksSS, All_geno_data, by=c("ID"="DNASample"))
 
 
-write.table(x = select(ForStacksSSUniq, UniqID, CrossX, Species.x), file = "../Metadata/SigSelection.pop", 
+write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Metadata/SigSelection.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 # Write out ChooseSigSel.sh
