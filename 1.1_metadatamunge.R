@@ -130,6 +130,8 @@ ForStacksAE <- rbind(select(AE_F2_DNA, ID, Cross, Type_Year),
 
 ForStacksAEUniq <- dplyr::left_join(ForStacksAE, All_geno_data, by=c("ID"="DNASample"))
 
+ForStacksAEUniq <- unique(ForStacksAEUniq)
+
 write.table(x = select(ForStacksAEUniq, UniqID, Cross, Type_Year), file = "../Metadata/AE_Deconvoluted.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 

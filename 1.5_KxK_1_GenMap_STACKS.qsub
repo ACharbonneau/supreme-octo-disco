@@ -1,0 +1,84 @@
+#!/bin/sh -login
+#PBS -j oe
+#PBS -l nodes=1:ppn=8,walltime=48:00:00,mem=10gb
+#PBS -m a
+
+# -o : tells it where to put output from your job
+# -j oe : specifies that output and error messages from your job can be placed in the same location
+# -l : resource requests (maximum amounts needed for each)
+# -M : email address to send status updates to
+# -m abe : what to send email updates about (abort, begin, end)
+# -N : names your job
+# -r n : tells it not to re-run the script in the case of an error (so it doesn't overwrite any results generated$
+# -t 0-? : job numbers for array submission
+
+#Starting in AE_Deconvoluted
+cd ${PBS_O_WORKDIR} || exit
+
+
+module load stacks/1.35
+
+dt=`date '+%Y%m%d'`
+# Run Stacks on the BT2 data
+
+# -p is parents, -r is progeny 
+
+## In this case -p are F0: A342.2/6, A196b/3, B358a/6, and D30/3 
+## -r are Family 1, KxK cross
+
+ref_map.pl -S -m 3 -T 8 -b ${dt} -o GenMapSTACKS/ -A F2 -X "genotypes:-o 'rqtl'" -X "genotypes:-o 'genomic'" -X "genotypes:-e 'pstI'" \
+-p 13229_QTL_F2_11.fq.sam \
+-p 13214_QTL_F2_11.fq.sam \
+-p 13215_QTL_F2_11.fq.sam \
+-p 13222_QTL_F2_11.fq.sam \
+-r 11090_QTL_F2_1.fq.sam \
+-r 11091_QTL_F2_1.fq.sam \
+-r 11093_QTL_F2_1.fq.sam \
+-r 11094_QTL_F2_1.fq.sam \
+-r 11107_QTL_F2_1.fq.sam \
+-r 11198_QTL_F2_1.fq.sam \
+-r 11202_QTL_F2_2.fq.sam \
+-r 11203_QTL_F2_2.fq.sam \
+-r 11656_QTL_F2_2.fq.sam \
+-r 11664_QTL_F2_3.fq.sam \
+-r 11665_QTL_F2_3.fq.sam \
+-r 11666_QTL_F2_3.fq.sam \
+-r 11677_QTL_F2_3.fq.sam \
+-r 11764_QTL_F2_2.fq.sam \
+-r 12010_QTL_F2_4.fq.sam \
+-r 12011_QTL_F2_4.fq.sam \
+-r 12027_QTL_F2_4.fq.sam \
+-r 12035_QTL_F2_4.fq.sam \
+-r 12088_QTL_F2_4.fq.sam \
+-r 12136_QTL_F2_5.fq.sam \
+-r 12143_QTL_F2_5.fq.sam \
+-r 12144_QTL_F2_5.fq.sam \
+-r 12145_QTL_F2_5.fq.sam \
+-r 12374_QTL_F2_6.fq.sam \
+-r 12380_QTL_F2_6.fq.sam \
+-r 12416_QTL_F2_6.fq.sam \
+-r 12420_QTL_F2_6.fq.sam \
+-r 12421_QTL_F2_6.fq.sam \
+-r 12424_QTL_F2_6.fq.sam \
+-r 12426_QTL_F2_6.fq.sam \
+-r 12430_QTL_F2_6.fq.sam \
+-r 12644_QTL_F2_7.fq.sam \
+-r 12645_QTL_F2_7.fq.sam \
+-r 12646_QTL_F2_7.fq.sam \
+-r 12656_QTL_F2_7.fq.sam \
+-r 12658_QTL_F2_7.fq.sam \
+-r 12738_QTL_F2_8.fq.sam \
+-r 12740_QTL_F2_8.fq.sam \
+-r 12745_QTL_F2_8.fq.sam \
+-r 12749_QTL_F2_8.fq.sam \
+-r 12803_QTL_F2_8.fq.sam \
+-r 12883_QTL_F2_9.fq.sam \
+-r 12888_QTL_F2_9.fq.sam \
+-r 12891_QTL_F2_9.fq.sam \
+-r 12896_QTL_F2_9.fq.sam \
+-r 12971_QTL_F2_9.fq.sam \
+-r 13061_QTL_F2_10.fq.sam \
+-r 13067_QTL_F2_10.fq.sam \
+-r 13072_QTL_F2_10.fq.sam \
+-r 13073_QTL_F2_10.fq.sam \
+-r 13079_QTL_F2_10.fq.sam

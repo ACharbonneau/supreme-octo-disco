@@ -21,7 +21,7 @@ module load stacks/1.35
 dt=`date '+%Y%m%d'`
 # Run Stacks on the BT2 data
 
-#Parents are parents, recombs are F1s. F2s currently not included
+#Parents (-p) are parents, progeny (-r) are F1s. F2s currently not included
 
 ref_map.pl -S -m 3 -T 8 -b ${dt} -o GenMapSTACKS/ -A F2 -X "genotypes:-o 'rqtl'" -X "genotypes:-o 'genomic'" -X "genotypes:-e 'pstI'" \
 -p 13210_QTL_F2_11.sam \
