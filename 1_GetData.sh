@@ -24,9 +24,11 @@ echo "2. Getting MetaData"
 cd ../
 mkdir Metadata/
 cp -r /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/Metadata/ Metadata/OriginalFiles/
-cd Metadata/OriginalFiles/PlateInfoSeq/
+mv Metadata/OriginalFiles/PlateInfoSeq/ Metadata/PlateInfoSeq/
+mv Metadata/OriginalFiles/SequencerQC Metadata/SequencerQC
+cd Metadata/PlateInfoSeq/
 mv QTL_F2_8.txt C6G98ANXX_8_fastq.gz.keys.txt
-cd ../../../supreme-octo-disco/
+cd ../../supreme-octo-disco/
 module load R/3.2.0
 R --file=1.1_metadatamunge.R
 
