@@ -46,7 +46,7 @@ All_geno_data <- tbl_df( do.call( "rbind", All_geno_data ))
 Samfile <- read.csv("../Metadata/OriginalFiles/ID_samfile.csv", head=T, colClasses = "factor")
 
 
-DNA_data <- read.csv("../Metadata/MetadataAll.txt", sep = "\t", header = F,
+DNA_data <- read.csv("../Metadata/OriginalFiles/MetadataAll.txt", sep = "\t", header = F,
                      colClasses = "factor")
 
 colnames(DNA_data) <- c("ID", "Type_Year", "Species", "Cross", "Indiv", "Date", "Prep")
