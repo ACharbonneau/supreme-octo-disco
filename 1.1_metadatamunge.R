@@ -51,6 +51,7 @@ DNA_data <- read.csv("../Metadata/OriginalFiles/MetadataAll.txt", sep = "\t", he
 
 colnames(DNA_data) <- c("ID", "Type_Year", "Species", "Cross", "Indiv", "Date", "Prep")
 
+DNA_data$Species[DNA_data$Cross=="YEIL_CLNC"] <- "Rros"
 DNA_data$Cross[DNA_data$Cross=="SPEU"] <- "SPNK"
 
 DNA_data <- droplevels(DNA_data)
