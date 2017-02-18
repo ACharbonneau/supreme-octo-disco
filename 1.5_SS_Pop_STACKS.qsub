@@ -27,7 +27,7 @@ dt=`date '+%Y%m%d'`
 
 #All sigselection plants
 
-ref_map.pl -S -m 3 -T 8 -b ${dt} -o PopSTACKS/ -X "populations:--fstats" \
+ref_map.pl -S -m 3 -T 8 -b ${dt} -o PopSTACKS/ \ #-X "populations:--fstats" \
 -X "populations:--treemix" -X "populations:--structure" -X "populations:--vcf" \
 -X "populations:--renz 'pstI'" -X "populations:--write_random_snp" -X "populations:--ordered_export" \
 -X "populations:--verbose" -X "populations:-p 21" \
