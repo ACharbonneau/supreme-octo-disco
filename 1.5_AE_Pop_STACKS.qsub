@@ -25,7 +25,7 @@ dt=`date '+%Y%m%d'`
 
 # Run Stacks on the BT2 data
 
-#All F2s from AE plants, no parents, no F1s
+#Just parents
 
 ref_map.pl -S -m 3 -T 8 -b ${dt} -o PopSTACKS/ -A F2 \ #-X "populations:--fstats" \
 -X "populations:--treemix" -X "populations:--structure" -X "populations:--vcf" \
