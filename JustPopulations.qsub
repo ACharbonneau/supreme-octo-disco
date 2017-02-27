@@ -24,4 +24,4 @@ rc=`basename $rc`
 dt=`date '+%Y%m%d'`
 
 
-populations -b ${dt} -P PopSTACKS -s -t 8 --treemix --structure --vcf --renz 'pstI' --write_random_snp --verbose -p 21 -r 0.75 --ordered_export -M ../../../Metadata/${rc}.pop
+populations -b ${dt} -P PopSTACKS -s -t 8 --treemix --structure --vcf --renz 'pstI' --write_random_snp --verbose -p 16 -r 0.75 --ordered_export -M ../../../Metadata/${rc}.pop
