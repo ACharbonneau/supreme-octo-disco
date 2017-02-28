@@ -27,7 +27,9 @@ dt=`date '+%Y%m%d'`
 
 #Just parents
 
-ref_map.pl -S -m 3 -T 8 -b ${dt} -o PopSTACKS/ -A F2 \ #-X "populations:--fstats" \
+# -X "populations:--fstats" \
+
+ref_map.pl -S -m 3 -T 8 -b ${dt} -o PopSTACKS/ -A F2 \
 -X "populations:--treemix" -X "populations:--structure" -X "populations:--vcf" \
 -X "populations:--renz 'pstI'" -X "populations:--write_single_snp" -X "populations:--genomic" \
 -O ../../../Metadata/${rc}.pop \
