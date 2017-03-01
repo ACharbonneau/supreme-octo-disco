@@ -57,7 +57,7 @@ qsub ../../supreme-octo-disco/1.1_BT2_build.qsub
 
 cd ../../RawFastq/
 
-ThisT=`ls fastq.gz | wc -w`
+ThisT=`ls *fastq.gz | wc -w`
 ThisT=`expr $ThisT - 1`
 
 qsub ../supreme-octo-disco/1.1_FastQC.qsub -t 0-${ThisT}
