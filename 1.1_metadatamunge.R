@@ -205,8 +205,8 @@ command <- rbind(AEcommand, SScommand)
 command <- mutate(command, UniqID=paste("*",UniqID, ".fq.sam", sep=""))
 command <- select(command, cp, UniqID, Folder)
 
-write.table(x = command, file = "1.4_ChooseSigSel.sh", quote = F,
-            sep = " ", col.names = F, row.names = F)
+#write.table(x = command, file = "1.4_ChooseSigSel.sh", quote = F,
+#            sep = " ", col.names = F, row.names = F)
 
 # Write out full data with phenotypes for SigSelection
 

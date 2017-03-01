@@ -1,4 +1,4 @@
-echo "1. Copying Files"
+echo "1. Getting Raw Files"
 
 mkdir RawFastq
 cd RawFastq
@@ -32,7 +32,7 @@ cd ../../supreme-octo-disco/
 module load R/3.2.0
 R --file=1.1_metadatamunge.R
 cd ../Metadata/PlateInfoSeq/
-for i in `ls *.unique.txt`; do cut -f 3,20 ${i} > `echo ${i} | sed s/.unique.txt/.gz.barcodes/` ; done
+for i in `ls *.unique.txt`; do cut -f 3,20 ${i} > `echo ${i} | sed s/.unique.txt/_fastq.gz.barcodes/` ; done
 cd ../../
 
 echo "3. Setting up workspace"
