@@ -146,7 +146,7 @@ write.table(x = select(ForStacksAEUniq, UniqID, Cross, Type_Year), file = "../Me
 
 All_AE <- paste(ForStacksAEUniq$UniqID, ".sam", sep = "")
 
-write.table(All_AE, file = "../Metadata/AE_stacks_list")
+write.table(All_AE, file = "../Metadata/AE_stacks_list", quote = F, col.names = F, row.names = F)
 
 Just_F0s <- ForStacksAEUniq$UniqID[ForStacksAEUniq$Cross == "KH" | 
                                    ForStacksAEUniq$Cross == "KL" |
@@ -172,9 +172,9 @@ Just_F0s <- paste(Just_F0s, ".sam", sep = "")
 Just_F1s <- paste(Just_F1s, ".sam", sep = "")
 Just_F2s <- paste(Just_F2s, ".sam", sep = "")
 
-write.table(Just_F0s, file = "../Metadata/AE_F0_stacks_list")
-write.table(Just_F1s, file = "../Metadata/AE_F1_stacks_list")
-write.table(Just_F2s, file = "../Metadata/AE_F2_stacks_list")
+write.table(Just_F0s, file = "../Metadata/AE_F0_stacks_list", quote = F, col.names = F, row.names = F)
+write.table(Just_F1s, file = "../Metadata/AE_F1_stacks_list", quote = F, col.names = F, row.names = F)
+write.table(Just_F2s, file = "../Metadata/AE_F2_stacks_list", quote = F, col.names = F, row.names = F)
 
 
 ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
@@ -188,7 +188,7 @@ write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Me
 
 All_SS <- paste(ForStacksSSUniq$UniqID, ".sam", sep = "")
 
-write.table(All_SS, file = "../Metadata/SS_stacks_list")
+write.table(All_SS, file = "../Metadata/SS_stacks_list", quote = F, col.names = F, row.names = F)
 
 
 # Write out ChooseSigSel.sh
