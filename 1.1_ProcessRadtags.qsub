@@ -18,8 +18,6 @@ module load stacks/1.35
 #Starting in GBS/RawFastq/
 cd ${PBS_O_WORKDIR}
 
-for i in `ls ../Metadata/PlateInfoSeq/*.unique.txt`; do cut -f 3,20 ${i} > `echo ${i} | sed s/.unique.txt/.barcodes/` ; done
-
 ThisT=`ls *fastq.gz | wc -w`
 
 filelist=(*fastq.gz) #get list of sequencing lanes
@@ -30,7 +28,7 @@ barcode=`basename ${lane} .fastq`.barcodes
 
 PBS_JOBNAME=${PBS_JOBNAME}_${lane} #rename job to job_indiv
 
-process_radtags -f ${lane} -i gzfastq -o ../ProcessRadtags/ -b ../Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --adapter_1 'AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT' --adapter_mm 3 --retain_header
+process_radtags -f ${lane} -i gzfastq -o ../ProcessRadtags/ -b ../Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --adapter_1 'AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT' --adapter_mm 3 --retain_header -y fastq
 
 
 cd ../ProcessRadtags/
