@@ -14,10 +14,12 @@
 # -t 0-? : job numbers for array submission
 
 
-module load bowtie2/2.2.6
 
 
 #Starting in GBS/ProcessRadtags/
+module load bowtie2/2.2.6
+module load SAMTools/1.2
+
 
 cd ${PBS_O_WORKDIR} || exit #Go to directory with sequencing files
 
@@ -54,7 +56,9 @@ bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -S ${PBS_ARRAYID}
 
 if [[ ! -f ${bsname}.sam ]] 
 then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
+else samtools view -q 30 -T ${genome} ${bsname}.sam > ${bsname}.sam
 fi
+
 
 # Calculate next job to run
 NEXT=$(( ${PBS_ARRAYID} + 200 ))
@@ -64,11 +68,13 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR}
-    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
+    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
 fi
 
-#Launch samtools
+#Launch first step of STACKS if all the mapping is done (if this is the only mappingrun scheduled)
 
-if [[ -f ${bsname}.sam ]] 
-then qsub ../../supreme-octo-disco/1.3_view_samtools.qsub -N ${bsname}.samtools -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",indiv="${indiv}",job="${PBS_JOBNAME}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",index="${index}"
+runs=$(qstat | grep MappingRuns | wc -l)
+
+if [ $? = 1 ]
+then qsub 1.4_Run_PSTACKS.qsub
 fi

@@ -39,6 +39,7 @@ cd ../
 mkdir ProcessRadtags
 mkdir ProcessRadtags/Indicies
 mkdir ProcessRadtags/BT2map
+mkdir ProcessRadtags/BT2map/pstacks
 mkdir ProcessRadtags/BT2map/AE_Deconvoluted
 mkdir ProcessRadtags/BT2map/SigSelection
 mkdir ProcessRadtags/BT2map/SigSelection/PopSTACKS
@@ -61,5 +62,5 @@ ThisT=`expr $ThisT - 1`
 
 qsub ../supreme-octo-disco/1.1_FastQC.qsub -t 0-${ThisT}
 
-qsub ../supreme-octo-disco/1.1_ProcessRadtags.qsub -t 0-${ThisT}
+qsub ../supreme-octo-disco/1.1_ProcessRadtags.qsub -N ProcessingRads -t 0-${ThisT}
 
