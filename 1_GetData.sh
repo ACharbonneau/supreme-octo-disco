@@ -42,11 +42,10 @@ mkdir ProcessRadtags
 mkdir ProcessRadtags/Indicies
 mkdir ProcessRadtags/BT2map
 mkdir ProcessRadtags/BT2map/pstacks
-mkdir ProcessRadtags/BT2map/AE_Deconvoluted
-mkdir ProcessRadtags/BT2map/SigSelection
-mkdir ProcessRadtags/BT2map/SigSelection/PopSTACKS
-mkdir ProcessRadtags/BT2map/AE_Deconvoluted/PopSTACKS
-mkdir ProcessRadtags/BT2map/AE_Deconvoluted/GenMapSTACKS
+mkdir ProcessRadtags/BT2map/cstacks
+mkdir ProcessRadtags/BT2map/SS_PopSTACKS
+mkdir ProcessRadtags/BT2map/AE_PopSTACKS
+mkdir ProcessRadtags/BT2map/AE_GenMapSTACKS
 echo "4. Launching fastqc"
 
 mkdir fastQC
