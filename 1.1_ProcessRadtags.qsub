@@ -36,7 +36,6 @@ cd ../ProcessRadtags/
 ## Expect 1425 individuals after processing plus 15 blanks
 
 fqT=`ls *.fq | wc -w`
-fqT=`expr $fqT - 1`
 
 if [[ ${fqT} = 1440 ]] 
 then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -v MAXJOBID=${fqT}

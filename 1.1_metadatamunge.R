@@ -1,6 +1,21 @@
 # There are no unique identifiers in this project until the DNA prep,
 # and even in the DNA prep, the unique identifiers aren't unique because
 # ~80 samples were sequenced twice.
+# One of these samples, 12059, was NOT supposed to be sequenced twice, but appears
+# twice in the sequencing data, in the same plate. Since I have the correct number 
+# of samples, this means another sample must not have been sequenced. Or at least
+# was mislabeled. This sample is 13245, which was supposed to be sequenced twice,
+# but wasn't. I asked Jeff to check his metadata collection to see if he could 
+# determine whether 12059 really was sequenced twice, or if one of them is 13245
+# just mislabeled. I told him that if he couldn't definitivly tell, I'd have to drop
+# both the samples labeled 12059, because I can't be sure they're both real, or if 
+# not, which one is, but apparently, that's ridiculous. He replied "Don’t we have 
+# plenty of genetic data to tell whether they are the same individual or not?"
+# Which I don't even know what to do with, but I suppose means that I have to magic up
+# a way to tell if they're the same. Since the two samples labeled 12059 are
+# in the same plate, they get the same unique ID, so I've added a really stupid bit 
+# of code to add the sequencing well to the unique ID as well.
+
 # Furthermore the ID names change subtley between datasheets. 
 # This script just munges the metadata into one useable format with unique IDs.
 
@@ -33,7 +48,7 @@ All_geno_data <- list()
 
 for( X in 1:length(Geno_list)){
   TempFile <- read.table(paste(Geno_dir, Geno_list[ X ], sep=""), sep = "\t", header = T, na.strings = "")
-  TempFile$UniqID <- paste(TempFile$DNASample, TempFile$DNA_Plate, sep="_")
+  TempFile$UniqID <- paste(TempFile$DNASample, TempFile$DNA_Plate, TempFile$SampleDNA_Well, sep="_")
   All_geno_data[[X]] <- TempFile
   write.table(TempFile, paste(Geno_dir, substr(Geno_list[X], 1, 11), ".unique.txt", sep=""), sep="\t", row.names=F, col.names=F, quote=F)
 }
@@ -42,9 +57,6 @@ for( X in 1:length(Geno_list)){
 All_geno_data <- tbl_df( do.call( "rbind", All_geno_data ))
 
 ## Get global data frames
-
-Samfile <- read.csv("../Metadata/OriginalFiles/ID_samfile.csv", head=T, colClasses = "factor")
-
 
 DNA_data <- read.csv("../Metadata/OriginalFiles/MetadataAll.txt", sep = "\t", header = F,
                      colClasses = "factor")
@@ -58,8 +70,6 @@ DNA_data$Species[DNA_data$Cross=="YEIL_CLNC"] <- "Rros"
 DNA_data$Cross[DNA_data$Cross=="SPEU"] <- "SPNK"
 
 DNA_data <- droplevels(DNA_data)
-
-DNA_data <- left_join(DNA_data, Samfile)
 
 Pedigree <- read.csv("../Metadata/OriginalFiles/Pedigree.csv", colClasses = "factor")
 
@@ -264,7 +274,7 @@ FullSSUniq$Order <- as.numeric(FullSSUniq$Order)
 FullSSUniq <- select(FullSSUniq, -Pedigree, -Population, -SeedLot, -Species.y)
 
 colnames(FullSSUniq) <- c("ID","Type_Year","STACKSspecies","Pop","Indiv","Date",
-                               "Prep","Samfile","Flowcell","Lane","Barcode","LibraryPlate",
+                               "Prep","Flowcell","Lane","Barcode","LibraryPlate",
                                "Row","Col","LibraryPrepID","LibraryPlateID","Enzyme",
                                "BarcodeWell","DNA_Plate","SampleDNA_Well","Genus",
                                "FullSampleName","UniqID","Geo","Taxon","Habit","locals",
