@@ -55,7 +55,7 @@ bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -p 8 -S ${PBS_ARR
 
 
 if [[ ! -f ${bsname}.sam ]] 
-then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
+then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
 else samtools view -q 30 -T ${genome} ${bsname}.sam > ${bsname}.sam
 fi
 

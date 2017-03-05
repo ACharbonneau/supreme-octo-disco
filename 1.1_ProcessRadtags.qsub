@@ -38,8 +38,8 @@ cd ../ProcessRadtags/
 fqT=`ls *.fq | wc -w`
 
 if [[ ${fqT} = 1440 ]] 
-then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -v MAXJOBID=${fqT}
-qsub ../supreme-octo-disco/1.2_BT2Map.qsub -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT
+then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJOBID=${fqT}
+qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT
 fi
 
 
