@@ -42,7 +42,7 @@ mkdir ProcessRadtags
 mkdir ProcessRadtags/Indicies
 mkdir ProcessRadtags/BT2map
 mkdir ProcessRadtags/BT2map/pstacks
-mkdir ProcessRadtags/BT2map/cstacks
+mkdir ProcessRadtags/BT2map/cs_stacks
 mkdir ProcessRadtags/BT2map/SS_PopSTACKS
 mkdir ProcessRadtags/BT2map/AE_PopSTACKS
 mkdir ProcessRadtags/BT2map/AE_GenMapSTACKS

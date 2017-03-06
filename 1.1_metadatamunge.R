@@ -157,6 +157,7 @@ write.table(x = select(ForStacksAEUniq, UniqID, Cross, Type_Year), file = "../Me
 All_AE <- paste("*", ForStacksAEUniq$UniqID, ".fq_q30.sam", sep = "")
 
 write.table(All_AE, file = "../Metadata/AE_stacks_list", quote = F, col.names = F, row.names = F)
+write.table(paste( " -s ../", All_AE, sep=""), file = "../Metadata/AE_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 
 Just_F0s <- ForStacksAEUniq$UniqID[ForStacksAEUniq$Cross == "KH" | 
                                    ForStacksAEUniq$Cross == "KL" |
@@ -186,6 +187,14 @@ write.table(Just_F0s, file = "../Metadata/AE_F0_stacks_list", quote = F, col.nam
 write.table(Just_F1s, file = "../Metadata/AE_F1_stacks_list", quote = F, col.names = F, row.names = F)
 write.table(Just_F2s, file = "../Metadata/AE_F2_stacks_list", quote = F, col.names = F, row.names = F)
 
+write.table(paste( " -s ../", Just_F0s, sep=""), file = "../Metadata/AE_F0_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ../", Just_F1s, sep=""), file = "../Metadata/AE_F1_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ../", Just_F2s, sep=""), file = "../Metadata/AE_F2_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+
+write.table(paste( " -p ../", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -r ../", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "", append = T)
+
+ 
 
 ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
   select(ID, Cross, Species)
@@ -199,6 +208,7 @@ write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Me
 All_SS <- paste("*", ForStacksSSUniq$UniqID, ".fq_q30.sam", sep = "")
 
 write.table(All_SS, file = "../Metadata/SS_stacks_list", quote = F, col.names = F, row.names = F)
+write.table(paste( " -s ../", All_SS, sep=""), file = "../Metadata/SS_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 
 
 # Write out ChooseSigSel.sh
