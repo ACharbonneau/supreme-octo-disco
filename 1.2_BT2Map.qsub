@@ -73,8 +73,8 @@ fi
 
 #Launch first step of STACKS if all the mapping is done (if this is the only mappingrun scheduled)
 
-runs=$(qstat | grep MappingRuns | wc -l)
+runs=$(ls *_q30* | wc)
 
-if [ $? = 1 ]
+if [ ${runs} = 1440 ]
 then qsub ../../supreme-octo-disco/1.4_Run_PSTACKS.qsub
 fi
