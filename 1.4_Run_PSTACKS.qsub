@@ -33,4 +33,4 @@ done
 
 cd cs_stacks
 
-sh ../../supreme-octo-disco/2_BuildCatalogs.sh
+sh ../../../supreme-octo-disco/2_BuildCatalogs.sh
