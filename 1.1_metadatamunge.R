@@ -154,10 +154,13 @@ ForStacksAEUniq <- unique(ForStacksAEUniq)
 write.table(x = select(ForStacksAEUniq, UniqID, Cross, Type_Year), file = "../Metadata/AE_Deconvoluted.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
-All_AE <- paste("*", ForStacksAEUniq$UniqID, ".fq_q30.sam", sep = "")
+All_AE <- paste("*", ForStacksAEUniq$UniqID, ".fq_q30", sep = "")
+
+write.table(paste( " -s ../pstacks/", All_AE, sep=""), file = "../Metadata/AE_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+
+All_AE <- paste(All_AE, ".sam", sep = "")
 
 write.table(All_AE, file = "../Metadata/AE_stacks_list", quote = F, col.names = F, row.names = F)
-write.table(paste( " -s ../", All_AE, sep=""), file = "../Metadata/AE_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 
 Just_F0s <- ForStacksAEUniq$UniqID[ForStacksAEUniq$Cross == "KH" | 
                                    ForStacksAEUniq$Cross == "KL" |
@@ -178,23 +181,28 @@ Just_F2s <- ForStacksAEUniq$UniqID[ForStacksAEUniq$Cross == "KF2" |
                                    ForStacksAEUniq$Cross == "RF2" |
                                    ForStacksAEUniq$Cross == "RXF2" ]
 
+Just_F0s <- paste("*", Just_F0s, ".fq_q30", sep = "")
+Just_F1s <- paste("*", Just_F1s, ".fq_q30", sep = "")
+Just_F2s <- paste("*", Just_F2s, ".fq_q30", sep = "")
 
-Just_F0s <- paste("*", Just_F0s, ".fq_q30.sam", sep = "")
-Just_F1s <- paste("*", Just_F1s, ".fq_q30.sam", sep = "")
-Just_F2s <- paste("*", Just_F2s, ".fq_q30.sam", sep = "")
+
+write.table(paste( " -s ../pstacks/", Just_F0s, sep=""), file = "../Metadata/AE_F0_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ../pstacks/", Just_F1s, sep=""), file = "../Metadata/AE_F1_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ../pstacks/", Just_F2s, sep=""), file = "../Metadata/AE_F2_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+
+write.table(paste( " -p ../pstacks/", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -r ../pstacks/", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "", append = T)
+
+
+Just_F0s <- paste(Just_F0s, ".sam", sep = "")
+Just_F1s <- paste(Just_F1s, ".sam", sep = "")
+Just_F2s <- paste(Just_F2s, ".sam", sep = "")
 
 write.table(Just_F0s, file = "../Metadata/AE_F0_stacks_list", quote = F, col.names = F, row.names = F)
 write.table(Just_F1s, file = "../Metadata/AE_F1_stacks_list", quote = F, col.names = F, row.names = F)
 write.table(Just_F2s, file = "../Metadata/AE_F2_stacks_list", quote = F, col.names = F, row.names = F)
 
-write.table(paste( " -s ../", Just_F0s, sep=""), file = "../Metadata/AE_F0_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-write.table(paste( " -s ../", Just_F1s, sep=""), file = "../Metadata/AE_F1_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-write.table(paste( " -s ../", Just_F2s, sep=""), file = "../Metadata/AE_F2_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 
-write.table(paste( " -p ../", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-write.table(paste( " -r ../", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "", append = T)
-
- 
 
 ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
   select(ID, Cross, Species)
@@ -205,10 +213,15 @@ ForStacksSSUniq <- droplevels(ForStacksSSUniq)
 write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Metadata/SigSelection.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
-All_SS <- paste("*", ForStacksSSUniq$UniqID, ".fq_q30.sam", sep = "")
+All_SS <- paste("*", ForStacksSSUniq$UniqID, ".fq_q30", sep = "")
+
+write.table(paste( " -s ../pstacks/", All_SS, sep=""), file = "../Metadata/SS_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+
+All_SS <- paste(All_SS, ".sam", sep = "")
 
 write.table(All_SS, file = "../Metadata/SS_stacks_list", quote = F, col.names = F, row.names = F)
-write.table(paste( " -s ../", All_SS, sep=""), file = "../Metadata/SS_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+
+
 
 
 # Write out ChooseSigSel.sh
