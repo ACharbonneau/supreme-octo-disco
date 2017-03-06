@@ -29,6 +29,6 @@ done
 cp ../../../supreme-octo-disco/2.1_cs_stacks.qsub ../../../supreme-octo-disco/2.1_cs_mapping.qsub
 
 
-sed "s/sstacks.*//" 2.1_cs_mapping.qsub
+sed -i "s/sstacks.*//" ../../../supreme-octo-disco/2.1_cs_mapping.qsub
 
-cat ../../../supreme-octo-disco/2.1_cs_mapping.qsub 'sstacks -g -p 20 -b ${batchID} -c ${batchID} -s `cat AE_F2_cs_stacks_list` -o . F2_F0_Mapping.log' > ../../../supreme-octo-disco/2.1_cs_mapping.qsub
+echo 'sstacks -g -p 20 -b ${batchID} -c ${batchID} -s `cat AE_F2_cs_stacks_list` -o . F2_F0_Mapping.log' >> ../../../supreme-octo-disco/2.1_cs_mapping.qsub
