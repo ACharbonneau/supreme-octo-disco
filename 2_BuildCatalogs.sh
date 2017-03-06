@@ -13,14 +13,21 @@
 # -b assign batchID
 # -n — number of mismatches allowed between sample loci when build the catalog
 # -o — output path to write results
-
+~
 files="../../../Metadata/AE_F0_cs_stacks_list
 ../../../Metadata/AE_F1_cs_stacks_list
 ../../../Metadata/AE_F2_cs_stacks_list
 ../../../Metadata/SS_cs_stacks_list"
 
+dt=`date '+%Y%m%d'`
+
+
+ID=0
+
 for filename in $files
-do qsub -N `basename ${filename}` -v InputFile="${filename}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
+do batchID=${dt}_${ID}
+qsub -N `basename ${filename}` -v InputFile="${filename}", batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
+ID=`expr ${ID} + 1`
 done
 
 
@@ -34,4 +41,6 @@ sed -i "s/sstacks.*//" ../../../supreme-octo-disco/2.1_cs_mapping.qsub
 
 echo 'sstacks -g -p 20 -b ${batchID} -c ${batchID} -s `cat AE_F2_cs_stacks_list` -o . F2_F0_Mapping.log' >> ../../../supreme-octo-disco/2.1_cs_mapping.qsub
 
-qsub -N `basename ${filename}` -v InputFile="${filename}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
+batchID=${dt}_${ID}
+
+qsub -N `basename ${filename}` -v InputFile="${filename}", batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub

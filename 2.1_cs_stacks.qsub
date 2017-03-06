@@ -17,8 +17,6 @@ cd ${PBS_O_WORKDIR} || exit
 
 module load stacks/1.35
 
-dt=`date '+%Y%m%d'`
-batchID=${dt}_`basename ${InputFile}`
 
 # -g,--aligned — base catalog construction on alignment position, not sequence identity.
 # -p processors
