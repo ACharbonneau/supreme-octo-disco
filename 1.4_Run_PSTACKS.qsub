@@ -30,3 +30,7 @@ for file in `cat ../../Metadata/AE_stacks_list ../../Metadata/SS_stacks_list`
 	do pstacks -p 20 -t sam -m 3 -i ${dt} -f ${file} \
 	-o pstacks
 done
+
+cd cs_stacks
+
+sh ../../supreme-octo-disco/2_BuildCatalogs.sh

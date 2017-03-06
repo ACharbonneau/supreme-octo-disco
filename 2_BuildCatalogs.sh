@@ -5,10 +5,8 @@
 
 # AE specific catalogs
 
-# Assuming it's a cross
 
 
-cd cs_stacks
 
 # -g,--aligned — base catalog construction on alignment position, not sequence identity.
 # -p processors
@@ -26,9 +24,14 @@ do qsub -N `basename ${filename}` -v InputFile="${filename}" ../../../supreme-oc
 done
 
 
+# Assuming it's a cross
+
+
 cp ../../../supreme-octo-disco/2.1_cs_stacks.qsub ../../../supreme-octo-disco/2.1_cs_mapping.qsub
 
 
 sed -i "s/sstacks.*//" ../../../supreme-octo-disco/2.1_cs_mapping.qsub
 
 echo 'sstacks -g -p 20 -b ${batchID} -c ${batchID} -s `cat AE_F2_cs_stacks_list` -o . F2_F0_Mapping.log' >> ../../../supreme-octo-disco/2.1_cs_mapping.qsub
+
+qsub -N `basename ${filename}` -v InputFile="${filename}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
