@@ -41,5 +41,5 @@ cstacks -g -p 20 -b ${batchID} -n 1 -o . `cat ${InputFile}` &>> `basename ${Inpu
 
 sstacks -g -p 20 -b ${batchID} -c ${batchID} -s `cat ${InputFile}` -o . `basename ${InputFile}`.log
 
-if [ `basename ${InputFile}` = "AE_F0_cs_stacks_list" ]
-do sstacks -g -p 20 -b ${batchID} -c ${batchID} -s `cat AE_F2_cs_stacks_list` -o . F2_F0_Mapping.log
+
+
