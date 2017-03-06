@@ -76,5 +76,5 @@ fi
 runs=$(qstat | grep MappingRuns | wc -l)
 
 if [ $? = 1 ]
-then qsub 1.4_Run_PSTACKS.qsub
+then qsub ../../supreme-octo-disco/1.4_Run_PSTACKS.qsub
 fi
