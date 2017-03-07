@@ -39,7 +39,7 @@ cstacks -g -p 20 -b ${batchID} -n 1 -o . `cat ${InputFile}` &>> `basename ${Inpu
 # -x — don't verify haplotype of matching locus.
 
 
-sstacks -g -p 20 -b batch_${batchID} -c batch_${batchID} -s `cat ${InputFile}` -o . `basename ${InputFile}`.log
+sstacks -g -p 20 -b ${batchID} -c batch_${batchID} -s `cat ${InputFile}` -o . `basename ${InputFile}`.log
 
 
 
