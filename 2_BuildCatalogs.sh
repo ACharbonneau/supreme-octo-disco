@@ -30,7 +30,7 @@ for file in ${files};
     for unexpandableline in ${needsexpand}
         do echo " -s " ls ${unexpandableline}.tags.tsv | sed "s/.tags.tsv//" | sed "s/ls //" 
     done | tr -d '\n' > ${file}.expanded
-    qsub -N `basename ${file}`.expanded -v InputFile=${file}.expanded,batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
+    qsub -N `basename ${file}`.expanded -v InputFile="${file}.expanded",batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
     ID=`expr ${ID} + 1`
 done
 
