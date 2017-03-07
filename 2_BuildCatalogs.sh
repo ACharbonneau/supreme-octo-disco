@@ -19,30 +19,23 @@ files="../../../Metadata/AE_F0_cs_stacks_list
 ../../../Metadata/AE_F2_cs_stacks_list
 ../../../Metadata/SS_cs_stacks_list"
 
+dt=`date '+%Y%m%d'`
 
 expandedfiles=
+ID=0
 
-for file in $files;
-    do needsexpand=`cat ${file}` 
+for file in ${files};
+    do needsexpand=`cat ${file}`
+    batchID="${dt}${ID}" 
     for unexpandableline in ${needsexpand}
         do echo " -s " ls ${unexpandableline}.tags.tsv | sed "s/.tags.tsv//" | sed "s/ls //" 
     done | tr -d '\n' > ${file}.expanded
-    expandedfiles+=${file}.expanded
+    qsub -N `basename ${file}`.expanded -v InputFile=${file}.expanded,batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
+    ID=`expr ${ID} + 1`
 done
 
 
 
-
-dt=`date '+%Y%m%d'`
-
-
-ID=0
-
-for filename in ${expandedfiles}
-do batchID="${dt}${ID}"
-qsub -N `basename ${filename}` -v InputFile="${filename}",batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
-ID=`expr ${ID} + 1`
-done
 
 
 # Assuming it's a cross
