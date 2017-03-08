@@ -54,11 +54,11 @@ bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -p 8 -S ${PBS_ARR
 #--sensitive            -D 15 -R 2 -N 0 -L 22 -i S,1,1.15 (default)
 
 
-if [[ ! -f ${bsname}.sam ]] 
-then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
-else samtools view -q 30 -T ${genome} ${bsname}.sam > ${bsname}_q30.sam
-fi
-
+#if [[ ! -f ${bsname}.sam ]] 
+#then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
+#else samtools view -q 30 -T ${genome} ${bsname}.sam > ${bsname}_q30.sam
+#fi
+#
 
 # Calculate next job to run
 NEXT=$(( ${PBS_ARRAYID} + 200 ))

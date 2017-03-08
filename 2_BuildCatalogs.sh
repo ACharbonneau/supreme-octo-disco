@@ -30,7 +30,7 @@ for file in ${files};
     for unexpandableline in ${needsexpand}
         do echo " -s " ls ${unexpandableline}.tags.tsv | sed "s/.tags.tsv//" | sed "s/ls //" 
     done | tr -d '\n' > ${file}.expanded
-    qsub -N `basename ${file}`.expanded -v InputFile="${file}.expanded",batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
+    qsub -N `basename ${file}`.expanded -v InputFile="${file}.expanded",outputfolder=`basename ${file}`,batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
     ID=`expr ${ID} + 1`
 done
 
@@ -50,4 +50,4 @@ echo 'sstacks -g -p 20 -b ${batchID} -c ${batchID} -s `cat AE_F2_cs_stacks_list`
 
 batchID="${dt}${ID}"
 
-qsub -N Mapping_F0_F2 -v InputFile="../../../Metadata/AE_F0_cs_stacks_list.expanded",batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
+qsub -N Mapping_F0_F2 -v InputFile="../../../Metadata/AE_F0_cs_stacks_list.expanded",outputfolder="AE_F0_F1"batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
