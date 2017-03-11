@@ -6,7 +6,7 @@
 # AE specific catalogs
 
 
-
+#Start in cs_stacks
 
 # -g,--aligned — base catalog construction on alignment position, not sequence identity.
 # -p processors

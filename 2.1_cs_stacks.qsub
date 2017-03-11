@@ -14,6 +14,7 @@
 
 cd ${PBS_O_WORKDIR} || exit
 
+##Start in cs_stacks
 
 module load stacks/1.35
 
