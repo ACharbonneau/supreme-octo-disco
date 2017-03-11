@@ -50,4 +50,4 @@ echo 'sstacks -g -p 20 -b ${batchID} -c ${batchID} -s `cat AE_F2_cs_stacks_list`
 
 batchID="${dt}${ID}"
 
-qsub -N Mapping_F0_F2 -v InputFile="../../../Metadata/AE_F0_cs_stacks_list.expanded",outputfolder="AE_F0_F1"batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
+qsub -N Mapping_F0_F2 -v InputFile="../../../Metadata/AE_F0_cs_stacks_list.expanded",outputfolder="AE_F0_F1",batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
