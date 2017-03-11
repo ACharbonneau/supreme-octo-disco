@@ -44,4 +44,6 @@ cstacks -g -p 20 -b ${batchID} -n 1 -o ${outputfolder}/ `cat ${InputFile}` &>> `
 sstacks -g -p 20 -b ${batchID} -c ${outputfolder}/batch_${batchID} `cat ${InputFile}` -o ${outputfolder}/ `basename ${InputFile}`.log
 
 
+cd ${outputfolder} 
 
+qsub ../../../../supreme-octo-disco/2.2_populations.qsub -N ${outputfolder} -v batchID="${batchID}"

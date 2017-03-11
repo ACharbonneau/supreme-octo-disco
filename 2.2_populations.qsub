@@ -18,13 +18,15 @@ cd ${PBS_O_WORKDIR} || exit
 
 module load stacks/1.35
 
-rc=`pwd`
-rc=`basename $rc | cut -f 1 -d "_"`
+popfile=`pwd`
+popfile=`basename $popfile | cut -f 1 -d "_" | ls ../../../../Metadata/${rc}*.pop`
+
+
 
 dt=`date '+%Y%m%d'`
 
 
-populations -b ${batchID} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p 21 -r 0.75 --ordered_export -M ../../../../Metadata/${rc}*.pop
+populations -b ${batchID} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p 21 -r 0.75 --ordered_export -M ${popfile}
 
 
 # -P,--in_path — path to the directory containing the Stacks files.
