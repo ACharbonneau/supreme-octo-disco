@@ -7,12 +7,12 @@
 # was mislabeled. This sample is 13245, which was supposed to be sequenced twice,
 # but wasn't. I asked Jeff to check his metadata collection to see if he could 
 # determine whether 12059 really was sequenced twice, or if one of them is 13245
-# just mislabeled. I told him that if he couldn't definitivly tell, I'd have to drop
-# both the samples labeled 12059, because I can't be sure they're both real, or if 
-# not, which one is, but apparently, that's ridiculous. He replied "Don’t we have 
-# plenty of genetic data to tell whether they are the same individual or not?"
-# Which I don't even know what to do with, but I suppose means that I have to magic up
-# a way to tell if they're the same. Since the two samples labeled 12059 are
+# just mislabeled. 
+
+# Jeff checked and now thinks that:
+# "the sample in Cell C4 of plate 4 was really 12054, not 12059, so it is KXF2(2)/102."
+
+# Since the two samples labeled 12059 are
 # in the same plate, they get the same unique ID, so I've added a really stupid bit 
 # of code to add the sequencing well to the unique ID as well.
 
@@ -210,7 +210,7 @@ ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
 ForStacksSSUniq <- dplyr::left_join(ForStacksSS, All_geno_data, by=c("ID"="DNASample"))
 ForStacksSSUniq <- droplevels(ForStacksSSUniq)
 
-write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Metadata/SigSelection.pop", 
+write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Metadata/SS_data.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 All_SS <- paste("*", ForStacksSSUniq$UniqID, ".fq_q30", sep = "")
