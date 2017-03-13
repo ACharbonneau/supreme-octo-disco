@@ -151,12 +151,10 @@ ForStacksAEUniq <- dplyr::left_join(ForStacksAE, All_geno_data, by=c("ID"="DNASa
 
 ForStacksAEUniq <- unique(ForStacksAEUniq)
 
-ForStacksAEUniq$UniqID <- paste("*", ForStacksAEUniq$UniqID, "*", sep="")
-
 write.table(x = select(ForStacksAEUniq, UniqID, Cross, Type_Year), file = "../Metadata/AE_Deconvoluted.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
-All_AE <- paste(ForStacksAEUniq$UniqID, ".fq_q30", sep = "")
+All_AE <- paste("*", ForStacksAEUniq$UniqID, ".fq_q30", sep = "")
 
 write.table(paste( "../pstacks/", All_AE, sep=""), file = "../Metadata/AE_cs_stacks_list", quote = F, col.names = F, row.names = F)
 
@@ -212,12 +210,10 @@ ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
 ForStacksSSUniq <- dplyr::left_join(ForStacksSS, All_geno_data, by=c("ID"="DNASample"))
 ForStacksSSUniq <- droplevels(ForStacksSSUniq)
 
-ForStacksSSUniq$UniqID <- paste("*", ForStacksSSUniq$UniqID, "*", sep="")
-
 write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Metadata/SS_data.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
-All_SS <- paste(ForStacksSSUniq$UniqID, ".fq_q30", sep = "")
+All_SS <- paste("*", ForStacksSSUniq$UniqID, ".fq_q30", sep = "")
 
 write.table(paste( "../pstacks/", All_SS, sep=""), file = "../Metadata/SS_cs_stacks_list", quote = F, col.names = F, row.names = F)
 
