@@ -18,16 +18,19 @@ cd ${PBS_O_WORKDIR} || exit
 
 module load stacks/1.35
 
+for i in `ls *.matches.tsv`; do mv ${i} `echo ${i} | sed 's/[0-9]*_//'` ; done
+
 folder=`pwd`
 popabbv=`basename ${folder} | cut -f 1 -d "_"`
 popfile=`ls ../../../../Metadata/${popabbv}*.pop`
 
+awk '{printf "%s.fq_q30\t%s\t%s\n", $1, $2, $3}' ${popfile} > Fixed.pop
 
 
 dt=`date '+%Y%m%d'`
 
 
-populations -b ${batchID} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p 21 -r 0.75 --ordered_export -M ${popfile}	
+populations -b ${batchID} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p 21 -r 0.75 --ordered_export -M Fixed.pop	
 
 
 # -P,--in_path — path to the directory containing the Stacks files.
