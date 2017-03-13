@@ -18,7 +18,6 @@ cd ${PBS_O_WORKDIR} || exit
 
 module load stacks/1.35
 
-for i in `ls *.matches.tsv`; do mv ${i} `echo ${i} | sed 's/[0-9]*_//'` ; done
 
 folder=`pwd`
 popabbv=`basename ${folder} | cut -f 1 -d "_"`
