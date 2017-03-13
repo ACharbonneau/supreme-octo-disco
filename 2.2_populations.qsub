@@ -1,6 +1,6 @@
 #!/bin/sh -login
 #PBS -j oe
-#PBS -l nodes=1:ppn=20,walltime=8:00:00,mem=64gb
+#PBS -l nodes=1:ppn=20,walltime=4:00:00,mem=64gb
 #PBS -m a
 
 # -o : tells it where to put output from your job
@@ -12,7 +12,7 @@
 # -r n : tells it not to re-run the script in the case of an error (so it doesn't overwrite any results generated$
 # -t 0-? : job numbers for array submission
 
-#Starting in SigSelection
+#Starting in folder for catalog: *cs_stacks_list
 
 cd ${PBS_O_WORKDIR} || exit
 
