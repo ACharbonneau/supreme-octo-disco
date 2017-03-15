@@ -57,6 +57,8 @@ bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -p 8 -S ${PBS_ARR
 if [[ ! -f ${bsname}.sam ]] 
 then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
 else samtools view -q 30 -T ${genome} ${bsname}.sam > ${bsname}_q30.sam
+mv ${bsname}_q30.sam ${bsname}.sam
+mv ${bsname}.sam `echo ${bsname}.sam | sed 's/[0-9]*_//'`
 fi
 
 
@@ -73,7 +75,7 @@ fi
 
 #Launch first step of STACKS if all the mapping is done (if this is the only mappingrun scheduled)
 
-runs=$(ls *_q30* | wc -l)
+runs=$(ls .sam | wc -l)
 
 if [ ${runs} = 1440 ]
 then qsub ../../supreme-octo-disco/1.4_Run_PSTACKS.qsub
