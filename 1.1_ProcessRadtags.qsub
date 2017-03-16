@@ -46,4 +46,6 @@ then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJ
 qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT
 fi
 
+cd BT2map/
 
+rm FilesMapped.txt

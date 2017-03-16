@@ -49,16 +49,15 @@ fi
 cd BT2map/
 
 echo bsname="${bsname}"
-bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -p 8 -S ${PBS_ARRAYID}_${indiv}.sam
+bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -p 8 -S ${indiv}.sam
 
 #--sensitive            -D 15 -R 2 -N 0 -L 22 -i S,1,1.15 (default)
 
 
-if [[ ! -f ${bsname}.sam ]] 
+if [[ ! -f ${indiv}.sam ]] 
 then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
-else samtools view -q 30 -T ${genome} ${bsname}.sam > ${bsname}_q30.sam
-mv ${bsname}_q30.sam ${bsname}.sam
-mv ${bsname}.sam `echo ${bsname}.sam | sed 's/[0-9]*_//'`
+else samtools view -q 30 -T ${genome} ${indiv}.sam > ${indiv}_q30.sam
+echo ${bsname} >> FilesMapped.txt
 fi
 
 
@@ -75,7 +74,7 @@ fi
 
 #Launch first step of STACKS if all the mapping is done (if this is the only mappingrun scheduled)
 
-runs=$(ls .sam | wc -l)
+runs=$(cat FilesMapped.txt | wc -l)
 
 if [ ${runs} = 1440 ]
 then qsub ../../supreme-octo-disco/1.4_Run_PSTACKS.qsub
