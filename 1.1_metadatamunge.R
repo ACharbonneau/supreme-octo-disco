@@ -154,7 +154,7 @@ ForStacksAEUniq <- unique(ForStacksAEUniq)
 write.table(x = select(ForStacksAEUniq, UniqID, Cross, Type_Year), file = "../Metadata/AE_Deconvoluted.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
-All_AE <- paste("*", ForStacksAEUniq$UniqID, ".fq_q30", sep = "")
+All_AE <- paste(ForStacksAEUniq$UniqID, ".fq_q30", sep = "")
 
 write.table(paste( "../pstacks/", All_AE, sep=""), file = "../Metadata/AE_cs_stacks_list", quote = F, col.names = F, row.names = F)
 
@@ -181,14 +181,14 @@ Just_F2s <- ForStacksAEUniq$UniqID[ForStacksAEUniq$Cross == "KF2" |
                                    ForStacksAEUniq$Cross == "RF2" |
                                    ForStacksAEUniq$Cross == "RXF2" ]
 
-Just_F0s <- paste("*", Just_F0s, ".fq_q30", sep = "")
-Just_F1s <- paste("*", Just_F1s, ".fq_q30", sep = "")
-Just_F2s <- paste("*", Just_F2s, ".fq_q30", sep = "")
+Just_F0s <- paste(Just_F0s, ".fq_q30", sep = "")
+Just_F1s <- paste(Just_F1s, ".fq_q30", sep = "")
+Just_F2s <- paste(Just_F2s, ".fq_q30", sep = "")
 
 
-write.table(paste( "../pstacks/", Just_F0s, sep=""), file = "../Metadata/AE_F0_cs_stacks_list", quote = F, col.names = F, row.names = F)
-write.table(paste( "../pstacks/", Just_F1s, sep=""), file = "../Metadata/AE_F1_cs_stacks_list", quote = F, col.names = F, row.names = F)
-write.table(paste( "../pstacks/", Just_F2s, sep=""), file = "../Metadata/AE_F2_cs_stacks_list", quote = F, col.names = F, row.names = F)
+write.table(paste( " -s ../pstacks/", Just_F0s, sep=""), file = "../Metadata/AE_F0_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ../pstacks/", Just_F1s, sep=""), file = "../Metadata/AE_F1_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ../pstacks/", Just_F2s, sep=""), file = "../Metadata/AE_F2_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 
 write.table(paste( " -p ../pstacks/", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 write.table(paste( " -r ../pstacks/", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "", append = T)
@@ -213,9 +213,9 @@ ForStacksSSUniq <- droplevels(ForStacksSSUniq)
 write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Metadata/SS_data.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
-All_SS <- paste("*", ForStacksSSUniq$UniqID, ".fq_q30", sep = "")
+All_SS <- paste(ForStacksSSUniq$UniqID, ".fq_q30", sep = "")
 
-write.table(paste( "../pstacks/", All_SS, sep=""), file = "../Metadata/SS_cs_stacks_list", quote = F, col.names = F, row.names = F)
+write.table(paste( " -s ../pstacks/", All_SS, sep=""), file = "../Metadata/SS_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 
 All_SS <- paste(All_SS, ".sam", sep = "")
 
