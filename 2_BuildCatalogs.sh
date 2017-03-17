@@ -21,12 +21,11 @@ files="../../../Metadata/AE_F0_cs_stacks_list
 
 dt=`date '+%Y%m%d'`
 
-expandedfiles=
 ID=0
 
 for file in ${files};
     do batchID="${dt}${ID}" 
-    qsub -N `basename ${file}`.expanded -v InputFile="${file}",outputfolder=`basename ${file}`,batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
+    qsub -N `basename ${file}` -v InputFile="${file}",outputfolder=`basename ${file}`,batchID="${batchID}" ../../../supreme-octo-disco/2.1_cs_stacks.qsub
     ID=`expr ${ID} + 1`
 done
 
