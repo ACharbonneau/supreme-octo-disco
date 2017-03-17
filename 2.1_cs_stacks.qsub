@@ -27,7 +27,7 @@ mkdir ${outputfolder}
 # -o — output path to write results
 
 
-cstacks -g -p 20 -b ${batchID} -n 1 -o ${outputfolder}/ `cat ${InputFile}` &>> `basename ${InputFile}`.log
+cstacks -g  -b ${batchID} -n 1 -o ${outputfolder}/ `cat ${InputFile}` &>> `basename ${InputFile}`.log
 
 
 # -b — database/batch ID of the catalog to consider (default: guess).
