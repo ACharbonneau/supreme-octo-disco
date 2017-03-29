@@ -30,7 +30,7 @@ dt=`date '+%Y%m%d'`
 ID=1
 for file in `cat ../../Metadata/SS_stacks_list`
 	do pstacks -p 20 -t sam -m 3 -i ${ID} -f ${file} \
-	-o pstacks
+	-o SS_stacks
 	ID=`expr ${ID} + 1`
 done
 
@@ -40,4 +40,4 @@ cstacks -g -p 20 -b ${dt} -n 1 -o . -s `cat ../../../Metadata/SS_cs_stacks_list`
 
 sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../../Metadata/SS_cs_stacks_list` &>> SS_sstacks.log
 
-populations -b ${dt} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p 21 -r 0.75 --ordered_export -M ../../../Metadata/SS_data.pop 	
+populations -b ${dt} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p 21 -r 0.75 --ordered_export -M ../../../Metadata/SS_data.pop
