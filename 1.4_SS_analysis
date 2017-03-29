@@ -1,0 +1,43 @@
+#!/bin/sh -login
+#PBS -j oe
+#PBS -l nodes=1:ppn=20,walltime=4:00:00,mem=64gb
+#PBS -m a
+
+# -o : tells it where to put output from your job
+# -j oe : specifies that output and error messages from your job can be placed in the same location
+# -l : resource requests (maximum amounts needed for each)
+# -M : email address to send status updates to
+# -m abe : what to send email updates about (abort, begin, end)
+# -N : names your job
+# -r n : tells it not to re-run the script in the case of an error (so it doesn't overwrite any results generated$
+# -t 0-? : job numbers for array submission
+
+#Starting in BT2map/
+
+#Starting in BT2map/
+
+cd ${PBS_O_WORKDIR} || exit
+
+module load stacks/1.35
+
+rc=`pwd`
+rc=`basename $rc`
+
+dt=`date '+%Y%m%d'`
+
+
+# Run pstacks
+ID=1
+for file in `cat ../../Metadata/SS_stacks_list`
+	do pstacks -p 20 -t sam -m 3 -i ${ID} -f ${file} \
+	-o pstacks
+	ID=`expr ${ID} + 1`
+done
+
+cd SS_stacks
+
+cstacks -g -p 20 -b ${dt} -n 1 -o . -s `cat ../../../Metadata/SS_cs_stacks_list` &>> SS_cstacks.log
+
+sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../../Metadata/SS_cs_stacks_list` &>> SS_sstacks.log
+
+populations -b ${dt} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p 21 -r 0.75 --ordered_export -M ../../../Metadata/SS_data.pop 	
