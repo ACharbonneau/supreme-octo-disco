@@ -36,7 +36,7 @@ done
 
 cd SS_stacks
 
-cstacks -g -p 20 -b ${dt} -n 1 -o . -s `cat ../../../Metadata/SS_cs_stacks_list` &>> SS_cstacks.log
+cstacks -g -p 20 -b ${dt} -n 1 -o . `cat ../../../Metadata/SS_cs_stacks_list` &>> SS_cstacks.log
 
 sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../../Metadata/SS_cs_stacks_list` &>> SS_sstacks.log
 
