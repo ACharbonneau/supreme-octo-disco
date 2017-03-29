@@ -151,7 +151,7 @@ ForStacksAEUniq <- dplyr::left_join(ForStacksAE, All_geno_data, by=c("ID"="DNASa
 
 ForStacksAEUniq <- unique(ForStacksAEUniq)
 
-write.table(x = select(ForStacksAEUniq, UniqID, Cross, Type_Year), file = "../Metadata/AE_Deconvoluted.pop", 
+write.table(x = c(paste(select(ForStacksAEUniq, UniqID), ".fq_q30", sep=""), select(UniqID, Cross, Type_Year)), file = "../Metadata/AE_Deconvoluted.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 All_AE <- paste(ForStacksAEUniq$UniqID, ".fq_q30", sep = "")
