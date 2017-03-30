@@ -20,9 +20,6 @@ cd ${PBS_O_WORKDIR} || exit
 
 module load stacks/1.35
 
-popmin=21
-indivmin=.75
-
 
 rc=`pwd`
 rc=`basename $rc`
