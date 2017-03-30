@@ -41,11 +41,6 @@ echo "3. Setting up workspace"
 mkdir ProcessRadtags
 mkdir ProcessRadtags/Indicies
 mkdir ProcessRadtags/BT2map
-mkdir ProcessRadtags/BT2map/SS_stacks
-mkdir ProcessRadtags/BT2map/A0_stacks
-mkdir ProcessRadtags/BT2map/A1_stacks
-mkdir ProcessRadtags/BT2map/A2_stacks
-mkdir ProcessRadtags/BT2map/AE_map_stacks
 
 echo "4. Launching fastqc"
 
