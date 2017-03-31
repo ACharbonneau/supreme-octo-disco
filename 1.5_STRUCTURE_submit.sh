@@ -11,7 +11,7 @@ tail -n +2 ../${BATCH} > nohead_${BATCH}
 NLINES=$(tail -n +2 nohead_${BATCH} | wc -l )
 INDIVIDS=`expr ${NLINES} / 2`
 
-MARKERS=$(head -2 ${BATCH} | tail -1 | wc -w)
+MARKERS=$(head -2 ../${BATCH} | tail -1 | wc -w)
 
 sed s/INDIVIDUALSGOHERE/${INDIVIDS}/ ../../../../supreme-octo-disco/1.6_mainparams4h > mainparams
 sed -i s/MARKERSGOHERE/${MARKERS}/ mainparams
