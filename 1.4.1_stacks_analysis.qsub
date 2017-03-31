@@ -45,8 +45,8 @@ sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../../Metadata/${cslist}` 
 
 populations -b ${dt} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M ../../../Metadata/${popfile}
 
-mkdir STRUCTURE
+mkdir ${dataAbv}_${batch}/STRUCTURE
 
-cd STRUCTURE
+cd ${dataAbv}_${batch}/STRUCTURE
 
 bash ../../../../supreme-octo-disco/1.5_STRUCTURE_submit.sh "batch_${dt}.structure.tsv"
