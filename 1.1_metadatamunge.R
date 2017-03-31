@@ -219,6 +219,35 @@ ForStacksSSUniq$UniqID <- paste(ForStacksSSUniq$UniqID, ".fq_q30", sep = "")
 write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Metadata/SS_data.pop", 
             quote = F, sep = "\t", col.names = F, row.names = F)
 
+# Just RRR data
+Just_Rrr <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.x == "Rrr"]
+write.table(paste( " -s ./", Just_Rrr, sep=""), file = "../Metadata/SS_Rrr_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+Just_Rrr <- paste(Just_Rrr, ".sam", sep = "")
+write.table(Just_Rrr, file = "../Metadata/SS_Rrr_stacks_list", quote = F, col.names = F, row.names = F)
+
+#Just landra
+Just_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.x == "Rrl"]
+write.table(paste( " -s ./", Just_landra, sep=""), file = "../Metadata/SS_Rrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+Just_landra <- paste(Just_landra, ".sam", sep = "")
+write.table(Just_landra, file = "../Metadata/SS_Rrl_stacks_list", quote = F, col.names = F, row.names = F)
+
+
+#Just crops
+Just_Rsat <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.x == "Rsat"]
+write.table(paste( " -s ./", Just_Rsat, sep=""), file = "../Metadata/SS_Rsat_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+Just_Rsat <- paste(Just_Rsat, ".sam", sep = "")
+write.table(Just_Rsat, file = "../Metadata/SS_Rsat_stacks_list", quote = F, col.names = F, row.names = F)
+
+#RRR and landra
+Rrr_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.x == "Rrr" | ForStacksSSUniq$Species.x == "Rrl"]
+write.table(paste( " -s ./", Rrr_landra, sep=""), file = "../Metadata/SS_RrrRrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+Rrr_landra <- paste(Rrr_landra, ".sam", sep = "")
+write.table(Rrr_landra, file = "../Metadata/SS_RrrRrl_stacks_list", quote = F, col.names = F, row.names = F)
+
+
+
+
+#All signature of selection
 All_SS <- ForStacksSSUniq$UniqID
  
 write.table(paste( " -s ./", All_SS, sep=""), file = "../Metadata/SS_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")

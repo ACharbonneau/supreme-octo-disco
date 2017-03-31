@@ -79,5 +79,5 @@ fi
 runs=$(cat FilesMapped.txt | wc -l)
 
 if [ ${runs} = 1440 ]
-then qsub ../../supreme-octo-disco/1.4_Run_PSTACKS.qsub
+then qsub ../../supreme-octo-disco/1.4_SS_analysis.qsub -v=popmin=21,indivmin=.75
 fi
