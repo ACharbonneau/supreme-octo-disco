@@ -32,6 +32,7 @@ packages<-function(x){
   }
 }
 packages(tidyr)
+packages(plyr)
 packages(dplyr)
 
 
@@ -68,6 +69,8 @@ DNA_data$Species[DNA_data$Cross=="SAES"] <- "Rrl"
 DNA_data$Species[DNA_data$Cross=="RA808"] <- "Rrl"
 DNA_data$Species[DNA_data$Cross=="YEIL_CLNC"] <- "Rros"
 DNA_data$Cross[DNA_data$Cross=="SPEU"] <- "SPNK"
+
+DNA_data$Cross <- revalue(DNA_data$Cross, c("YEIL_CLNC" = "YEIL"))
 
 DNA_data <- droplevels(DNA_data)
 
@@ -286,32 +289,32 @@ GeographyList <- c(AFFR="France", AROL="NA", BINY="nonNative", DEES="Spain", ESN
                    GMIL="pugiformis", MAES="Spain", NAAU="nonNative", NELO="NA", 
                    OIBG="NA", PBFR="France", RA226="Algeria", RA444="Italy", 
                    RA761="Turkey", RA808="Turkey", RABG="NA", RACA="NA", SAES="Spain", 
-                   SPNK="NA", TOBG="NA", YEIL_CLNC="pugiformis")
+                   SPNK="NA", TOBG="NA", YEIL="pugiformis")
 
 TaxonomyList <- c(AFFR="raphanistrum", AROL="oleifera", BINY="raphanistrum", DEES="raphanistrum", 
                   ESNK="european", GMIL="pugiformis", MAES="raphanistrum", NAAU="raphanistrum", NELO="daikon", 
                   OIBG="oleifera", PBFR="landra", RA226="landra", RA444="landra", 
                   RA761="landra", RA808="landra", RABG="caudatus", RACA="caudatus", SAES="landra", 
-                  SPNK="european", TOBG="daikon", YEIL_CLNC="pugiformis")
+                  SPNK="european", TOBG="daikon", YEIL="pugiformis")
 
 
 HabitatList <- c(AFFR="agricultural", AROL="cultivar", BINY="agricultural", DEES="natural", 
                  ESNK="cultivar", GMIL="natural", MAES="disturbed", NAAU="agricultural", NELO="cultivar", 
                  OIBG="cultivar", PBFR="natural", RA226="natural", RA444="natural", 
                  RA761="natural", RA808="natural", RABG="cultivar", RACA="cultivar", SAES="natural", 
-                 SPNK="cultivar", TOBG="cultivar", YEIL_CLNC="natural")
+                 SPNK="cultivar", TOBG="cultivar", YEIL="natural")
 
 LocationList <- c(AFFR="raphNatW", AROL="oleifera", BINY="raphNN", DEES="raphNatW", 
                   ESNK="european", GMIL="pugiformis", MAES="raphNatW", NAAU="raphNN", NELO="daikon", 
                   OIBG="oleifera", PBFR="landra", RA226="landra", RA444="landra", 
                   RA761="landra", RA808="landra", RABG="caudatus", RACA="caudatus", SAES="landra", 
-                  SPNK="european", TOBG="daikon", YEIL_CLNC="pugiformis")
+                  SPNK="european", TOBG="daikon", YEIL="pugiformis")
 
 SpeciesList <- c(AFFR="raphanistrum", AROL="sativus", BINY="raphanistrum", DEES="raphanistrum", 
                  ESNK="sativus", GMIL="pugiformis", MAES="raphanistrum", NAAU="raphanistrum", NELO="sativus", 
                  OIBG="sativus", PBFR="raphanistrum", RA226="raphanistrum", RA444="raphanistrum", 
                  RA761="raphanistrum", RA808="raphanistrum", RABG="sativus", RACA="sativus", SAES="raphanistrum", 
-                 SPNK="sativus", TOBG="sativus", YEIL_CLNC="pugiformis")
+                 SPNK="sativus", TOBG="sativus", YEIL="pugiformis")
 
 
 
@@ -319,7 +322,7 @@ OrderList <- c(AFFR=1, AROL=7, BINY=2, DEES=3,
                ESNK=1, GMIL=1, MAES=4, NAAU=5, NELO=3, 
                OIBG=8, PBFR=1, RA226=3, RA444=4, 
                RA761=5, RA808=6, RABG=5, RACA=6, SAES=2, 
-               SPNK=2, TOBG=4, YEIL_CLNC=2)
+               SPNK=2, TOBG=4, YEIL=2)
 
 FullSSUniq$Geo <- as.factor(GeographyList[FullSSUniq$Cross])
 FullSSUniq$Taxon <- as.factor(TaxonomyList[FullSSUniq$Cross])
