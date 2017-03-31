@@ -2,11 +2,11 @@
 
 #Launches 20 different randomizations of the dataset (seq 1 20) with a K of ( -t <number range>)
 
-BATCH=${1}
+BATCH=../${1}
 
 
 #Randomize Input files
-tail -n +2 ${BATCH} > nohead_${BATCH}
+tail -n +2 ../${BATCH} > nohead_${BATCH}
 
 NLINES=$(tail -n +2 nohead_${BATCH} | wc -l )
 INDIVIDS=`expr ${NLINES} / 2`
