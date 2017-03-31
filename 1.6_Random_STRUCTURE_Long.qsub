@@ -1,0 +1,28 @@
+#!/bin/bash -login
+
+### define resources needed:
+### walltime - how long you expect the job to run
+#PBS -l walltime=8:00:00
+
+### nodes:ppn - how many nodes & cores per node (ppn) that you require
+#PBS -l nodes=1:ppn=1
+### mem: amount of memory that the job will need
+#PBS -l mem=64gb
+
+#PBS -N notset
+if [ "$PBS_JOBNAME" == "notset" ]
+then
+    echo "please set the job name"
+    exit 1
+fi
+
+#setnumber=`echo ${PBS_JOBNAME} | sed s/(\d+)*+/\1/`
+#echo ${setnumber}
+# change to the working directory where your code is located
+cd ${PBS_O_WORKDIR}
+
+
+### call your executable
+module load structure/2.3.4
+
+structure -K ${PBS_ARRAYID} -i ${thisfile} -o ${PBS_JOBNAME} -m mainparams -e ../../../../supreme-octo-disco/extraparams

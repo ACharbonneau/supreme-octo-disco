@@ -45,3 +45,9 @@ cstacks -g -p 20 -b ${dt} -n 1 -o . `cat ../../../Metadata/SS_cs_stacks_list` &>
 sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../../Metadata/SS_cs_stacks_list` &>> SS_sstacks.log
 
 populations -b ${dt} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M ../../../Metadata/SS_data.pop
+
+mkdir STRUCTURE
+
+cd STRUCTURE
+
+bash ../../../../supreme-octo-disco/STRUCTURE_submit.sh -v BATCH="../batch_${dt}.structure.tsv"
