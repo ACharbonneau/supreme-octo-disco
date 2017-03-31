@@ -50,4 +50,4 @@ mkdir STRUCTURE
 
 cd STRUCTURE
 
-bash ../../../../supreme-octo-disco/STRUCTURE_submit.sh "../batch_${dt}.structure.tsv"
+bash ../../../../supreme-octo-disco/1.5_STRUCTURE_submit.sh "../batch_${dt}.structure.tsv"

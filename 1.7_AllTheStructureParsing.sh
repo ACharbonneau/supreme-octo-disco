@@ -1,6 +1,8 @@
 #! /bin/bash
 
-## Just change number in line 11 to number of samples +1
+
+NUMINDS=$(grep NUMINDS mainparams | cut -f 3 -d " ")
+NUMIND=`expr ${NUMIND} + 1`
 
 for i in `ls *_f`
 	do echo $i
@@ -22,11 +24,11 @@ for i in `ls *_f`
 	done > AlltheProbabilities.txt
 
 for i in `ls *_f`
-	do grep -A 259 "Inferred ancestry of individuals" $i > $i.forparse
+	do grep -A ${NUMINDS} "Inferred ancestry of individuals" $i > $i.forparse
 done
 
 for i in `ls *forparse`
-	do python ../../../../supreme-octo-disco/structureparse.py $i
+	do python ../../../../supreme-octo-disco/1.7_structureparse.py $i
 done
 
 mkdir parsed_data
