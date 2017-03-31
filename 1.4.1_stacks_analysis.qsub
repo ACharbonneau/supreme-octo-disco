@@ -12,7 +12,6 @@
 # -r n : tells it not to re-run the script in the case of an error (so it doesn't overwrite any results generated$
 # -t 0-? : job numbers for array submission
 
-#Starting in BT2map/
 
 #Starting in BT2map/
 
@@ -28,23 +27,23 @@ dt=`date '+%Y%m%d'`
 
 batch=${dt}_${popmin}_${indivmin}
 
-mkdir SS_${batch}
+mkdir ${dataAbv}_${batch}
 
 # Run pstacks
 ID=1
-for file in `cat ../../Metadata/SS_stacks_list`
+for file in `cat ../../Metadata/${stackslist}`
 	do pstacks -p 20 -t sam -m 3 -i ${ID} -f ${file} \
-	-o SS_${batch}
+	-o ${dataAbv}_${batch}
 	ID=`expr ${ID} + 1`
 done
 
 cd SS_${batch}
 
-cstacks -g -p 20 -b ${dt} -n 1 -o . `cat ../../../Metadata/SS_cs_stacks_list` &>> SS_cstacks.log
+cstacks -g -p 20 -b ${dt} -n 1 -o . `cat ../../../Metadata/${cslist}` &>> ${cslist}.log
 
-sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../../Metadata/SS_cs_stacks_list` &>> SS_sstacks.log
+sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../../Metadata/${cslist}` &>> ${cslist}.log
 
-populations -b ${dt} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M ../../../Metadata/SS_data.pop
+populations -b ${dt} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M ../../../Metadata/${popfile}
 
 mkdir STRUCTURE
 
