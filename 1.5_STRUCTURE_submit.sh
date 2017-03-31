@@ -2,7 +2,7 @@
 
 #Launches 20 different randomizations of the dataset (seq 1 20) with a K of ( -t <number range>)
 
-BATCH=../${1}
+BATCH=${1}
 
 
 #Randomize Input files
