@@ -16,7 +16,7 @@ args = commandArgs(trailingOnly=TRUE)
 
 print(args[1])
 
-metadata <- read.csv("../../../../Metadata/SigSelectionMeta.csv")
+metadata <- read.csv("../../../../Metadata/SS_data.pop")
 stacksgenotypes <- data.table::fread(paste("../", args[1], sep = ""), header = F, sep="\t")
 stacksmarkers <- read.table(paste("../", args[1], sep = ""), nrows = 1, skip = 1)
 stacksmarkers <- as.data.frame(c("SSR", stacksmarkers))
@@ -40,9 +40,9 @@ write.table(geno, paste(args[1],".geno", sep = ""), sep = "", col.names = F, row
 
 ind <- select(biallele, SSR)
 ind$SSR <- as.factor(ind$SSR)
-ind <- left_join(ind, metadata, by=c("SSR"="ID"))
+ind <- left_join(ind, metadata, by=c("SSR"="V1"))
 ind$U <- "U"
-ind <- select(ind, SSR, U, Pop)
+ind <- select(ind, SSR, U, V2)
 
 write.table(ind, paste(args[1],".ind", sep = ""), sep = "\t", col.names = F, row.names = F, quote = F)
 
