@@ -27,7 +27,7 @@ write.table(stacksmarkers, forbiallele, sep = ",", col.names = F, row.names = F,
 
 write.table(select(stacksgenotypes, -V2), forbiallele, col.names = F, sep = ",", row.names = F, append = T, quote = F)
 
-system(paste("python bi-winning_allele.py", forbiallele, "-o", biallele, sep = " "), intern = TRUE,
+system(paste("../../../../supreme-octo-disco/python bi-winning_allele.py", forbiallele, "-o", biallele, sep = " "), intern = TRUE,
        ignore.stdout = FALSE, ignore.stderr = FALSE,
        wait = TRUE, input = NULL)
 
