@@ -40,7 +40,7 @@ write.table(geno, paste(args[1],".geno", sep = ""), sep = "", col.names = F, row
 
 ind <- select(biallele, SSR)
 ind$SSR <- as.factor(ind$SSR)
-ind <- left_join(ind, SSmeta, by=c("SSR"="ID"))
+ind <- left_join(ind, metadata, by=c("SSR"="ID"))
 ind$U <- "U"
 ind <- select(ind, SSR, U, Pop)
 
