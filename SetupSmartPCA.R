@@ -14,9 +14,9 @@ packages(dplyr)
 
 args = commandArgs(trailingOnly=TRUE)
 
-print(args[1])
+#print(args[1])
 
-metadata <- read.csv("../../../../Metadata/SS_data.pop")
+metadata <- read.csv("../../../../Metadata/SS_data.pop", header = F, sep="\t")
 stacksgenotypes <- data.table::fread(paste("../", args[1], sep = ""), header = F, sep="\t")
 stacksmarkers <- read.table(paste("../", args[1], sep = ""), nrows = 1, skip = 1)
 stacksmarkers <- as.data.frame(c("SSR", stacksmarkers))
@@ -48,10 +48,23 @@ write.table(ind, paste(args[1],".ind", sep = ""), sep = "\t", col.names = F, row
 
 snp <- colnames(biallele)
 snp <- as.data.frame(snp[2:length(snp)])
-#snp$FakeChromo <- rep(1:(length(snp$`snp[2:length(snp)]`)/104), each=104)
-snp$FakeChromo <- rep(c(1:21), 104)
+snp$FakeChromo <- c(1, 2, 3)
 snp$zero1 <- 0
 snp$zero2 <- 0
 
 write.table(snp, paste(args[1],".snp", sep = ""), sep = "\t", col.names = F, row.names = F, quote = F)
 
+parnames <- c("genotypename:", "snpname:", "indivname:", "evecoutname:", 
+              "evaloutname:", "altnormstyle:", "numoutevec:", "familynames:", 
+              "grmoutname:", "snpweightoutname:", "genotypeoutname:", 
+              "snpoutname:", "indivoutname:")
+
+parvalues <- c(paste(args[1],".geno", sep = ""), paste(args[1],".snp", sep = ""), 
+               paste(args[1],".ind", sep = ""), paste(args[1],".evec", sep = ""),
+               paste(args[1],".eval", sep = ""), "NO", length(snp$zero2), "NO",
+               paste(args[1],".grmjunk", sep = ""), paste(args[1],".weights", sep = ""), 
+               paste(args[1],".badgeno", sep = ""), paste(args[1],".badsnp", sep = ""),
+               paste(args[1],".badindiv", sep = ""))
+parfile <- cbind(parnames, parvalues)
+
+write.table(parvalues, "smartpca.par", quote = F, sep = " ", row.names = F, col.names = F)
