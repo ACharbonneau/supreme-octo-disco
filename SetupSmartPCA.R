@@ -9,8 +9,8 @@ stacksgenotypes <- data.table::fread(paste("../", args[1], sep = ""), header = F
 stacksmarkers <- read.table(paste("../", args[1], sep = ""), nrows = 1, skip = 1)
 stacksmarkers <- as.data.frame(c("SSR", stacksmarkers))
 
-forbiallele <- paste("../output/", args[1], "_for_biallele.csv", sep = "")
-donebiallele <- paste("../output/", args[1], "_biallele.csv", sep="")
+forbiallele <- paste(args[1], "_for_biallele.csv", sep = "")
+donebiallele <- paste(args[1], "_biallele.csv", sep="")
 
 write.table(stacksmarkers, forbiallele, sep = ",", col.names = F, row.names = F, quote = F)
 
