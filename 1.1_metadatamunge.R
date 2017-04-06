@@ -195,8 +195,12 @@ write.table(paste( " -s ./", Just_F0s, sep=""), file = "../Metadata/AE_F0_cs_sta
 write.table(paste( " -s ./", Just_F1s, sep=""), file = "../Metadata/AE_F1_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 write.table(paste( " -s ./", Just_F2s, sep=""), file = "../Metadata/AE_F2_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 
-write.table(paste( " -p ./", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-write.table(paste( " -r ./", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "", append = T)
+write.table(paste( " -s ./", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ./", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "", append = T)
+
+
+write.table(paste( " -p ./", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_geno", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -r ./", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_geno", quote = F, col.names = F, row.names = F, eol = "", append = T)
 
 Just_F0s <- paste(Just_F0s, ".sam", sep = "")
 Just_F1s <- paste(Just_F1s, ".sam", sep = "")
