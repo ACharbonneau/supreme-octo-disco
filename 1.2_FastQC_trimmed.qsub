@@ -2,7 +2,7 @@
 #PBS -j oe
 #PBS -l nodes=1:ppn=1,walltime=04:00:00,mem=10gb
 #PBS -m a
-#PBS -t 0-20  
+#PBS -t 0-20
 
 # -o : tells it where to put output from your job
 # -j oe : specifies that output and error messages from your job can be placed in the same location
@@ -19,11 +19,8 @@ cd ${PBS_O_WORKDIR}
 
 source ~/.bash_profile
 module load FastQC/0.11.3
-module load bowtie2/2.2.6
 
 #Run FastQC again
-
-ThisT=`ls *.fq | wc -w`
 
 filelist=(*.fq) #get list of sequencing lanes
 
@@ -31,12 +28,9 @@ fastqfile=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
 fastqc -o ../fastQC/TrimmedFQC/ ${fastqfile}
 
-fqcT=`ls ../fastQC/TrimmedFQC/*fastqc.zip | wc -w`
-
-
 # Calculate next job to run
 NEXT=$(( ${PBS_ARRAYID} + 20 ))
-JOBSCRIPT=../supreme-octo-disco/FastQC_trimmed.qsub
+JOBSCRIPT=../supreme-octo-disco/1.2_FastQC_trimmed.qsub
 
 #Check to see if next job is past the maximum job id
 if [ ${NEXT} -le ${MAXJOBID} ]
@@ -44,4 +38,3 @@ then
     cd ${PBS_O_WORKDIR}
     qsub -t ${NEXT} ${JOBSCRIPT} -v MAXJOBID=${MAXJOBID}
 fi
-

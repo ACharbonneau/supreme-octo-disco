@@ -38,7 +38,7 @@ fi
 #Run bowtie2
 
 # Using default mode: search for multiple alignments, report the best one
-# --sensitive-local      -D 15 -R 2 -N 0 -L 20 -i S,1,0.75 (default)
+# --sensitive      Same as: -D 15 -R 2 -L 22 -i S,1,1.15 (default in --end-to-end mode)
 # -D <int>           give up extending after <int> failed extends in a row (15)
 # -R <int>           for reads w/ repetitive seeds, try <int> sets of seeds (2)
 # -N <int>           max # mismatches in seed alignment; can be 0 or 1 (0)

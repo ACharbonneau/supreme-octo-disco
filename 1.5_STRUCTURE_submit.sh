@@ -6,7 +6,7 @@ BATCH=${1}
 
 
 #Randomize Input files
-tail -n +2 ../${BATCH} > nohead_${BATCH}
+tail -n +2 ../${BATCH} > nohead_${BATCH} || exit
 
 NLINES=$(tail -n +2 nohead_${BATCH} | wc -l )
 INDIVIDS=`expr ${NLINES} / 2`
