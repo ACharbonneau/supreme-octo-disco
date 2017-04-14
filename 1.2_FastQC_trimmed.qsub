@@ -19,6 +19,8 @@ cd ${PBS_O_WORKDIR}
 
 source ~/.bash_profile
 module load FastQC/0.11.3
+module load R/3.2.0
+module load pandoc/1.17.3
 
 #Run FastQC again
 
@@ -37,4 +39,12 @@ if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR}
     qsub -t ${NEXT} ${JOBSCRIPT} -v MAXJOBID=${MAXJOBID}
+fi
+
+cd ../fastQC/TrimmedFastQC/
+
+qcs=$(cat *.zip | wc -l)
+
+if [ ${qcs} = 1440 ]
+  then Rscript ../../supreme-octo-disco/1.2.1_FastQC_aggregate.R
 fi
