@@ -59,4 +59,4 @@ ThisT=`expr $ThisT - 1`
 
 qsub ../supreme-octo-disco/1.1_FastQC.qsub -t 0-${ThisT}
 
-qsub ../supreme-octo-disco/1.1_ProcessRadtags.qsub -N ProcessingRads -t 0-${ThisT}
+qsub ../supreme-octo-disco/1.1_ProcessRadtags.qsub -N ProcessingRads -t 0-${ThisT} 
