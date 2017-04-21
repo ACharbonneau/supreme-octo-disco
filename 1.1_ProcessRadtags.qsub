@@ -33,9 +33,9 @@ mkdir ../ProcessRadtags/${lane}
 process_radtags -f ${lane} -i gzfastq -o ../ProcessRadtags/${lane}/ -b ../Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --adapter_1 'AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT' --adapter_mm 2 --retain_header -y fastq
 
 
-cd ../ProcessRadtags/
+#cd ../ProcessRadtags/
 
-mv */*.fq .
+#mv */*.fq .
 
 #cd BT2map/
 
@@ -45,11 +45,11 @@ mv */*.fq .
 
 ## Expect 1425 individuals after processing plus 15 blanks
 
-fqT=`ls *.fq | wc -w`
-fqT=`expr ${fqT} - 1`
+#fqT=`ls *.fq | wc -w`
+#fqT=`expr ${fqT} - 1`
 
-if [[ ${fqT} = 1439 ]]
-then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJOBID=${fqT}
-bash ../supreme-octo-disco/1.4_SubmitSTACKS
+#if [[ ${fqT} = 1439 ]]
+#then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJOBID=${fqT}
+#bash ../supreme-octo-disco/1.4_SubmitSTACKS
 #qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT
-fi
+#fi
