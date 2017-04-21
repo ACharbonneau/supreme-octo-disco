@@ -18,6 +18,7 @@ then
 fi
 
 cd ${PBS_O_WORKDIR}
+source ~/.bash_profile
 
 module load bowtie2/2.2.6
 module load SAMTools/1.2
