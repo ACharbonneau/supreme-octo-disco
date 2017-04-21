@@ -13,7 +13,7 @@
 # -t 0-? : job numbers for array submission
 
 
-module load stacks/1.35
+source ~/.bash_profile
 
 #Starting in GBS/RawFastq/
 cd ${PBS_O_WORKDIR}
@@ -37,20 +37,19 @@ cd ../ProcessRadtags/
 
 mv */*.fq .
 
-cd BT2map/
+#cd BT2map/
 
-rm FilesMapped.txt
+#rm FilesMapped.txt
 
-cd ..
+#cd ..
 
 ## Expect 1425 individuals after processing plus 15 blanks
 
 fqT=`ls *.fq | wc -w`
 fqT=`expr ${fqT} - 1`
 
-if [[ ${fqT} = 1439 ]] 
+if [[ ${fqT} = 1439 ]]
 then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJOBID=${fqT}
-qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT
+bash ../supreme-octo-disco/1.4_SubmitSTACKS
+#qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT
 fi
-
-

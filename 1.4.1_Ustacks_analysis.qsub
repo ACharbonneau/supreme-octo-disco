@@ -1,6 +1,6 @@
 #!/bin/sh -login
 #PBS -j oe
-#PBS -l nodes=1:ppn=20,walltime=4:00:00,mem=64gb
+#PBS -l nodes=1:ppn=20,walltime=24:00:00,mem=64gb
 #PBS -m a
 
 # -o : tells it where to put output from your job
@@ -17,7 +17,7 @@
 
 cd ${PBS_O_WORKDIR} || exit
 
-module load stacks/1.35
+source ~/.bash_profile
 
 
 
@@ -30,21 +30,23 @@ mkdir ${dataAbv}_${batch}
 # Run pstacks
 ID=1
 for file in `cat ../Metadata/${Ustackslist}`
-	do ustacks -p 20 -t fastq -m 3 -i ${ID} -f ${file} \
+	do ustacks -t fastq -m 3 -i ${ID} -f ${file} \
 	-o ${dataAbv}_${batch}
 	ID=`expr ${ID} + 1`
 done
 
 cd ${dataAbv}_${batch}
 
-cstacks -g -p 20 -b ${dt} -n 1 -o . `cat ../../Metadata/${cslist}` &>> ${cslist}.log
+cstacks -p 20 -b ${dt} -n 1 -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q30//g` &>> ${cslist}.log
 
-sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../Metadata/${cslist}` &>> ${cslist}.log
+sstacks -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q30//g` &>> ${cslist}.log
 
-populations -b ${dt} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M ../../../Metadata/${popfile}
+cat ../../../Metadata/${popfile}  | sed s/.fq_q30//g > temppopfile
 
-mkdir Ustacks/STRUCTURE
+populations -b ${dt} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M temppopfile
 
-cd Ustacks/STRUCTURE || exit
+mkdir STRUCTURE
 
-bash ../../../../supreme-octo-disco/1.5_STRUCTURE_submit.sh "batch_${dt}.structure.tsv"
+cd STRUCTURE || exit
+
+bash ../../../supreme-octo-disco/1.5_STRUCTURE_submit.sh "batch_${dt}.structure.tsv"
