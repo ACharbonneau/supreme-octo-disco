@@ -48,11 +48,11 @@ mkdir fastQC
 mkdir fastQC/RawFQC
 mkdir fastQC/TrimmedFQC
 
-Build indicies for mapping
+#Build indicies for mapping
 cd ProcessRadtags/Indicies
-bash 1.1_LaunchBuild.sh
+bash ../../supreme-octo-disco/1.1_LaunchBuild.sh
 
-cd RawFastq/
+cd ../../RawFastq/
 
 ThisT=`ls *fastq.gz | wc -w`
 ThisT=`expr $ThisT - 1`
