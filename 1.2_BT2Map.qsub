@@ -29,6 +29,7 @@ indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
 bsname=${PBS_ARRAYID}_${indiv}
 
+
 #Then launch metadata collector, once per reference per dataset
 
 if [[ ${PBS_ARRAYID} = 0 ]]
@@ -45,8 +46,9 @@ fi
 # -L <int>           length of seed substrings; must be >3, <32 (22)
 # -i <func>          interval between seed substrings w/r/t read len (S,1,1.15)
 
+mkdir ${PBS_JOBNAME}
 
-cd BT2map/
+cd ${PBS_JOBNAME}
 
 echo bsname="${bsname}"
 

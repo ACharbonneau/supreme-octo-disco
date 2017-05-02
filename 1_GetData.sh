@@ -48,9 +48,9 @@ mkdir fastQC
 mkdir fastQC/RawFQC
 mkdir fastQC/TrimmedFQC
 
-#Build indicies for mapping
-#cd ProcessRadtags/Indicies
-#qsub ../../supreme-octo-disco/1.1_BT2_build.qsub
+Build indicies for mapping
+cd ProcessRadtags/Indicies
+bash 1.1_LaunchBuild.sh
 
 cd RawFastq/
 
@@ -59,4 +59,4 @@ ThisT=`expr $ThisT - 1`
 
 qsub ../supreme-octo-disco/1.1_FastQC.qsub -t 0-${ThisT}
 
-qsub ../supreme-octo-disco/1.1_ProcessRadtags.qsub -N ProcessingRads -t 0-${ThisT} 
+qsub ../supreme-octo-disco/1.1_ProcessRadtags.qsub -N ProcessingRads -t 0-${ThisT}
