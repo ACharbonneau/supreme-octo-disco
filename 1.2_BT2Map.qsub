@@ -52,7 +52,7 @@ echo bsname="${bsname}"
 
 if [[ ! -f ${indiv}.sam ]]
  then bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -p 8 -S ${indiv}.sam
- samtools view -q 30 -T ${genome} ${indiv}.sam > ${indiv}_q30.sam
+ samtools view -q 20 -T ${genome} ${indiv}.sam > ${indiv}_q20.sam
  echo ${bsname} >> FilesMapped.txt
 fi
 #--sensitive            -D 15 -R 2 -N 0 -L 22 -i S,1,1.15 (default)
