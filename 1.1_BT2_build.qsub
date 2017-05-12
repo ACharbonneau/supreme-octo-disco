@@ -19,3 +19,5 @@ cd ${PBS_O_WORKDIR}
 module load bowtie2/2.2.6
 
 bowtie2-build /mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta Moghe2014_BT
+
+bowtie2-build /mnt/research/radishGenomics/PublicData/2016RsativusGenome/Rs_1.0.chromosomes.fix.fasta Jeong2016_BT

@@ -40,7 +40,9 @@ echo "3. Setting up workspace"
 
 mkdir ProcessRadtags
 mkdir ProcessRadtags/Indicies
-mkdir ProcessRadtags/BT2map
+mkdir ProcessRadtags/MogheMap
+mkdir ProcessRadtags/JeongMap
+
 
 echo "4. Launching fastqc"
 
@@ -59,4 +61,4 @@ ThisT=`expr $ThisT - 1`
 
 qsub ../supreme-octo-disco/1.1_FastQC.qsub -t 0-${ThisT}
 
-qsub ../supreme-octo-disco/1.1_ProcessRadtags.qsub -N ProcessingRads -t 0-${ThisT} 
+qsub ../supreme-octo-disco/1.1_ProcessRadtags.qsub -N ProcessingRads -t 0-${ThisT}

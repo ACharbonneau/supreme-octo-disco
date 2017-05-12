@@ -46,7 +46,7 @@ fi
 # -i <func>          interval between seed substrings w/r/t read len (S,1,1.15)
 
 
-cd BT2map/
+cd ${PBS_JOBNAME}/
 
 echo bsname="${bsname}"
 
@@ -59,7 +59,7 @@ fi
 
 
 if [[ ! -f ${indiv}_q30.sam ]]
-then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
+then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N ${PBS_JOBNAME} -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
 fi
 
 
@@ -71,7 +71,7 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR}
-    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
+    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N ${PBS_JOBNAME} -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
 fi
 
 #Launch first step of STACKS if all the mapping is done (if this is the only mappingrun scheduled)

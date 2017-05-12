@@ -47,6 +47,8 @@ fqT=`expr ${fqT} - 1`
 if [[ ${fqT} = 1439 ]]
 then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJOBID=${fqT}
 bash ../supreme-octo-disco/1.4_SubmitSTACKS
-#rm BT2map/FilesMapped.txt
-#qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N MappingRuns -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT
-#fi
+rm MogheMap/FilesMapped.txt
+qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N MogheMap -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT
+rm JeongMap/FilesMapped.txt
+qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N JeongMap -v genome=/mnt/research/radishGenomics/PublicData/2016RsativusGenome/Rs_1.0.chromosomes.fix.fasta,gff=/mnt/research/radishGenomics/PublicData/2016RsativusGenome/Edited_Rs_1.0.Gene.LFY.gff,gffi="Derives_from",exon="protein",stranded="yes",MAXJOBID=${fqT},index=Indicies/Jeong2016_BT
+fi
