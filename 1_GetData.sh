@@ -51,8 +51,8 @@ mkdir fastQC/RawFQC
 mkdir fastQC/TrimmedFQC
 
 #Build indicies for mapping
-#cd ProcessRadtags/Indicies
-#qsub ../../supreme-octo-disco/1.1_BT2_build.qsub
+cd ProcessRadtags/Indicies
+qsub ../../supreme-octo-disco/1.1_BT2_build.qsub
 
 cd RawFastq/
 

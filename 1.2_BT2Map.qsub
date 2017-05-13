@@ -46,7 +46,7 @@ fi
 # -i <func>          interval between seed substrings w/r/t read len (S,1,1.15)
 
 
-cd ${PBS_JOBNAME}/
+cd ${PBS_JOBNAME}/ || exit
 
 echo bsname="${bsname}"
 
