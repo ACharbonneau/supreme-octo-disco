@@ -58,8 +58,8 @@ fi
 #--sensitive            -D 15 -R 2 -N 0 -L 22 -i S,1,1.15 (default)
 
 
-if [[ ! -f ${indiv}_q30.sam ]]
-then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N ${PBS_JOBNAME} -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
+if [[ ! -f ${indiv}_q20.sam ]]
+then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N ${MapFolder} -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
 fi
 
 
@@ -70,11 +70,11 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 #Check to see if next job is past the maximum job id
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
-    cd ${PBS_O_WORKDIR}
-    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N ${PBS_JOBNAME} -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder=${MapFolder}
+    cd ${PBS_O_WORKDIR} || exit
+    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N ${MapFolder} -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder=${MapFolder}
 fi
 
-#Launch first step of STACKS if all the mapping is done (if this is the only mappingrun scheduled)
+#Launch first step of STACKS if all the mapping is done
 
 runs=$(cat FilesMapped.txt | wc -l)
 
