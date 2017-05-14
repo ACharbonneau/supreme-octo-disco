@@ -32,7 +32,7 @@ bsname=${PBS_ARRAYID}_${indiv}
 #Then launch metadata collector, once per reference per dataset
 
 if [[ ${PBS_ARRAYID} = 0 ]]
-then qsub ../supreme-octo-disco/1.3_echo.qsub -N ${PBS_JOBNAME}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
+then qsub ../supreme-octo-disco/1.3_echo.qsub -N ${MapFolder}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
 fi
 
 #Run bowtie2
@@ -46,7 +46,7 @@ fi
 # -i <func>          interval between seed substrings w/r/t read len (S,1,1.15)
 
 
-cd ${PBS_JOBNAME}/ || exit
+cd ${MapFolder}/ || exit
 
 echo bsname="${bsname}"
 
@@ -59,7 +59,7 @@ fi
 
 
 if [[ ! -f ${indiv}_q30.sam ]]
-then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N ${PBS_JOBNAME} -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
+then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N ${PBS_JOBNAME} -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
 fi
 
 
@@ -71,7 +71,7 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR}
-    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N ${PBS_JOBNAME} -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}"
+    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N ${PBS_JOBNAME} -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder=${MapFolder}
 fi
 
 #Launch first step of STACKS if all the mapping is done (if this is the only mappingrun scheduled)
