@@ -57,6 +57,7 @@ if [[ ! -f ${indiv}.sam ]]
 fi
 #--sensitive            -D 15 -R 2 -N 0 -L 22 -i S,1,1.15 (default)
 
+runs=$(cat FilesMapped.txt | wc -l)
 
 if [[ ! -f ${indiv}_q20.sam ]]
 then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N ${MapFolder} -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
@@ -76,7 +77,6 @@ fi
 
 #Launch first step of STACKS if all the mapping is done
 
-runs=$(cat FilesMapped.txt | wc -l)
 
 if [ ${runs} = 1440 ]
 then bash ../../supreme-octo-disco/1.4_SubmitSTACKS.sh

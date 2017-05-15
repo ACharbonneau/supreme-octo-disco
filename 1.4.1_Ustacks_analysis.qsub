@@ -24,25 +24,25 @@ source ~/.bash_profile
 
 dt=`date '+%Y%m%d'`
 
-batch=${dt}_${popmin}_${indivmin}
+batch=${dt}_${popmin}_${indivmin}_${m}_${M}
 
 mkdir ${dataAbv}_${batch}
 
 # Run pstacks
 ID=1
 for file in `cat ../Metadata/${Ustackslist}`
-	do ustacks -t fastq -m 3 -i ${ID} -f ${file} \
+	do ustacks -t fastq -m ${m} -M ${M} -i ${ID} -f ${file} \
 	-o ${dataAbv}_${batch}
 	ID=`expr ${ID} + 1`
 done
 
 cd ${dataAbv}_${batch}
 
-cstacks -p 20 -b ${dt} -n 1 -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q20//g` &>> ${cslist}.log
+cstacks -p 20 -b ${dt} -n ${M} -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q20//g` &>> ${cslist}.log
 
 sstacks -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q20//g` &>> ${cslist}.log
 
-cat ../../../Metadata/${popfile}  | sed s/.fq_q20//g > temppopfile
+cat ../../Metadata/${popfile}  | sed s/.fq_q20//g > temppopfile
 
 populations -b ${dt} -P . -t 20 --fasta --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M temppopfile
 
