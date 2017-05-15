@@ -7,10 +7,15 @@
 
 #qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="SS",stackslist="SS_stacks_list",cslist="SS_cs_stacks_list",popfile="SS_data.pop",popmin="20",indivmin=".75"
 #qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="Rrl",stackslist="SS_Rrl_stacks_list",cslist="SS_Rrl_cs_stacks_list",popfile="SS_data.pop",popmin="6",indivmin=".75"
-qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="Rrr",stackslist="SS_Rrr_stacks_list",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".75"
+qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="Rrr",stackslist="SS_Rrr_stacks_list",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".75",m=3
+qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="Rrr",stackslist="SS_Rrr_stacks_list",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".75",m=2
+qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="Rrr",stackslist="SS_Rrr_stacks_list",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".75",m=1
+
 #qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="Rsat",stackslist="SS_Rsat_stacks_list",cslist="SS_Rsat_cs_stacks_list",popfile="SS_data.pop",popmin="8",indivmin=".75"
 #qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="RrrRrl",stackslist="SS_RrrRrl_stacks_list",cslist="SS_RrrRrl_cs_stacks_list",popfile="SS_data.pop",popmin="11",indivmin=".75"
-qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="Rrr",stackslist="SS_Rrr_stacks_list",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".5"
+qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="Rrr",stackslist="SS_Rrr_stacks_list",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".5",m=3
+qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="Rrr",stackslist="SS_Rrr_stacks_list",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".5",m=2
+qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="Rrr",stackslist="SS_Rrr_stacks_list",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".5",m=1
 
 #Anther Exsertion
 
