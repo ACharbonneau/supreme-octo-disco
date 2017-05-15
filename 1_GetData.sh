@@ -54,7 +54,7 @@ mkdir fastQC/TrimmedFQC
 cd ProcessRadtags/Indicies
 qsub ../../supreme-octo-disco/1.1_BT2_build.qsub
 
-cd RawFastq/
+cd ../../RawFastq/
 
 ThisT=`ls *fastq.gz | wc -w`
 ThisT=`expr $ThisT - 1`
