@@ -41,7 +41,7 @@ mv ${lane}/*.fq .
 
 ## Expect 1425 individuals after processing plus 15 blanks
 
-fqT=`ls *trimmed.fq | wc -w`
+fqT=`ls *.fq | wc -w`
 fqT=`expr ${fqT} - 1`
 
 if [[ ${fqT} = 1439 ]]
