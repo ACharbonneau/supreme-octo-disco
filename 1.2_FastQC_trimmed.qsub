@@ -24,7 +24,7 @@ module load pandoc/1.17.3
 
 #Run FastQC again
 
-filelist=(*.fq) #get list of sequencing lanes
+filelist=(*trimmed.fq) #get list of sequencing lanes
 
 fastqfile=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 

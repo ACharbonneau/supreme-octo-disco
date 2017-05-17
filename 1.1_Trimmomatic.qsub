@@ -1,0 +1,51 @@
+#!/bin/sh -login
+#PBS -j oe
+#PBS -l nodes=1:ppn=16,walltime=04:00:00,mem=64gb
+#PBS -m a
+#PBS -l feature='intel16'
+
+# -o : tells it where to put output from your job
+# -j oe : specifies that output and error messages from your job can be placed in the same location
+# -l : resource requests (maximum amounts needed for each)
+# -M : email address to send status updates to
+# -m abe : what to send email updates about (abort, begin, end)
+# -N : names your job
+# -r n : tells it not to re-run the script in the case of an error (so it doesn't overwrite any results generated)
+# -t 0-? : job numbers for array submission
+
+module load Trimmomatic/0.33
+
+cd ${PBS_O_WORKDIR}
+
+filelist=(*fq) #Get a list of all sequencing files
+
+indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
+
+
+java -jar $TRIM/trimmomatic SE -threads 16 -trimlog ./${indiv}.log ${indiv} `basename ${indiv} .fq`.trimmed.fq ILLUMINACLIP:/mnt/research/common-data/Bio/Trimmomatic/adapters/TruSeq3-SE.fa:2:30:10 LEADING:3 TRAILING:3 MAXINFO:20:0.5 MINLEN:50
+
+# Calculate next job to run
+NEXT=$(( ${PBS_ARRAYID} + 200 ))
+
+
+#Check to see if next job is past the maximum job id
+if [ ${NEXT} -le ${MAXJOBID} ]
+then
+    cd ${PBS_O_WORKDIR} || exit
+    qsub ../supreme-octo-disco/1.1_Trimmomatic.qsub -t ${NEXT}
+fi
+
+
+## Expect 1425 individuals after processing plus 15 blanks
+
+fqT=`ls *trimmed.fq | wc -w`
+fqT=`expr ${fqT} - 1`
+
+if [[ ${fqT} = 1439 ]]
+then #qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJOBID=${fqT}
+#bash ../supreme-octo-disco/1.2_SubmitUSTACKS.sh
+rm MogheMap/FilesMapped.txt
+qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N MogheMap -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT,MapFolder="MogheMap"
+rm JeongMap/FilesMapped.txt
+qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N JeongMap -v genome=/mnt/research/radishGenomics/PublicData/2016RsativusGenome/Rs_1.0.chromosomes.fix.fasta,gff=/mnt/research/radishGenomics/PublicData/2016RsativusGenome/Edited_Rs_1.0.Gene.LFY.gff,gffi="Derives_from",exon="protein",stranded="yes",MAXJOBID=${fqT},index=Indicies/Jeong2016_BT,MapFolder="JeongMap"
+fi

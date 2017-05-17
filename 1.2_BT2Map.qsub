@@ -23,7 +23,7 @@ module load SAMTools/1.2
 
 cd ${PBS_O_WORKDIR} || exit #Go to directory with sequencing files
 
-filelist=(*fq) #Get a list of all sequencing files
+filelist=(*trimmed.fq) #Get a list of all sequencing files
 
 indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
@@ -78,6 +78,6 @@ fi
 #Launch first step of STACKS if all the mapping is done
 
 
-if [ ${runs} = 1440 ]
-then bash ../../supreme-octo-disco/1.4_SubmitSTACKS.sh
-fi
+#if [ ${runs} = 1440 ]
+#then bash ../../supreme-octo-disco/1.4_SubmitSTACKS.sh
+#fi
