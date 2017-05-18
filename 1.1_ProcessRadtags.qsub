@@ -45,5 +45,5 @@ fqT=`ls *.fq | wc -w`
 fqT=`expr ${fqT} - 1`
 
 if [[ ${fqT} = 1439 ]]
-then qsub ../supreme-octo-disco/1.1_Trimmomatic.qsub -t 0-200
+then qsub ../supreme-octo-disco/1.1_Trimmomatic.qsub -t 0-200 -v MAXJOBID=${fqT}
 fi
