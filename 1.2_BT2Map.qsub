@@ -29,12 +29,6 @@ indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
 bsname=${PBS_ARRAYID}_${indiv}
 
-#Then launch metadata collector, once per reference per dataset
-
-if [[ ${PBS_ARRAYID} = 0 ]]
-then qsub ../supreme-octo-disco/1.3_echo.qsub -N ${MapFolder}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
-fi
-
 #Run bowtie2
 
 # Using default mode: search for multiple alignments, report the best one
@@ -81,3 +75,10 @@ fi
 #if [ ${runs} = 1440 ]
 #then bash ../../supreme-octo-disco/1.4_SubmitSTACKS.sh
 #fi
+
+#Then launch metadata collector, once per reference per dataset
+
+if [[ ${PBS_ARRAYID} = 0 ]]
+then cd ${PBS_O_WORKDIR} || exit
+qsub ../supreme-octo-disco/1.3_echo.qsub -N ${MapFolder}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
+fi
