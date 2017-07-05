@@ -17,5 +17,6 @@
 
 source ~/.bash_profile
 
+cd ${PBS_O_WORKDIR}
 
 kmer_filter -p . --write_k_freq --k_dist
