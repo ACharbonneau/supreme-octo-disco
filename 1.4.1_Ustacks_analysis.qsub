@@ -24,7 +24,7 @@ source ~/.bash_profile
 
 dt=`date '+%Y%m%d'`
 
-batch=${dt}_${popmin}_${indivmin}_${m}_${M}
+batch=${dt}_Pop${popmin}_Ind${indivmin}_m${m}_M${M}_n${n}
 
 mkdir ${dataAbv}_${batch}
 
@@ -38,7 +38,7 @@ done
 
 cd ${dataAbv}_${batch}
 
-cstacks -p 20 -b ${dt} -n ${M} -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q20//g` &>> ${cslist}.log
+cstacks -p 20 -b ${dt} -n ${n} -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q20//g` &>> ${cslist}.log
 
 sstacks -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q20//g` &>> ${cslist}.log
 

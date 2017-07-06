@@ -21,4 +21,5 @@ source ~/.bash_profile
 
 cd ${PBS_O_WORKDIR}
 
-kmer_filter -p . --write_k_freq --k_dist
+kmer_filter -p . --write_k_freq kmer_frequency.txt
+kmer_filter -p . --k_dist > kmer_distribution.txt
