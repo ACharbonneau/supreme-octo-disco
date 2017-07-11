@@ -7,7 +7,7 @@
 
 for m in `seq 1 7`
   do for n in `seq 1 9`
-    do qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="Rrr",stackslist="SS_Rrr_stacks_list",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".80",m=${m},n=${M}
+    do qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="Rrr",stackslist="SS_Rrr_stacks_list",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".80",m=${m},n=${n}
   done
 done
 
