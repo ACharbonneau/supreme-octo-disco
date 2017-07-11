@@ -26,7 +26,7 @@ rc=`basename $rc`
 
 dt=`date '+%Y%m%d'`
 
-batch=${dt}_Pop${popmin}_Ind${indivmin}_m${m}_n${n}
+batch=${dt}_P_Pop${popmin}_Ind${indivmin}_m${m}_n${n}
 
 mkdir ${dataAbv}_${batch}
 

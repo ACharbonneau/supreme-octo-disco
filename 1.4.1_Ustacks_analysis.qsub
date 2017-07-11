@@ -24,11 +24,11 @@ source ~/.bash_profile
 
 dt=`date '+%Y%m%d'`
 
-batch=${dt}_Pop${popmin}_Ind${indivmin}_m${m}_M${M}_n${n}
+batch=${dt}_U_Pop${popmin}_Ind${indivmin}_m${m}_M${M}_n${n}
 
 mkdir ${dataAbv}_${batch}
 
-# Run pstacks
+# Run Ustacks
 ID=1
 for file in `cat ../Metadata/${Ustackslist}`
 	do ustacks -t fastq -m ${m} -M ${M} -i ${ID} -f ${file} \
