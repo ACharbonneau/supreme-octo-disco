@@ -5,18 +5,14 @@
 #cd ../ || exit
 #Signatures of Selection
 
-for m in `seq 1 7`
-  do for M in `seq 1 8`
-    do qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -v dataAbv="Rrr",Ustackslist="SS_Rrr_stacks_fastqs",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".80",m=${m},M=${M},n=${M}
-    qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -v dataAbv="Rrr",Ustackslist="SS_Rrr_stacks_fastqs",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".80",m=${m},M=${M},n=`expr ${M} - 1`
-    qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -v dataAbv="Rrr",Ustackslist="SS_Rrr_stacks_fastqs",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".80",m=${m},M=${M},n=`expr ${M} + 1`
-  done
-done
+m=5
+M=7
 
-#qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -v dataAbv="SS",Ustackslist="SS_stacks_fastqs",cslist="SS_cs_stacks_list",popfile="SS_data.pop",popmin="20",indivmin=".75"
-#qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -v dataAbv="Rrl",Ustackslist="SS_Rrl_stacks_fastqs",cslist="SS_Rrl_cs_stacks_list",popfile="SS_data.pop",popmin="6",indivmin=".75"
-#qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -v dataAbv="Rsat",Ustackslist="SS_Rsat_stacks_fastqs",cslist="SS_Rsat_cs_stacks_list",popfile="SS_data.pop",popmin="8",indivmin=".75"
-#qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -v dataAbv="RrrRrl",Ustackslist="SS_RrrRrl_stacks_fastqs",cslist="SS_RrrRrl_cs_stacks_list",popfile="SS_data.pop",popmin="11",indivmin=".75"
+qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -t 1-80 -v dataAbv="Rrr",Ustackslist="SS_Rrr_stacks_fastqs",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".80",m=${m},M=${M},n=${M}
+qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -t 1-259 -v dataAbv="SS",Ustackslist="SS_stacks_fastqs",cslist="SS_cs_stacks_list",popfile="SS_data.pop",popmin="20",indivmin=".80",m=${m},M=${M},n=${M}
+qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -t 1-96 -v dataAbv="Rrl",Ustackslist="SS_Rrl_stacks_fastqs",cslist="SS_Rrl_cs_stacks_list",popfile="SS_data.pop",popmin="6",indivmin=".80",m=${m},M=${M},n=${M}
+qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -t 1-51 -v dataAbv="Rsat",Ustackslist="SS_Rsat_stacks_fastqs",cslist="SS_Rsat_cs_stacks_list",popfile="SS_data.pop",popmin="8",indivmin=".80",m=${m},M=${M},n=${M}
+qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -t 1-176 -v dataAbv="RrrRrl",Ustackslist="SS_RrrRrl_stacks_fastqs",cslist="SS_RrrRrl_cs_stacks_list",popfile="SS_data.pop",popmin="11",indivmin=".80",m=${m},M=${M},n=${M}
 
 
 #Anther Exsertion
