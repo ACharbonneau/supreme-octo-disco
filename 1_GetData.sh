@@ -52,7 +52,11 @@ mkdir fastQC/TrimmedFQC
 
 #Build indicies for mapping
 cd ProcessRadtags/Indicies
+<<<<<<< HEAD
 qsub ../../supreme-octo-disco/1.1_GS_build.qsub
+=======
+bash ../../supreme-octo-disco/1.1_LaunchBuild.sh
+>>>>>>> master
 
 cd ../../RawFastq/
 
