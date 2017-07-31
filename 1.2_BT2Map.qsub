@@ -23,14 +23,12 @@ module load SAMTools/1.2
 
 cd ${PBS_O_WORKDIR} || exit #Go to directory with sequencing files
 
-filelist=(*fq) #Get a list of all sequencing files
+filelist=(*trimmed.fq) #Get a list of all sequencing files
 
 indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
 bsname=${PBS_ARRAYID}_${indiv}
 
-<<<<<<< HEAD
-=======
 
 #Then launch metadata collector, once per reference per dataset
 
@@ -38,7 +36,6 @@ if [[ ${PBS_ARRAYID} = 0 ]]
 then qsub ../supreme-octo-disco/1.3_echo.qsub -N ${PBS_JOBNAME}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
 fi
 
->>>>>>> master
 #Run bowtie2
 
 # Using default mode: search for multiple alignments, report the best one
@@ -51,11 +48,7 @@ fi
 
 mkdir ${PBS_JOBNAME}
 
-<<<<<<< HEAD
 cd ${MapFolder}/ || exit
-=======
-cd ${PBS_JOBNAME}
->>>>>>> master
 
 echo bsname="${bsname}"
 
@@ -87,8 +80,15 @@ fi
 #Launch first step of STACKS if all the mapping is done
 
 
-if [ ${runs} = 1440 ]
-then bash ../../supreme-octo-disco/1.4_SubmitSTACKS.sh
+#if [ ${runs} = 1440 ]
+#then bash ../../supreme-octo-disco/1.4_SubmitSTACKS.sh
+#fi
+
+#Then launch metadata collector, once per reference per dataset
+
+if [[ ${PBS_ARRAYID} = 0 ]]
+then cd ${PBS_O_WORKDIR} || exit
+qsub ../supreme-octo-disco/1.3_echo.qsub -N ${MapFolder}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
 fi
 
 #Then launch metadata collector, once per reference per dataset
