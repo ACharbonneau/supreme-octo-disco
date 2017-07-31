@@ -40,7 +40,9 @@ echo "3. Setting up workspace"
 
 mkdir ProcessRadtags
 mkdir ProcessRadtags/Indicies
-mkdir ProcessRadtags/BT2map
+mkdir ProcessRadtags/MogheMap
+mkdir ProcessRadtags/JeongMap
+
 
 echo "4. Launching fastqc"
 
@@ -50,7 +52,11 @@ mkdir fastQC/TrimmedFQC
 
 #Build indicies for mapping
 cd ProcessRadtags/Indicies
+<<<<<<< HEAD
+qsub ../../supreme-octo-disco/1.1_GS_build.qsub
+=======
 bash ../../supreme-octo-disco/1.1_LaunchBuild.sh
+>>>>>>> master
 
 cd ../../RawFastq/
 

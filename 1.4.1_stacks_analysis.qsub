@@ -26,28 +26,28 @@ rc=`basename $rc`
 
 dt=`date '+%Y%m%d'`
 
-batch=${dt}_${popmin}_${indivmin}
+batch=${dt}_P_Pop${popmin}_Ind${indivmin}_m${m}_n${n}
 
 mkdir ${dataAbv}_${batch}
 
 # Run pstacks
 ID=1
 for file in `cat ../../Metadata/${stackslist}`
-	do pstacks -p 20 -t sam -m 3 -i ${ID} -f ${file} \
+	do pstacks -p 20 -t sam -m ${m} -i ${ID} -f ${file} \
 	-o ${dataAbv}_${batch}
 	ID=`expr ${ID} + 1`
 done
 
 cd ${dataAbv}_${batch}
 
-cstacks -g -p 20 -b ${dt} -n 1 -o . `cat ../../../Metadata/${cslist}` &>> ${cslist}.log
+cstacks -g -p 20 -b ${dt} -n ${n} -o . `cat ../../../Metadata/${cslist}` &>> ${cslist}.log
 
 sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../../Metadata/${cslist}` &>> ${cslist}.log
 
-populations -b ${dt} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M ../../../Metadata/${popfile}
+populations -b ${dt} -P . -t 20 --treemix --fasta --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M ../../../Metadata/${popfile}
 
 mkdir STRUCTURE
 
 cd STRUCTURE || exit
 
-bash ../../../../supreme-octo-disco/1.5_STRUCTURE_submit.sh "batch_${dt}.structure.tsv"
+#bash ../../../../supreme-octo-disco/1.5_STRUCTURE_submit.sh "batch_${dt}.structure.tsv"

@@ -31,7 +31,12 @@ PBS_JOBNAME=${PBS_JOBNAME}_${lane} #rename job to job_indiv
 
 mkdir ../ProcessRadtags/${lane}
 
+<<<<<<< HEAD
+process_radtags -f ${lane} -i gzfastq -o ../ProcessRadtags/${lane}/ -b ../Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --adapter_1 'AGATCGGAAGAGCGGTTCAGCAGGAATGCCGAG' --retain_header -y fastq
+
+=======
 process_radtags -f ${lane} -i gzfastq -o ../ProcessRadtags/${lane}/ -b ../Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --adapter_1 'AGATCGGAAGAGCGGTTCAGCAGGAATGCCGAG' --adapter_mm 3 --retain_header -y fastq
+>>>>>>> master
 
 cd ../ProcessRadtags/ || exit
 
@@ -44,6 +49,13 @@ fqT=`expr ${fqT} - 1`
 
 if [[ ${fqT} = 1439 ]]
 then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJOBID=${fqT}
+<<<<<<< HEAD
+bash ../supreme-octo-disco/1.2_SubmitUSTACKS.sh
+rm MogheMap/FilesMapped.txt
+qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N MogheMap -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT,MapFolder="MogheMap"
+rm JeongMap/FilesMapped.txt
+qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N JeongMap -v genome=/mnt/research/radishGenomics/PublicData/2016RsativusGenome/Rs_1.0.chromosomes.fix.fasta,gff=/mnt/research/radishGenomics/PublicData/2016RsativusGenome/Edited_Rs_1.0.Gene.LFY.gff,gffi="Derives_from",exon="protein",stranded="yes",MAXJOBID=${fqT},index=Indicies/Jeong2016_BT,MapFolder="JeongMap"
+=======
 qsub ../supreme-octo-disco/1.4.1_Ustacks_analysis.qsub -v dataAbv="Rrr",Ustackslist="SS_Rrr_stacks_fastqs",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".75"
 rm BT2map/FilesMapped.txt
 qsub ../supreme-octo-disco/1.22Map.qsub -N Moghe2014MappingRuns -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014
@@ -52,4 +64,5 @@ qsub ../supreme-octo-disco/1.22Map.qsub -N Kitashiba2014MappingRuns -v genome=/m
 qsub ../supreme-octo-disco/1.22Map.qsub -N Mitsui2015MappingRuns -v genome=/mnt/research/radishGenomics/PublicData/2015_RsativusGenome/rsg_all_v1.fasta,gff=/mnt/research/radishGenomics/PublicData/2015_RsativusGenome/rsgv1.gff,gffi="Parent",exon="CDS",stranded="no",MAXJOBID=${fqT},index=Indicies/Mitsui2015
 qsub ../supreme-octo-disco/1.22Map.qsub -N BR_2017MappingRuns -v genome=/mnt/research/radishGenomics/PublicData/2017_Brapa/Brapa_R500_V1.2.fasta,gff=NA,gffi="NA",exon="NA",stranded="NA",MAXJOBID=${fqT},index=Indicies/Moghe2014,MAXJOBID=${fqT},index=Indicies/BR_2017
 qsub ../supreme-octo-disco/1.22Map.qsub -N AT_2016MappingRuns -v genome=/mnt/research/radishGenomics/PublicData/AT_TAIR10/TAIR10_chr_all.fas,gff=/mnt/research/radishGenomics/PublicData/AT_TAIR10/TAIR10_GFF3_genes.gff,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/AT_2016
+>>>>>>> master
 fi

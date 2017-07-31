@@ -1,6 +1,6 @@
 #!/bin/sh -login
 #PBS -j oe
-#PBS -l nodes=1:ppn=20,walltime=24:00:00,mem=64gb
+#PBS -l nodes=1:ppn=20,walltime=4:00:00,mem=64gb
 #PBS -m a
 #PBS -l feature='intel16'
 
@@ -21,33 +21,37 @@ cd ${PBS_O_WORKDIR} || exit
 source ~/.bash_profile
 
 
+indiv=`awk NR==${PBS_ARRAYID} ../Metadata/${Ustackslist}`  #assign indiv to be current sequence file
 
 dt=`date '+%Y%m%d'`
 
-batch=${dt}_${popmin}_${indivmin}
+batch=${dt}_U_Pop${popmin}_Ind${indivmin}_m${m}_M${M}_n${n}
 
-mkdir ${dataAbv}_${batch}
+if [ ! -d ${dataAbv}_${batch} ]; then
 
-# Run pstacks
-ID=1
-for file in `cat ../Metadata/${Ustackslist}`
-	do ustacks -t fastq -m 3 -i ${ID} -f ${file} \
-	-o ${dataAbv}_${batch}
-	ID=`expr ${ID} + 1`
-done
+	mkdir ${dataAbv}_${batch}
+	touch ${dataAbv}_${batch}/donelist.txt
+fi
+
+ustacks -p 20 -t fastq -m ${m} -M ${M} -i ${PBS_ARRAYID} -f ${indiv} -o ${dataAbv}_${batch}
+
+echo ${indiv}_done >> ${dataAbv}_${batch}/donelist.txt
+
 
 cd ${dataAbv}_${batch}
 
-cstacks -p 20 -b ${dt} -n 1 -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q30//g` &>> ${cslist}.log
+if [ wc -l donelist.txt == wc -l ../Metadata/${Ustackslist} ]; then
+	cstacks -p 20 -b ${dt} -n ${n} -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q20//g` &>> ${cslist}.log
 
-sstacks -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q30//g` &>> ${cslist}.log
+	sstacks -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q20//g` &>> ${cslist}.log
 
-cat ../../../Metadata/${popfile}  | sed s/.fq_q30//g > temppopfile
+	cat ../../Metadata/${popfile}  | sed s/.fq_q20//g > temppopfile
 
-populations -b ${dt} -P . -t 20 --treemix --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M temppopfile
+	populations -b ${dt} -P . -t 20 --fasta --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M temppopfile
 
-mkdir STRUCTURE
+	mkdir STRUCTURE
 
-cd STRUCTURE || exit
+	cd STRUCTURE || exit
+fi
 
-bash ../../../supreme-octo-disco/1.5_STRUCTURE_submit.sh "batch_${dt}.structure.tsv"
+#bash ../../../supreme-octo-disco/1.5_STRUCTURE_submit.sh "batch_${dt}.structure.tsv"
