@@ -19,7 +19,7 @@ qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="RrrRrl",sta
 
 #Anther Exsertion
 
-qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="AE0",stackslist="AE_F0_stacks_list",cslist="AE_F0_cs_stacks_list",popfile="AE_data.pop",popmin="4",indivmin=".80",m=${m},n=${n}
-qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="AE1",stackslist="AE_F1_stacks_list",cslist="AE_F1_cs_stacks_list",popfile="AE_data.pop",popmin="8",indivmin=".80",m=${m},n=${n}
-qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="AE2",stackslist="AE_F2_stacks_list",cslist="AE_F2_cs_stacks_list",popfile="AE_data.pop",popmin="4",indivmin=".80",m=${m},n=${n}
-qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -v dataAbv="AEMap",stackslist="AE_Mapping_stacks_list",cslist="AE_Mapping_cs_stacks_list",popfile="AE_data.pop",popmin="8",indivmin=".80",m=${m},n=${n}
+qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -t 1-85 -v dataAbv="AE0",stackslist="AE_F0_stacks_list",cslist="AE_F0_cs_stacks_list",popfile="AE_data.pop",popmin="4",indivmin=".80",m=${m},n=${n}
+#qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -t 1-80 -v dataAbv="AE1",stackslist="AE_F1_stacks_list",cslist="AE_F1_cs_stacks_list",popfile="AE_data.pop",popmin="8",indivmin=".80",m=${m},n=${n}
+#qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -t 1-1001 -v dataAbv="AE2",stackslist="AE_F2_stacks_list",cslist="AE_F2_cs_stacks_list",popfile="AE_data.pop",popmin="4",indivmin=".80",m=${m},n=${n}
+#qsub ../../supreme-octo-disco/1.4.1_stacks_analysis.qsub -t 1-1086 -v dataAbv="AEMap",stackslist="AE_Mapping_stacks_list",cslist="AE_Mapping_cs_stacks_list",popfile="AE_data.pop",popmin="8",indivmin=".80",m=${m},n=${n}
