@@ -34,7 +34,6 @@ mkdir ../ProcessRadtags/${lane}
 
 process_radtags -f ${lane} -i gzfastq -o ../ProcessRadtags/${lane}/ -b ../Metadata/PlateInfoSeq/${barcode} -c -q -D -e 'pstI' --retain_header -y fastq
 
-
 cd ../ProcessRadtags/ || exit
 
 mv ${lane}/*.fq .
@@ -45,5 +44,10 @@ fqT=`ls *.fq | wc -w`
 fqT=`expr ${fqT} - 1`
 
 if [[ ${fqT} = 1439 ]]
-then qsub ../supreme-octo-disco/1.1_Trimmomatic.qsub -t 0-200 -v MAXJOBID=${fqT}
+then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJOBID=${fqT}
+bash ../supreme-octo-disco/1.2_SubmitUSTACKS.sh
+rm MogheMap/FilesMapped.txt
+qsub ../supreme-octo-disco/1.2_GSMap.qsub -N MogheMap -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Moghe2014_GS,MapFolder="MogheMap"
+#rm JeongMap/FilesMapped.txt
+#qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N JeongMap -v genome=/mnt/research/radishGenomics/PublicData/2016RsativusGenome/Rs_1.0.chromosomes.fix.fasta,gff=/mnt/research/radishGenomics/PublicData/2016RsativusGenome/Edited_Rs_1.0.Gene.LFY.gff,gffi="Derives_from",exon="protein",stranded="yes",MAXJOBID=${fqT},index=Indicies/Jeong2016_BT,MapFolder="JeongMap"
 fi

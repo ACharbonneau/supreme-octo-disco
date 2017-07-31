@@ -14,10 +14,22 @@
 
 
 #Starting in GBS/ProcessRadtags/Indicies
-cd ${PBS_O_WORKDIR}
+
 
 module load bowtie2/2.2.6
 
+<<<<<<< HEAD:1.1_BT2_build.qsub
 bowtie2-build /mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta Moghe2014_BT
 
 bowtie2-build /mnt/research/radishGenomics/PublicData/2016RsativusGenome/Rs_1.0.chromosomes.fix.fasta Jeong2016_BT
+=======
+if [ "$PBS_JOBNAME" == "notset" ]
+  then
+  echo "please set the job name"
+  exit 1
+fi
+
+cd ${PBS_O_WORKDIR} || exit
+
+bowtie2-build ${genome} BowtieIndicies/${PBS_JOBNAME} #build index
+>>>>>>> master:1.2_BT2_build.qsub
