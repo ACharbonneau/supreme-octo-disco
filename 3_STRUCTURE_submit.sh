@@ -31,7 +31,7 @@ head -1 nohead_${BATCH} > ${rep}_${BATCH}
 
 	done
 
-    qsub ../../../supreme-octo-disco/1.6_Random_STRUCTURE.qsub -N ${rep}_STRUCTURE -t 3-22 -v thisfile=${rep}_${BATCH}
+    qsub ../../../supreme-octo-disco/1.6_Random_STRUCTURE.qsub -N ${rep}_STRUCTURE -t 3-${popmin} -v thisfile=${rep}_${BATCH}
 
     #qsub ../../../../supreme-octo-disco/1.6_Random_STRUCTURE_Long.qsub -N ${rep}_STRUCTURE -t 6-22 -v thisfile=${rep}_${BATCH}
 

@@ -1,0 +1,29 @@
+#!/bin/bash -login
+
+### define resources needed:
+### walltime - how long you expect the job to run
+#PBS -l walltime=04:00:00
+
+### nodes:ppn - how many nodes & cores per node (ppn) that you require
+#PBS -l nodes=1:ppn=1
+#PBS -l feature=gbe
+### mem: amount of memory that the job will need
+#PBS -l mem=2gb
+##PBS -m abe
+### you can give your job a name for easier identification
+
+#PBS -N notset
+if [ "$PBS_JOBNAME" == "notset" ]
+then
+    echo "please set the job name"
+    exit 1
+fi
+
+
+#Runs in smartPCA folder
+cd ${PBS_O_WORKDIR}
+
+module load Eigensoft/6.0.1
+### call your executable
+
+smartpca.perl -i ../MungedData/${PBS_JOBNAME}.geno -a ../MungedData/${PBS_JOBNAME}.snp -b ../MungedData/${PBS_JOBNAME}.ind -o ${PBS_JOBNAME}.pca -p ${PBS_JOBNAME}.plot -e ${PBS_JOBNAME}.eval -l ${PBS_JOBNAME}.log

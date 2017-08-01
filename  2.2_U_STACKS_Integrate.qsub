@@ -1,0 +1,51 @@
+#!/bin/sh -login
+#PBS -j oe
+#PBS -l nodes=1:ppn=20,walltime=4:00:00,mem=64gb
+#PBS -m a
+#PBS -l feature='intel16'
+
+# -o : tells it where to put output from your job
+# -j oe : specifies that output and error messages from your job can be placed in the same location
+# -l : resource requests (maximum amounts needed for each)
+# -M : email address to send status updates to
+# -m abe : what to send email updates about (abort, begin, end)
+# -N : names your job
+# -r n : tells it not to re-run the script in the case of an error (so it doesn't overwrite any results generated$
+# -t 0-? : job numbers for array submission
+
+cd ${PBS_O_WORKDIR} || exit
+
+source ~/.bash_profile
+
+
+cut -f 3,10 batch_${dt}.catalog.tags.tsv > batch_${dt}.consensus
+
+sed -i "s/^/>/g" batch_${dt}.consensus
+
+sed -i "s/\t/\n/g" batch_${dt}.consensus
+
+gsnap -d moghegenome --force-single-end -m 5 -i 2 -k 15 --min-coverage=0.95 -o batch_20170711.sam -A sam batch_20170711.consensus
+
+mkdir gmappedstacks
+
+integrate_alignments.py -o gmappedstacks/ -a batch_${dt}.sam -p . -b ${dt}
+
+cd gmappedstacks/ || exit
+
+populations -b ${dt} -P . --fasta --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M ../../temppopfile
+
+count_fixed_catalog_snps.py -p . -b ${dt} 1&> fixedsnps.txt
+
+mkdir STRUCTURE
+
+cd STRUCTURE || exit
+
+bash ../../../../supreme-octo-disco/3_STRUCTURE_submit.sh "batch_${dt}.structure.tsv" -v ${popmin}="${popmin}"
+
+cd ../ || exit
+
+mkdir SmartPCA
+
+cd SmartPCA || exit
+
+R --file=../../../../4_SetupSmartPCA.R

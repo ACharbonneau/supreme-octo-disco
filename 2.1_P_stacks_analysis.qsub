@@ -1,0 +1,70 @@
+#!/bin/sh -login
+#PBS -j oe
+#PBS -l nodes=1:ppn=20,walltime=4:00:00,mem=64gb
+#PBS -m a
+#PBS -l feature='intel16'
+
+# -o : tells it where to put output from your job
+# -j oe : specifies that output and error messages from your job can be placed in the same location
+# -l : resource requests (maximum amounts needed for each)
+# -M : email address to send status updates to
+# -m abe : what to send email updates about (abort, begin, end)
+# -N : names your job
+# -r n : tells it not to re-run the script in the case of an error (so it doesn't overwrite any results generated$
+# -t 0-? : job numbers for array submission
+
+
+#Starting in BT2map/
+
+
+cd ${PBS_O_WORKDIR} || exit
+
+source ~/.bash_profile
+
+
+indiv=`awk NR==${PBS_ARRAYID} ../Metadata/${Ustackslist}`  #assign indiv to be current sequence file
+
+dt=`date '+%Y%m%d'`
+
+batch=${dt}_P_Pop${popmin}_Ind${indivmin}_m${m}_n${n}
+
+if [ ! -d ${dataAbv}_${batch} ]; then
+
+	mkdir ${dataAbv}_${batch}
+	touch ${dataAbv}_${batch}/donelist.txt
+fi
+
+# Run pstacks
+
+pstacks -p 20 -t sam -m ${m} -M ${M} -i ${PBS_ARRAYID} -f ${indiv} -o ${dataAbv}_${batch}
+
+echo ${indiv}_done >> ${dataAbv}_${batch}/donelist.txt
+
+cd ${dataAbv}_${batch} || exit
+
+if [ wc -l donelist.txt == wc -l ../Metadata/${stackslist} ]; then
+	cstacks -g -p 20 -b ${dt} -n ${n} -o . `cat ../../../Metadata/${cslist}` &>> ${cslist}.log
+
+	sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../../Metadata/${cslist}` &>> ${cslist}.log
+
+	cat ../../Metadata/${popfile}  | sed s/.fq_q20//g > temppopfile
+
+	populations -b ${dt} -P . -t 20 --treemix --fasta --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M ../../../Metadata/${popfile}
+
+	count_fixed_catalog_snps.py -p . -b ${dt} 1&> fixedsnps.txt
+
+	mkdir STRUCTURE
+
+	cd STRUCTURE || exit
+
+	bash ../../../../supreme-octo-disco/3_STRUCTURE_submit.sh "batch_${dt}.structure.tsv" -v ${popmin}="${popmin}"
+
+	cd ../ || exit
+
+	mkdir SmartPCA
+
+	cd SmartPCA || exit
+
+	R --file=../../../../4_SetupSmartPCA.R
+
+fi
