@@ -24,7 +24,7 @@ sed -i "s/^/>/g" batch_${dt}.consensus
 
 sed -i "s/\t/\n/g" batch_${dt}.consensus
 
-gsnap -d moghegenome --force-single-end -m 5 -i 2 -k 15 --min-coverage=0.95 -o batch_20170711.sam -A sam batch_20170711.consensus
+gsnap -d moghegenome --force-single-end -m 5 -i 2 -k 15 --min-coverage=0.95 -o batch_${dt}.sam -A sam batch_${dt}.consensus
 
 mkdir gmappedstacks
 
@@ -40,7 +40,7 @@ mkdir STRUCTURE
 
 cd STRUCTURE || exit
 
-bash ../../../../supreme-octo-disco/3_STRUCTURE_submit.sh "batch_${dt}.structure.tsv" -v ${popmin}="${popmin}"
+bash ../../../../supreme-octo-disco/3_STRUCTURE_submit.sh "batch_${dt}.structure.tsv" ${popmin}
 
 cd ../ || exit
 

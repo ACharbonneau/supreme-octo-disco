@@ -3,7 +3,7 @@
 #Launches 20 different randomizations of the dataset (seq 1 20) with a K of ( -t <number range>)
 
 BATCH=${1}
-
+popmin=${2}
 
 #Randomize Input files
 tail -n +2 ../${BATCH} > nohead_${BATCH} || exit
@@ -13,7 +13,7 @@ INDIVIDS=`expr ${NLINES} / 2`
 
 MARKERS=$(head -2 ../${BATCH} | tail -1 | wc -w)
 
-sed s/INDIVIDUALSGOHERE/${INDIVIDS}/ ../../../supreme-octo-disco/1.6_mainparams4h > mainparams
+sed s/INDIVIDUALSGOHERE/${INDIVIDS}/ ../../../supreme-octo-disco/3.2_mainparams4h > mainparams
 sed -i s/MARKERSGOHERE/${MARKERS}/ mainparams
 
 

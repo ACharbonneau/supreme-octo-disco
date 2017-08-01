@@ -43,6 +43,7 @@ echo ${indiv}_done >> ${dataAbv}_${batch}/donelist.txt
 cd ${dataAbv}_${batch} || exit
 
 if [ wc -l donelist.txt == wc -l ../Metadata/${stackslist} ]; then
+
 	cstacks -g -p 20 -b ${dt} -n ${n} -o . `cat ../../../Metadata/${cslist}` &>> ${cslist}.log
 
 	sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../../Metadata/${cslist}` &>> ${cslist}.log
@@ -57,7 +58,7 @@ if [ wc -l donelist.txt == wc -l ../Metadata/${stackslist} ]; then
 
 	cd STRUCTURE || exit
 
-	bash ../../../../supreme-octo-disco/3_STRUCTURE_submit.sh "batch_${dt}.structure.tsv" -v ${popmin}="${popmin}"
+	bash ../../../../supreme-octo-disco/3_STRUCTURE_submit.sh "batch_${dt}.structure.tsv" ${popmin}
 
 	cd ../ || exit
 

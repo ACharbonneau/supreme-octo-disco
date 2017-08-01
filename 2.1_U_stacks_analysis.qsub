@@ -50,10 +50,22 @@ if [ `wc -l donelist.txt  | cut -f 1 -d " "` == `wc -l ../../Metadata/${Ustacksl
 
 	populations -b ${dt} -P . -t 20 --fasta --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M temppopfile
 
+	count_fixed_catalog_snps.py -p . -b ${dt} 1&> fixedsnps.txt
+
+	qsub ../../../2.2_U_STACKS_Integrate.qsub
+
 	mkdir STRUCTURE
 
 	cd STRUCTURE || exit
 
-	#bash ../../../supreme-octo-disco/1.5_STRUCTURE_submit.sh "batch_${dt}.structure.tsv"
+	bash ../../../supreme-octo-disco/3_STRUCTURE_submit.sh "batch_${dt}.structure.tsv" ${popmin}
+
+	cd ../ || exit
+
+	mkdir SmartPCA
+
+	cd SmartPCA || exit
+
+	R --file=../../../4_SetupSmartPCA.R
 
 fi
