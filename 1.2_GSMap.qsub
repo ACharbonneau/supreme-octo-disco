@@ -17,11 +17,12 @@
 
 
 #Starting in GBS/ProcessRadtags/
-module load bowtie2/2.2.6
+cd ${PBS_O_WORKDIR} || exit
+
+source ~/.bash_profile
+
 module load SAMTools/1.2
 
-
-cd ${PBS_O_WORKDIR} || exit #Go to directory with sequencing files
 
 filelist=(*fq) #Get a list of all sequencing files
 
@@ -29,34 +30,28 @@ indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
 bsname=${PBS_ARRAYID}_${indiv}
 
-#Run bowtie2
-
-# Using default mode: search for multiple alignments, report the best one
-# --sensitive      Same as: -D 15 -R 2 -L 22 -i S,1,1.15 (default in --end-to-end mode)
-# -D <int>           give up extending after <int> failed extends in a row (15)
-# -R <int>           for reads w/ repetitive seeds, try <int> sets of seeds (2)
-# -N <int>           max # mismatches in seed alignment; can be 0 or 1 (0)
-# -L <int>           length of seed substrings; must be >3, <32 (22)
-# -i <func>          interval between seed substrings w/r/t read len (S,1,1.15)
-
 
 cd ${MapFolder}/ || exit
 
 echo bsname="${bsname}"
 
 if [[ ! -f ${indiv}.sam ]]
- then bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -p 8 -S ${indiv}.sam
+ then gsnap -t 8 -d ${index} --force-single-end -m 5 -i 2 -k 15 \
+ --min-coverage=0.95 -o ${indiv}.sam -A sam ../${indiv}
  samtools view -q 20 -T ${genome} ${indiv}.sam > ${indiv}_q20.sam
  echo ${bsname} >> FilesMapped.txt
 fi
-#--sensitive            -D 15 -R 2 -N 0 -L 22 -i S,1,1.15 (default)
 
-runs=$(cat FilesMapped.txt | wc -l)
 
 if [[ ! -f ${indiv}_q20.sam ]]
-then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N ${MapFolder} -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
+then qsub ../../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${PBS_ARRAYID}\
+-v genome="${genome}",gff="${gff}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",\
+MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
 fi
 
+if [[ -f ${indiv}_q20.sam ]]
+then runs=$(cat FilesMapped.txt | wc -l)
+fi
 
 # Calculate next job to run
 NEXT=$(( ${PBS_ARRAYID} + 200 ))
@@ -66,7 +61,9 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR} || exit
-    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N ${MapFolder} -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder=${MapFolder}
+    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N ${MapFolder} -t ${NEXT}\
+    -v genome="${genome}",gff="${gff}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",\
+    MAXJOBID="${MAXJOBID}",index="${index}",MapFolder=${MapFolder}
 fi
 
 #Launch first step of STACKS if all the mapping is done
@@ -80,5 +77,7 @@ fi
 
 if [[ ${PBS_ARRAYID} = 0 ]]
 then cd ${PBS_O_WORKDIR} || exit
-qsub ../supreme-octo-disco/1.3_echo.qsub -N ${MapFolder}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
+qsub ../supreme-octo-disco/1.3_echo.qsub -N ${MapFolder}.metadata\
+-v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",\
+gffi="${gffi}",exon="${exon}"
 fi

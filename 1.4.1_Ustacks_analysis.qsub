@@ -40,7 +40,8 @@ echo ${indiv}_done >> ${dataAbv}_${batch}/donelist.txt
 
 cd ${dataAbv}_${batch}
 
-if [ wc -l donelist.txt == wc -l ../Metadata/${Ustackslist} ]; then
+if [ `wc -l donelist.txt  | cut -f 1 -d " "` == `wc -l ../../Metadata/${Ustackslist} | cut -f 1 -d " "` ]; then
+
 	cstacks -p 20 -b ${dt} -n ${n} -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q20//g` &>> ${cslist}.log
 
 	sstacks -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../Metadata/${cslist}  | sed s/.fq_q20//g` &>> ${cslist}.log
@@ -52,6 +53,7 @@ if [ wc -l donelist.txt == wc -l ../Metadata/${Ustackslist} ]; then
 	mkdir STRUCTURE
 
 	cd STRUCTURE || exit
-fi
 
-#bash ../../../supreme-octo-disco/1.5_STRUCTURE_submit.sh "batch_${dt}.structure.tsv"
+	#bash ../../../supreme-octo-disco/1.5_STRUCTURE_submit.sh "batch_${dt}.structure.tsv"
+
+fi

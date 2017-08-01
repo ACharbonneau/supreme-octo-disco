@@ -41,7 +41,6 @@ echo "3. Setting up workspace"
 mkdir ProcessRadtags
 mkdir ProcessRadtags/Indicies
 mkdir ProcessRadtags/MogheMap
-mkdir ProcessRadtags/JeongMap
 
 
 echo "4. Launching fastqc"
