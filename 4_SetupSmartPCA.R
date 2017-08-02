@@ -35,7 +35,7 @@ write.table(stacksmarkers, forbiallele, sep = ",", col.names = F, row.names = F,
 
 write.table(select(stacksgenotypes, -V2), forbiallele, col.names = F, sep = ",", row.names = F, append = T, quote = F)
 
-system(paste("python", args[2], forbiallele, "-o", donebiallele, sep = " "), intern = TRUE,
+system(paste("python", args[3], forbiallele, "-o", donebiallele, sep = " "), intern = TRUE,
        ignore.stdout = FALSE, ignore.stderr = FALSE,
        wait = TRUE, input = NULL)
 
