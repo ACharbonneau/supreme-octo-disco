@@ -55,7 +55,7 @@ write.table(ind, paste(newbasename,".ind", sep = ""), sep = "\t", col.names = F,
 
 snp <- colnames(biallele)
 snp <- as.data.frame(snp[2:length(snp)])
-snp$FakeChromo <- c(1, 2, 3)
+ifelse( length(snp[,1]) %% 2 == 0,  snp$FakeChromo <- c(1, 2, 3, 4), snp$FakeChromo <- c(1, 2, 3))
 snp$zero1 <- 0
 snp$zero2 <- 0
 
