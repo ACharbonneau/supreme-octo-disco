@@ -17,7 +17,7 @@ args = commandArgs(trailingOnly=TRUE)
 #print(args[1])
 
 #args="NameOfStructureFile" "path to .pop file" "path to 4.1_bi-winning_allele.py"
-#args="batch_20170402.structure.tsv"
+#args=c("batch_20170801.structure.tsv", "../temppopfile", "../../../supreme-octo-disco/4.1_bi-winning_allele.py")
 
 metadata <- read.csv(args[2], header = F, sep="\t")
 stacksgenotypes <- data.table::fread(paste("../", args[1], sep = ""), header = F, sep="\t")
