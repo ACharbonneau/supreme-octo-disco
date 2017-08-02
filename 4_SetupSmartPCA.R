@@ -1,7 +1,7 @@
 
 #!/usr/bin/env Rscript
 
-# Install function for packages    
+# Install function for packages
 packages<-function(x){
   x<-as.character(match.call()[[2]])
   if (!require(x,character.only=TRUE)){
@@ -12,11 +12,11 @@ packages<-function(x){
 
 packages(dplyr)
 
-#args = commandArgs(trailingOnly=TRUE)
+args = commandArgs(trailingOnly=TRUE)
 
 #print(args[1])
 
-args="batch_20170402.structure.tsv"
+#args="batch_20170402.structure.tsv"
 
 metadata <- read.csv("../../../../Metadata/SS_data.pop", header = F, sep="\t")
 stacksgenotypes <- data.table::fread(paste("../", args[1], sep = ""), header = F, sep="\t")
@@ -60,15 +60,15 @@ snp$zero2 <- 0
 
 write.table(snp, paste(newbasename,".snp", sep = ""), sep = "\t", col.names = F, row.names = F, quote = F)
 
-parnames <- c("genotypename:", "snpname:", "indivname:", "evecoutname:", 
-              "evaloutname:", "altnormstyle:", "numoutevec:", "familynames:", 
-              "grmoutname:", "snpweightoutname:", "genotypeoutname:", 
+parnames <- c("genotypename:", "snpname:", "indivname:", "evecoutname:",
+              "evaloutname:", "altnormstyle:", "numoutevec:", "familynames:",
+              "grmoutname:", "snpweightoutname:", "genotypeoutname:",
               "snpoutname:", "indivoutname:")
 
-parvalues <- c(paste(newbasename,".geno", sep = ""), paste(newbasename,".snp", sep = ""), 
+parvalues <- c(paste(newbasename,".geno", sep = ""), paste(newbasename,".snp", sep = ""),
                paste(newbasename,".ind", sep = ""), paste(newbasename,".evec", sep = ""),
                paste(newbasename,".eval", sep = ""), "NO", length(snp$zero2), "NO",
-               paste(newbasename,".grmjunk", sep = ""), paste(newbasename,".weights", sep = ""), 
+               paste(newbasename,".grmjunk", sep = ""), paste(newbasename,".weights", sep = ""),
                paste(newbasename,".badgeno", sep = ""), paste(newbasename,".badsnp", sep = ""),
                paste(newbasename,".badindiv", sep = ""))
 parfile <- cbind(parnames, parvalues)
