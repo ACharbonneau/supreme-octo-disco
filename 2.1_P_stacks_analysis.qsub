@@ -20,6 +20,7 @@
 cd ${PBS_O_WORKDIR} || exit
 
 source ~/.bash_profile
+module load R/3.2.0
 
 
 indiv=`awk NR==${PBS_ARRAYID} ../Metadata/${Ustackslist}`  #assign indiv to be current sequence file
@@ -48,7 +49,7 @@ if [ wc -l donelist.txt == wc -l ../Metadata/${stackslist} ]; then
 
 	sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../../Metadata/${cslist}` &>> ${cslist}.log
 
-	cat ../../Metadata/${popfile}  | sed s/.fq_q20//g > temppopfile
+	cat ../../../Metadata/${popfile}  | sed s/.fq_q20//g > temppopfile
 
 	populations -b ${dt} -P . -t 20 --treemix --fasta --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M ../../../Metadata/${popfile}
 
@@ -66,6 +67,8 @@ if [ wc -l donelist.txt == wc -l ../Metadata/${stackslist} ]; then
 
 	cd SmartPCA || exit
 
-	R --file=../../../../4_SetupSmartPCA.R
+	R --file=../../../../4_SetupSmartPCA.R batch_${dt}.structure.tsv "../temppopfile" ../../../../supreme-octo-disco/4.1_bi-winning_allele.py
+
+	qsub ../../../../supreme-octo-disco/4.2_SmartPCA.qsub
 
 fi
