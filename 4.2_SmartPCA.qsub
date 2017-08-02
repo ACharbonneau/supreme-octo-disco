@@ -26,4 +26,4 @@ cd ${PBS_O_WORKDIR}
 module load Eigensoft/6.0.1
 ### call your executable
 
-smartpca.perl -i ../MungedData/${PBS_JOBNAME}.geno -a ../MungedData/${PBS_JOBNAME}.snp -b ../MungedData/${PBS_JOBNAME}.ind -o ${PBS_JOBNAME}.pca -p ${PBS_JOBNAME}.plot -e ${PBS_JOBNAME}.eval -l ${PBS_JOBNAME}.log
+smartpca.perl -i ${PBS_JOBNAME}.geno -a ${PBS_JOBNAME}.snp -b ${PBS_JOBNAME}.ind -o ${PBS_JOBNAME}.pca -p ${PBS_JOBNAME}.plot -e ${PBS_JOBNAME}.eval -l ${PBS_JOBNAME}.log
