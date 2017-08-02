@@ -16,9 +16,10 @@ args = commandArgs(trailingOnly=TRUE)
 
 #print(args[1])
 
+#args="NameOfStructureFile" "path to .pop file" "path to 4.1_bi-winning_allele.py"
 #args="batch_20170402.structure.tsv"
 
-metadata <- read.csv("../../../../Metadata/SS_data.pop", header = F, sep="\t")
+metadata <- read.csv(args[2], header = F, sep="\t")
 stacksgenotypes <- data.table::fread(paste("../", args[1], sep = ""), header = F, sep="\t")
 stacksmarkers <- read.table(paste("../", args[1], sep = ""), nrows = 1, skip = 1)
 
@@ -34,7 +35,7 @@ write.table(stacksmarkers, forbiallele, sep = ",", col.names = F, row.names = F,
 
 write.table(select(stacksgenotypes, -V2), forbiallele, col.names = F, sep = ",", row.names = F, append = T, quote = F)
 
-system(paste("python ../../../../supreme-octo-disco/bi-winning_allele.py", forbiallele, "-o", donebiallele, sep = " "), intern = TRUE,
+system(paste("python", args[2], forbiallele, "-o", donebiallele, sep = " "), intern = TRUE,
        ignore.stdout = FALSE, ignore.stderr = FALSE,
        wait = TRUE, input = NULL)
 
