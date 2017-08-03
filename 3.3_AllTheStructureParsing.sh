@@ -1,8 +1,8 @@
 #! /bin/bash
 
 
-NUMINDS=$(grep NUMINDS mainparams | cut -f 3 -d " ")
-NUMIND=`expr ${NUMIND} + 1`
+NUMINDS=$(grep NUMINDS mainparams | awk '{print $3}')
+NUMINDS=`expr ${NUMINDS} + 1`
 
 for i in `ls *_f`
 	do echo $i
@@ -19,16 +19,11 @@ sed -i -E '/^([0-9]+)_.+-([0-9])+_f$/ N
 
 
 for i in `ls *_f`
-	do echo $i
-	grep -A 2 "Estimated Ln Prob of Data" $i
-	done > AlltheProbabilities.txt
-
-for i in `ls *_f`
 	do grep -A ${NUMINDS} "Inferred ancestry of individuals" $i > $i.forparse
 done
 
 for i in `ls *forparse`
-	do python ../../../../supreme-octo-disco/1.7_structureparse.py $i
+	do python ../../../supreme-octo-disco/3.3.1_structureparse.py $i
 done
 
 mkdir parsed_data
