@@ -31,7 +31,7 @@ Data file format
 
 
 #define LABEL     1     // (B) Input file contains individual labels
-#define POPDATA   0     // (B) Input file contains a population identifier
+#define POPDATA   1     // (B) Input file contains a population identifier
 #define POPFLAG   0     // (B) Input file contains a flag which says
                               whether to use popinfo when USEPOPINFO==1
 #define LOCDATA   0     // (B) Input file contains a location identifier
