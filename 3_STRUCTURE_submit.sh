@@ -6,7 +6,9 @@ BATCH=${1}
 popmin=${2}
 
 #Randomize Input files
-tail -n +2 ../${BATCH} > nohead_${BATCH} || exit
+tail -n +2 ../${BATCH} | head -1 > nohead_${BATCH} || exit
+
+tail -n +3 ../${BATCH} | cut -f 1,3- >> nohead_${BATCH} || exit
 
 NLINES=$(tail -n +2 nohead_${BATCH} | wc -l )
 INDIVIDS=`expr ${NLINES} / 2`
