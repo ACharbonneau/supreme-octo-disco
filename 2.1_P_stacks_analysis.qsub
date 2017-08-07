@@ -57,7 +57,7 @@ if [ `wc -l donelist.txt  | cut -f 1 -d " "` == `wc -l ../../../Metadata/${stack
 
 	cd STRUCTURE || exit
 
-	bash ../../../../supreme-octo-disco/3_STRUCTURE_submit.sh "batch_${dt}.structure.tsv" ${popmin}
+	bash ../../../../supreme-octo-disco/3_STRUCTURE_submit.sh "batch_${dt}.structure.tsv" ${popmin} 3
 
 	cd ../ || exit
 
