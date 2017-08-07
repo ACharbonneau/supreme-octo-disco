@@ -67,5 +67,5 @@ if [ `wc -l donelist.txt  | cut -f 1 -d " "` == `wc -l ../../../Metadata/${stack
 
 	Rscript ../../../../4_SetupSmartPCA.R batch_${dt}.structure.tsv "../../../../Metadata/${popfile}" "../../../../supreme-octo-disco/4.1_bi-winning_allele.py"
 
-	qsub ../../../../supreme-octo-disco/4.2_SmartPCA.qsub -N ${batch}
+	qsub ../../../../supreme-octo-disco/4.2_SmartPCA.qsub -N ${dt}
 fi

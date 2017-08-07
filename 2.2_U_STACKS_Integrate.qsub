@@ -51,4 +51,4 @@ cd SmartPCA || exit
 
 Rscript ../../../../supreme-octo-disco/4_SetupSmartPCA.R "batch_${dt}.structure.tsv" "../../temppopfile" "../../../../supreme-octo-disco/4.1_bi-winning_allele.py"
 
-qsub ../../../../supreme-octo-disco/4.2_SmartPCA.qsub -N ${batch}
+qsub ../../../../supreme-octo-disco/4.2_SmartPCA.qsub -N ${dt}
