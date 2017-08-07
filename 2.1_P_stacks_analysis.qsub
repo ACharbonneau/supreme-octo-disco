@@ -14,7 +14,7 @@
 # -t 0-? : job numbers for array submission
 
 
-#Starting in BT2map/
+#Starting in mapping folder
 
 
 cd ${PBS_O_WORKDIR} || exit
@@ -23,7 +23,7 @@ source ~/.bash_profile
 module load R/3.2.0
 
 
-indiv=`awk NR==${PBS_ARRAYID} ../Metadata/${Ustackslist}`  #assign indiv to be current sequence file
+indiv=`awk NR==${PBS_ARRAYID} ../../Metadata/${Ustackslist}`  #assign indiv to be current sequence file
 
 dt=`date '+%Y%m%d'`
 
@@ -43,15 +43,13 @@ echo ${indiv}_done >> ${dataAbv}_${batch}/donelist.txt
 
 cd ${dataAbv}_${batch} || exit
 
-if [ wc -l donelist.txt == wc -l ../Metadata/${stackslist} ]; then
+if [ `wc -l donelist.txt  | cut -f 1 -d " "` == `wc -l ../../../Metadata/${stackslist} | cut -f 1 -d " "` ]; then
 
 	cstacks -g -p 20 -b ${dt} -n ${n} -o . `cat ../../../Metadata/${cslist}` &>> ${cslist}.log
 
 	sstacks -g -p 20 -b ${dt} -c batch_${dt} -o . `cat ../../../Metadata/${cslist}` &>> ${cslist}.log
 
-	cat ../../../Metadata/${popfile}  | sed s/.fq_q20//g > temppopfile
-
-	populations -b ${dt} -P . -t 20 --treemix --fasta --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M ../../../Metadata/${popfile}
+	populations -b ${dt} -P . -t 20 --treemix --fasta --fstats --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M "../../../Metadata/${popfile}"
 
 	count_fixed_catalog_snps.py -p . -b ${dt} 1&> fixedsnps.txt
 
@@ -67,7 +65,7 @@ if [ wc -l donelist.txt == wc -l ../Metadata/${stackslist} ]; then
 
 	cd SmartPCA || exit
 
-	R --file=../../../../4_SetupSmartPCA.R batch_${dt}.structure.tsv "../temppopfile" ../../../../supreme-octo-disco/4.1_bi-winning_allele.py
+	R --file=../../../../4_SetupSmartPCA.R batch_${dt}.structure.tsv "../../../../Metadata/${popfile}" "../../../../supreme-octo-disco/4.1_bi-winning_allele.py"
 
 	qsub ../../../../supreme-octo-disco/4.2_SmartPCA.qsub -N ${batch}
 fi

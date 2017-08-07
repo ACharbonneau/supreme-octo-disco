@@ -53,7 +53,7 @@ if [ `wc -l donelist.txt  | cut -f 1 -d " "` == `wc -l ../../Metadata/${Ustacksl
 
 	count_fixed_catalog_snps.py -p . -b ${dt} 1&> fixedsnps.txt
 
-	qsub ../../supreme-octo-disco/2.2_U_STACKS_Integrate.qsub -v dataAbv="${dataAbv}",Ustackslist="${Ustackslist}",cslist="${cslist}",popfile="${popfile}",popmin="${popmin}",indivmin="${indivmin}",m=${m},M=${M},n=${M}
+	qsub ../../supreme-octo-disco/2.2_U_STACKS_Integrate.qsub -v dataAbv="${dataAbv}",Ustackslist="${Ustackslist}",cslist="${cslist}",popfile="${popfile}",popmin="${popmin}",indivmin="${indivmin}",m=${m},M=${M},n=${M},dt=${dt}
 
 	mkdir STRUCTURE
 

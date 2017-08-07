@@ -41,7 +41,7 @@ mkdir STRUCTURE
 
 cd STRUCTURE || exit
 
-bash ../../../../supreme-octo-disco/3_STRUCTURE_submit.sh "batch_${dt}.structure.tsv" ${popmin}
+bash ../../../../supreme-octo-disco/3_STRUCTURE_submit.sh "batch_${dt}.structure.tsv" ${popmin} 4
 
 cd ../ || exit
 
