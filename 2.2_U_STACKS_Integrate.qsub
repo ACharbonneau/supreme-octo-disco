@@ -16,6 +16,7 @@
 cd ${PBS_O_WORKDIR} || exit
 
 source ~/.bash_profile
+module load R/3.2.0
 
 
 cut -f 3,10 batch_${dt}.catalog.tags.tsv > batch_${dt}.consensus
