@@ -19,10 +19,17 @@ fi
 #setnumber=`echo ${PBS_JOBNAME} | sed s/(\d+)*+/\1/`
 #echo ${setnumber}
 # change to the working directory where your code is located
+shopt -s expand_aliases
 cd ${PBS_O_WORKDIR}
+module load powertools
+
+# 4 hours * 60 minutes * 6 seconds - 60 seconds * 5 minutes
+export BLCR_WAIT_SEC=$(( 4 * 60 * 60 - 60 * 5 ))
+export PBS_JOBSCRIPT="$0"
+echo "Waiting ${BLCR_WAIT_SEC} seconds to run ${PBS_JOBSCRIPT}"
 
 
 ### call your executable
 module load structure/2.3.4
 
-structure -K ${PBS_ARRAYID} -i ${thisfile} -o ${PBS_JOBNAME} -m mainparams -e ../../../supreme-octo-disco/3.2_extraparams
+longjob structure -K ${PBS_ARRAYID} -i ${thisfile} -o ${PBS_JOBNAME} -m mainparams -e ../../../supreme-octo-disco/3.2_extraparams
