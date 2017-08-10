@@ -16,6 +16,7 @@ then
     exit 1
 fi
 
+PBS_JOBNAME=${PBS_JOBNAME}
 #setnumber=`echo ${PBS_JOBNAME} | sed s/(\d+)*+/\1/`
 #echo ${setnumber}
 # change to the working directory where your code is located
