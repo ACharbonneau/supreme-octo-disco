@@ -23,14 +23,21 @@ shopt -s expand_aliases
 cd ${PBS_O_WORKDIR}
 module load powertools
 
+#/usr/lib64/libcr_run.so.0
+$ PATH=$PATH:/usr/bin
+$ MANPATH=$MANPATH:/usr/bin/man
+$ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib:/usr/lib64
+$ export PATH MANPATH LD_LIBRARY_PATH
 
 # 4 hours * 60 minutes * 60 seconds - 60 seconds * 5 minutes
 #export BLCR_WAIT_SEC=$(( 4 * 60 * 60 - 60 * 5 ))
 export BLCR_WAIT_SEC=$(( 10 * 60 - 60 * 5 ))
 export PBS_JOBSCRIPT="$0 -v PBS_ARRAYID=${PBS_ARRAYID},thisfile=${thisfile},PBS_JOBNAME=${PBS_JOBNAME},depth=${depth}"
 echo "Waiting ${BLCR_WAIT_SEC} seconds to run ${PBS_JOBSCRIPT}"
-export BLCR_OUTPUT="output.txt"
+export BLCR_OUTPUT=${PBS_JOBNAME}
 export BLCR_CHECKFILE="checkfile.blcr"
+
+
 
 ### call your executable
 module load structure/2.3.4
