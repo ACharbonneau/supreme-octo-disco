@@ -44,7 +44,8 @@ fi
 
 
 if [[ ! -f ${indiv}_q20.sam ]]
-then qsub ../../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${PBS_ARRAYID}\
+then cd ${PBS_O_WORKDIR} || exit
+qsub ../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${PBS_ARRAYID}\
 -v genome="${genome}",gff="${gff}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",\
 MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
 fi
@@ -61,7 +62,7 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR} || exit
-    qsub ../../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${PBS_ARRAYID}\
+    qsub ../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${NEXT}\
     -v genome="${genome}",gff="${gff}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",\
     MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
     cd - || exit
