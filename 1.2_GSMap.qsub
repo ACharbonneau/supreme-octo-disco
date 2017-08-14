@@ -35,25 +35,25 @@ cd ${MapFolder}/ || exit
 
 echo bsname="${bsname}"
 
-if [[ ! -f ${indiv}_q20.sam ]]
+if [ ! -f ${indiv}_q20.sam ]
  then gsnap -t 6 -d ${index} --force-single-end -m 5 -i 2 -k 15 \
  --min-coverage=0.95 -o ${indiv}.sam -A sam ../${indiv}
  samtools view -q 20 -T ${genome} ${indiv}.sam > ${indiv}_q20.sam
  echo ${bsname} >> FilesMapped.txt
+ echo "I finished mapping"
 fi
 
 
-if [[ ! -f ${indiv}_q20.sam ]]
+if [ ! -f ${indiv}_q20.sam ]
   then cd ${PBS_O_WORKDIR} || exit
   qsub ../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${PBS_ARRAYID}\
   -v genome="${genome}",gff="${gff}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",\
   MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
+  echo "I broke during mapping mapping"
   cd - || exit
 fi
 
-if [[ -f ${indiv}_q20.sam ]]
-then runs=$(cat FilesMapped.txt | wc -l)
-fi
+runs=$(cat FilesMapped.txt | wc -l)
 
 # Calculate next job to run
 NEXT=$(( ${PBS_ARRAYID} + 200 ))
@@ -63,9 +63,9 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR} || exit
-    qsub ../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${NEXT}\
-    -v genome="${genome}",gff="${gff}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",\
-    MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
+    echo "I want to run job" ${NEXT}
+    qsub ../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
+    echo "I started the next job"
     cd - || exit
 fi
 
@@ -78,8 +78,9 @@ fi
 
 #Then launch metadata collector, once per reference per dataset
 
-if [[ ${PBS_ARRAYID} = 0 ]]
+if [ ${PBS_ARRAYID} = 0 ]
   then cd ${PBS_O_WORKDIR} || exit
+  echo "I'm gonna metadata"
   qsub ../supreme-octo-disco/1.3_echo.qsub -N ${MapFolder}.metadata\
   -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",\
   gffi="${gffi}",exon="${exon}"
