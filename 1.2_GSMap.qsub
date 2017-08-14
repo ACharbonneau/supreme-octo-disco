@@ -44,10 +44,11 @@ fi
 
 
 if [[ ! -f ${indiv}_q20.sam ]]
-then cd ${PBS_O_WORKDIR} || exit
-qsub ../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${PBS_ARRAYID}\
--v genome="${genome}",gff="${gff}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",\
-MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
+  then cd ${PBS_O_WORKDIR} || exit
+  qsub ../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${PBS_ARRAYID}\
+  -v genome="${genome}",gff="${gff}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",\
+  MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
+  cd - || exit
 fi
 
 if [[ -f ${indiv}_q20.sam ]]
@@ -78,8 +79,8 @@ fi
 #Then launch metadata collector, once per reference per dataset
 
 if [[ ${PBS_ARRAYID} = 0 ]]
-then cd ${PBS_O_WORKDIR} || exit
-qsub ../supreme-octo-disco/1.3_echo.qsub -N ${MapFolder}.metadata\
--v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",\
-gffi="${gffi}",exon="${exon}"
+  then cd ${PBS_O_WORKDIR} || exit
+  qsub ../supreme-octo-disco/1.3_echo.qsub -N ${MapFolder}.metadata\
+  -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",\
+  gffi="${gffi}",exon="${exon}"
 fi
