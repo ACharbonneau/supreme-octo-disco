@@ -3,6 +3,7 @@
 #PBS -l nodes=1:ppn=8,walltime=04:00:00,mem=64gb
 #PBS -m a
 #PBS -t 0-200
+#PBS -l feature='intel16'
 
 # -o : tells it where to put output from your job
 # -j oe : specifies that output and error messages from your job can be placed in the same location
@@ -49,7 +50,7 @@ if [ ! -f ${indiv}_q20.sam ]
   qsub ../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${PBS_ARRAYID}\
   -v genome="${genome}",gff="${gff}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",\
   MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
-  echo "I broke during mapping mapping"
+  echo "I broke during mapping"
   cd - || exit
 fi
 
