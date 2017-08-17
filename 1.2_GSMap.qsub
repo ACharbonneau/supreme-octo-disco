@@ -74,7 +74,8 @@ fi
 
 
 if [ ${runs} = 1440 ]
-then bash ../../supreme-octo-disco/2_Submit_P_STACKS.sh
+then cd ${MapFolder} || exit
+bash ../../supreme-octo-disco/2_Submit_P_STACKS.sh
 fi
 
 #Then launch metadata collector, once per reference per dataset

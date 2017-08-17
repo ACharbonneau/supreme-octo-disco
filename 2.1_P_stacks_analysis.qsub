@@ -23,7 +23,7 @@ source ~/.bash_profile
 module load R/3.2.0
 
 
-indiv=`awk NR==${PBS_ARRAYID} ../../Metadata/${Ustackslist}`  #assign indiv to be current sequence file
+indiv=`awk NR==${PBS_ARRAYID} ../../Metadata/${stackslist}`  #assign indiv to be current sequence file
 
 dt=`date '+%Y%m%d'`
 
@@ -37,7 +37,7 @@ fi
 
 # Run pstacks
 
-pstacks -p 20 -t sam -m ${m} -M ${M} -i ${PBS_ARRAYID} -f ${indiv} -o ${dataAbv}_${batch}
+pstacks -p 20 -t sam -m ${m} -i ${PBS_ARRAYID} -f ${indiv} -o ${dataAbv}_${batch}
 
 echo ${indiv}_done >> ${dataAbv}_${batch}/donelist.txt
 
