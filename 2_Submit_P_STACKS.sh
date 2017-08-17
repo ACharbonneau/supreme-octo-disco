@@ -7,15 +7,11 @@
 
 m=2
 n=7
-qsub ../../supreme-octo-disco/2.1_P_stacks_analysis.qsub -v dataAbv="Rrr",stackslist="SS_Rrr_stacks_list",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".80",m=${m},n=${n}
-
-
-qsub ../../supreme-octo-disco/2.1_P_stacks_analysis.qsub -v dataAbv="SS",stackslist="SS_stacks_list",cslist="SS_cs_stacks_list",popfile="SS_data.pop",popmin="20",indivmin=".80",m=${m},n=${n}
-qsub ../../supreme-octo-disco/2.1_P_stacks_analysis.qsub -v dataAbv="Rrl",stackslist="SS_Rrl_stacks_list",cslist="SS_Rrl_cs_stacks_list",popfile="SS_data.pop",popmin="6",indivmin=".80",m=${m},n=${n}
-
-
-qsub ../../supreme-octo-disco/2.1_P_stacks_analysis.qsub -v dataAbv="Rsat",stackslist="SS_Rsat_stacks_list",cslist="SS_Rsat_cs_stacks_list",popfile="SS_data.pop",popmin="8",indivmin=".80",m=${m},n=${n}
-qsub ../../supreme-octo-disco/2.1_P_stacks_analysis.qsub -v dataAbv="RrrRrl",stackslist="SS_RrrRrl_stacks_list",cslist="SS_RrrRrl_cs_stacks_list",popfile="SS_data.pop",popmin="11",indivmin=".80",m=${m},n=${n}
+qsub ../../supreme-octo-disco/2.1_P_stacks_analysis.qsub -t 1-80  -v dataAbv="Rrr",stackslist="SS_Rrr_stacks_list",cslist="SS_Rrr_cs_stacks_list",popfile="SS_data.pop",popmin="5",indivmin=".80",m=${m},n=${n}
+qsub ../../supreme-octo-disco/2.1_P_stacks_analysis.qsub -t 1-259 -v dataAbv="SS",stackslist="SS_stacks_list",cslist="SS_cs_stacks_list",popfile="SS_data.pop",popmin="20",indivmin=".80",m=${m},n=${n}
+qsub ../../supreme-octo-disco/2.1_P_stacks_analysis.qsub -t 1-96  -v dataAbv="Rrl",stackslist="SS_Rrl_stacks_list",cslist="SS_Rrl_cs_stacks_list",popfile="SS_data.pop",popmin="6",indivmin=".80",m=${m},n=${n}
+qsub ../../supreme-octo-disco/2.1_P_stacks_analysis.qsub -t 1-51  -v dataAbv="Rsat",stackslist="SS_Rsat_stacks_list",cslist="SS_Rsat_cs_stacks_list",popfile="SS_data.pop",popmin="8",indivmin=".80",m=${m},n=${n}
+qsub ../../supreme-octo-disco/2.1_P_stacks_analysis.qsub -t 1-176 -v dataAbv="RrrRrl",stackslist="SS_RrrRrl_stacks_list",cslist="SS_RrrRrl_cs_stacks_list",popfile="SS_data.pop",popmin="11",indivmin=".80",m=${m},n=${n}
 
 #Anther Exsertion
 
