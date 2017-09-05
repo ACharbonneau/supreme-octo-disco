@@ -1,4 +1,4 @@
-#!/bin/sh -login
+#!/bin/bash -login
 #PBS -j oe
 #PBS -l nodes=1:ppn=20,walltime=4:00:00,mem=64gb
 #PBS -m a
@@ -55,11 +55,15 @@ if [ `wc -l donelist.txt  | cut -f 1 -d " "` == `wc -l ../../Metadata/${Ustacksl
 
 	qsub ../../supreme-octo-disco/2.2_U_STACKS_Integrate.qsub -v dataAbv="${dataAbv}",Ustackslist="${Ustackslist}",cslist="${cslist}",popfile="${popfile}",popmin="${popmin}",indivmin="${indivmin}",m=${m},M=${M},n=${M},dt=${dt},batch=${batch}
 
+	echo `tail -5 fixedsnps.txt` `wc -l *.catalog.tags.tsv` `cut -f 3 *catalog.alleles.tsv | sort | uniq | wc -l` `grep -v -c '^#' *.vcf` > ${dataAbv}_${batch}_summary.txt
+
 	mkdir STRUCTURE
 
 	cd STRUCTURE || exit
 
 	bash ../../../supreme-octo-disco/3_STRUCTURE_submit.sh "batch_${dt}.structure.tsv" ${popmin} 3
+
+	cd ../ || exit
 
 	mkdir SmartPCA
 

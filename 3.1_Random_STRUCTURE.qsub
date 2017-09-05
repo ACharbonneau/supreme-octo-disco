@@ -1,12 +1,6 @@
 #!/bin/bash -login
-
-### define resources needed:
-### walltime - how long you expect the job to run
-#PBS -l walltime=00:10:00
-
-### nodes:ppn - how many nodes & cores per node (ppn) that you require
+#PBS -l walltime=04:00:00
 #PBS -l nodes=1:ppn=1
-### mem: amount of memory that the job will need
 #PBS -l mem=64gb
 
 #PBS -N notset
@@ -16,35 +10,30 @@ then
     exit 1
 fi
 
-PBS_JOBNAME=${PBS_JOBNAME}
-#setnumber=`echo ${PBS_JOBNAME} | sed s/(\d+)*+/\1/`
-#echo ${setnumber}
-# change to the working directory where your code is located
+
+#Runs in STRUCTURE folder
+
 shopt -s expand_aliases
-cd ${PBS_O_WORKDIR}
+cd $PBS_O_WORKDIR || exit
 module load powertools
-
-#/usr/lib64/libcr_run.so.0
-$ PATH=$PATH:/usr/bin
-$ MANPATH=$MANPATH:/usr/bin/man
-$ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib:/usr/lib64
-$ export PATH MANPATH LD_LIBRARY_PATH
-
-# 4 hours * 60 minutes * 60 seconds - 60 seconds * 5 minutes
-#export BLCR_WAIT_SEC=$(( 4 * 60 * 60 - 60 * 5 ))
-export BLCR_WAIT_SEC=$(( 10 * 60 - 60 * 5 ))
-export PBS_JOBSCRIPT="$0 -v PBS_ARRAYID=${PBS_ARRAYID},thisfile=${thisfile},PBS_JOBNAME=${PBS_JOBNAME},depth=${depth}"
-echo "Waiting ${BLCR_WAIT_SEC} seconds to run ${PBS_JOBSCRIPT}"
-export BLCR_OUTPUT=${PBS_JOBNAME}
-export BLCR_CHECKFILE="checkfile.blcr"
-
-
-
-### call your executable
 module load structure/2.3.4
 
-if [ ${depth} == 4 ]; then
-  longjob structure -K ${PBS_ARRAYID} -i ${thisfile} -o ${PBS_JOBNAME} -m mainparams -e ../../../../supreme-octo-disco/3.2_extraparams
-else
-  longjob structure -K ${PBS_ARRAYID} -i ${thisfile} -o ${PBS_JOBNAME} -m mainparams -e ../../../supreme-octo-disco/3.2_extraparams
+
+
+# 4 hours * 60 minutes * 6 seconds - 60 seconds * 5 minutes
+export BLCR_WAIT_SEC=$(( 4 * 60 * 60 - 60 * 5 ))
+#export BLCR_WAIT_SEC=$(( 20 * 60 - 60 * 5 ))
+export PBS_JOBSCRIPT="$0"
+export output="${PBS_JOBNAME}_output.txt"
+export checkpoint="${PBS_JOBNAME}_checkfile.blcr"
+echo "Waiting ${BLCR_WAIT_SEC} seconds to run ${PBS_JOBSCRIPT}"
+
+if [ ! -f checkfile.blcr ]
+then
+  echo "Running for the first time"
+fi
+
+if [ ${depth} == 4 ]
+then longjob structure -K ${PBS_ARRAYID} -i ${thisfile} -o ${PBS_JOBNAME} -m mainparams -e ../../../../supreme-octo-disco/3.2_extraparams
+else longjob structure -K ${PBS_ARRAYID} -i ${thisfile} -o ${PBS_JOBNAME} -m mainparams -e ../../../supreme-octo-disco/3.2_extraparams
 fi

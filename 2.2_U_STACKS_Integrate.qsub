@@ -37,6 +37,8 @@ populations -b ${dt} -P . --fasta --structure --vcf --renz 'pstI' --write_random
 
 count_fixed_catalog_snps.py -p . -b ${dt} 1&> fixedsnps.txt
 
+echo `tail -5 fixedsnps.txt` `wc -l *.catalog.tags.tsv` `cut -f 3 *catalog.alleles.tsv | sort | uniq | wc -l` `grep -v -c '^#' *.vcf` > ${dataAbv}_${batch}_summary.txt
+
 mkdir STRUCTURE
 
 cd STRUCTURE || exit
