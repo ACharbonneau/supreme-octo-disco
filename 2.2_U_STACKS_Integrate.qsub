@@ -31,13 +31,17 @@ mkdir gmappedstacks
 
 integrate_alignments.py -o gmappedstacks/ -a batch_${dt}.sam -p . -b ${dt}
 
+here=`pwd`
+
+here=`basename ${here}`
+
 cd gmappedstacks/ || exit
 
 populations -b ${dt} -P . --fasta --structure --vcf --renz 'pstI' --write_random_snp --verbose -p ${popmin} -r ${indivmin} --ordered_export -M ../temppopfile
 
 count_fixed_catalog_snps.py -p . -b ${dt} 1&> fixedsnps.txt
 
-echo `tail -5 fixedsnps.txt` `wc -l *.catalog.tags.tsv` `cut -f 3 *catalog.alleles.tsv | sort | uniq | wc -l` `grep -v -c '^#' *.vcf` > ${dataAbv}_${batch}_summary.txt
+echo ${dataAbv}_${batch} `tail -5 fixedsnps.txt` `wc -l *.catalog.tags.tsv` `cut -f 3 *catalog.alleles.tsv | sort | uniq | wc -l` `grep -v -c '^#' *.vcf` > gmap_${dataAbv}_${batch}_summary.txt
 
 mkdir STRUCTURE
 

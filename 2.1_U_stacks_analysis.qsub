@@ -55,7 +55,9 @@ if [ `wc -l donelist.txt  | cut -f 1 -d " "` == `wc -l ../../Metadata/${Ustacksl
 
 	qsub ../../supreme-octo-disco/2.2_U_STACKS_Integrate.qsub -v dataAbv="${dataAbv}",Ustackslist="${Ustackslist}",cslist="${cslist}",popfile="${popfile}",popmin="${popmin}",indivmin="${indivmin}",m=${m},M=${M},n=${M},dt=${dt},batch=${batch}
 
-	echo `tail -5 fixedsnps.txt` `wc -l *.catalog.tags.tsv` `cut -f 3 *catalog.alleles.tsv | sort | uniq | wc -l` `grep -v -c '^#' *.vcf` > ${dataAbv}_${batch}_summary.txt
+	echo ${dataAbv}_${batch} `tail -5 fixedsnps.txt` `wc -l *.catalog.tags.tsv` `cut -f 3 *catalog.alleles.tsv | sort | uniq | wc -l` `grep -v -c '^#' *.vcf` > ${dataAbv}_${batch}_summary.txt
+
+	echo ${dataAbv}_${batch} `awk '/heterozygous/ {print $2}' fixedsnps.txt | head -16` > ${dataAbv}_${batch}_indiv_summary.txt
 
 	mkdir STRUCTURE
 

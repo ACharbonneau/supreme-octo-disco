@@ -73,7 +73,7 @@ fi
 #Launch first step of STACKS if all the mapping is done
 
 
-if [ ${runs} = 1440 ]
+if [ ${runs} = ${MAXJOBID} ]
 then cd ${MapFolder} || exit
 bash ../../supreme-octo-disco/2_Submit_P_STACKS.sh
 fi
