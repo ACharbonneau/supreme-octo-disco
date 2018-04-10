@@ -17,5 +17,19 @@
 cd ${PBS_O_WORKDIR} || exit
 
 source ~/.bash_profile
+module load GNU/4.9
+module load GMAP/20160609
 
-gmap_build -d Moghe2014_GS -k 15 /mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta
+gmap_build -d Moghe2014_GS -k 15 /mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta -D .
+
+
+#Launch mapper
+rc=$?
+
+if [[ $rc = 0 ]]
+
+then cd ../../RawFastq/ || exit
+     ThisT=`ls *fastq.gz | wc -w`
+     ThisT=`expr $ThisT - 1`
+     qsub ../supreme-octo-disco/1.1_ProcessRadtags.qsub -N ProcessingRads -t 0-${ThisT}
+fi

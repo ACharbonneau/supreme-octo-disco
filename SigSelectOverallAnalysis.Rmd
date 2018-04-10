@@ -1,12 +1,24 @@
 ---
 title: "Signatures of Selection Analysis"
 author: "Amanda Charbonneau"
-date: "2/17/2017"
-output: html_document
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    code_folding: hide
+    collapsed: no
+    df_print: paged
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_depth: 5
+    toc_float: yes
+  html_notebook:
+    toc: yes
+    toc_depth: 5
 ---
 #Overview
 
-The USTACKS pipeline requires very strict pre-filtering, reads must be:
+The PSTACKS pipeline requires very strict pre-filtering, reads must be:
 
 - High quality (STACKS ignores quality scores)
 - Exactly the same length
@@ -30,16 +42,16 @@ Then to call SNPs between individuals populations, a given locus must:
 - Have data for every population
 - Have data for 80% of individuals in the population
 
-I ran a series of tests with the BINY individuals to optimize the parameters, and ended up using USTACKS where m=5, and M=n=7, or PSTACKS where m=2 and n=7.
+I ran a series of tests with the BINY individuals to optimize the parameters, and ended up using  PSTACKS where m=2 and n=7.
 
 
 Some of these parameters, like read depth per individual and how complete a locus must be, are user-settable. Others, like the restriction that sites must be biallelic, are not.
 
-I also had it only take one (random) SNP per stack, so none of the sites used are *extremely* closely linked, however the fragmented nature of the current genome precludes avoiding linkage. This leaves the 1092 informative sites used in the following analysis, which is still substantially more than the 21 used in the previous analysis, especially considering the rate of missing genotypes even among those 21.
+I also had it only take one (random) SNP per stack, so none of the sites used are *extremely* closely linked, however the fragmented nature of the current genome precludes avoiding linkage. This leaves the 1293 informative sites used in the following analysis, which is still substantially more than the 21 used in the previous analysis, especially considering the rate of missing genotypes even among those 21.
 
 To begin, I'm simply running the data through the same analyses that we did with the previous marker set, to see how well our previous assertions match the new data.
 
-This is data from 758 markers for the five Rrr populaitons:
+
 ```{r importpackages, echo=FALSE, message=FALSE, warning=FALSE}
 rm(list = ls())
 
@@ -60,9 +72,10 @@ packages(knitr)
 
 ```{r ImportFiles, echo=FALSE, message=FALSE, warning=FALSE}
 
-biallele <- read.table("../../SS_Analysis/SmartPCA/20170804_biallele.csv", sep = ",", header = T)
-SSmeta <- read.csv("../../Metadata/SS_data.pop", sep = "\t", header = F)
-meta <- read.csv("../../Metadata/SigSelectionMeta.csv")
+biallele <- read.table("../ProcessRadtags/SS_20180325_U_Pop20_Ind.80_m5_M7_n7/SmartPCA/20180325_biallele.csv", sep = ",", header = T)
+
+SSmeta <- read.csv("../Metadata/SS_data.pop", sep = "\t", header = F)
+meta <- read.csv("../Metadata/SigSelectionMeta.csv")
 
 ind <- select(biallele, SSR)
 ind$SSR <- as.factor(ind$SSR)
