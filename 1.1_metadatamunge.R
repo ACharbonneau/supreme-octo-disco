@@ -35,28 +35,6 @@ packages(tidyr)
 packages(plyr)
 packages(dplyr)
 
-
-
-## They sequenced lots of samples twice, but used the same names, which breaks
-## the deconvolution step. This loop gives each sample a unique name and writes
-## out a new sequence list file for each lane with the unique names
-
-Geno_dir <- file.path("../Metadata/PlateInfoSeq/")
-
-Geno_list <- list.files(Geno_dir, pattern = "*gz.keys.txt")
-
-All_geno_data <- list()
-
-for( X in 1:length(Geno_list)){
-  TempFile <- read.table(paste(Geno_dir, Geno_list[ X ], sep=""), sep = "\t", header = T, na.strings = "")
-  TempFile$UniqID <- paste(TempFile$DNASample, TempFile$DNA_Plate, TempFile$SampleDNA_Well, sep="_")
-  All_geno_data[[X]] <- TempFile
-  write.table(TempFile, paste(Geno_dir, substr(Geno_list[X], 1, 11), ".unique.txt", sep=""), sep="\t", row.names=F, col.names=F, quote=F)
-}
-
-
-All_geno_data <- tbl_df( do.call( "rbind", All_geno_data ))
-
 ## Get global data frames
 
 DNA_data <- read.csv("../Metadata/OriginalFiles/MetadataAll.txt", sep = "\t", header = F,
@@ -75,6 +53,34 @@ DNA_data$Cross <- revalue(DNA_data$Cross, c("YEIL_CLNC" = "YEIL"))
 DNA_data <- droplevels(DNA_data)
 
 Pedigree <- read.csv("../Metadata/OriginalFiles/Pedigree.csv", colClasses = "factor")
+
+
+## They sequenced lots of samples twice, but used the same names, which breaks
+## the deconvolution step. This loop gives each sample a unique name and writes
+## out a new sequence list file for each lane with the unique names
+
+Geno_dir <- file.path("../Metadata/PlateInfoSeq/")
+
+Geno_list <- list.files(Geno_dir, pattern = "*gz.keys.txt")
+
+All_geno_data <- list()
+
+for( X in 1:length(Geno_list)){
+  TempFile <- read.table(paste(Geno_dir, Geno_list[ X ], sep=""), sep = "\t", header = T, na.strings = "")
+  TempFile$UniqID <- paste(TempFile$DNASample, gsub( '.*_([0-9]{1,2})', "\\1", TempFile$LibraryPlate, ignore.case = FALSE ), TempFile$SampleDNA_Well, "F", sep=".")
+  ComboTemp <- left_join(TempFile, DNA_data, by=c("DNASample"="ID"))
+  ComboTemp$UniqID <- paste(ComboTemp$Cross, ComboTemp$UniqID, sep="_")
+  All_geno_data[[X]] <- ComboTemp
+  write.table(select(ComboTemp, -Pedigree, -Population, -SeedLot), paste(Geno_dir, substr(Geno_list[X], 1, 11), ".unique.txt", sep=""), sep="\t", row.names=F, col.names=F, quote=F)
+  write.table(cbind(as.character(ComboTemp$Barcode), ComboTemp$UniqID), paste(Geno_dir, substr(Geno_list[X], 1, 11), "_fastq.gz.barcodes", sep=""), sep="\t", row.names=F, col.names=F, quote=F)
+  }
+
+rm(TempFile, ComboTemp)
+
+All_geno_data <- tbl_df( do.call( "rbind", All_geno_data ))
+
+## Get global data frames
+
 
 # Get F0 data and combine
 
@@ -286,7 +292,7 @@ write.table(paste( " -s ./", All_SS, sep=""), file = "../Metadata/SS_cs_stacks_l
 All_SS <- paste(All_SS, ".sam", sep = "")
 
 write.table(All_SS, file = "../Metadata/SS_stacks_list", quote = F, col.names = F, row.names = F)
-All_SS <- gsub("_q20.sam","", All_SS )  
+All_SS <- gsub("_q20.sam","", All_SS )
 write.table(All_SS, file = "../Metadata/SS_stacks_fastqs", quote = F, col.names = F, row.names = F)
 
 

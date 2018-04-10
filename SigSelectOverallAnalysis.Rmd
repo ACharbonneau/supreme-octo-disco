@@ -1,0 +1,562 @@
+---
+title: "Signatures of Selection Analysis"
+author: "Amanda Charbonneau"
+date: "2/17/2017"
+output: html_document
+---
+#Overview
+
+The USTACKS pipeline requires very strict pre-filtering, reads must be:
+
+- High quality (STACKS ignores quality scores)
+- Exactly the same length
+- Have an intact restriction site
+- Have an intact barcode
+- Have either a SNP or very small mutation
+
+Subsequent steps are also conservative. To be used in an analysis, each individuals stack must:
+
+- Align to the genome
+- Have at least 3 identical reads
+- Have 85% alignment to the reference/rest of the stacks
+- Have a chi square signifigance to call it homozygous or heterozygous
+
+Then to call SNPs between individuals populations, a given locus must:
+
+- Be polymorphic
+- Have no more than two alleles within a population
+- Match only a single genomic location both within a pop and between pops
+- Only be covered by a single set of stacks
+- Have data for every population
+- Have data for 80% of individuals in the population
+
+I ran a series of tests with the BINY individuals to optimize the parameters, and ended up using USTACKS where m=5, and M=n=7, or PSTACKS where m=2 and n=7.
+
+
+Some of these parameters, like read depth per individual and how complete a locus must be, are user-settable. Others, like the restriction that sites must be biallelic, are not.
+
+I also had it only take one (random) SNP per stack, so none of the sites used are *extremely* closely linked, however the fragmented nature of the current genome precludes avoiding linkage. This leaves the 1092 informative sites used in the following analysis, which is still substantially more than the 21 used in the previous analysis, especially considering the rate of missing genotypes even among those 21.
+
+To begin, I'm simply running the data through the same analyses that we did with the previous marker set, to see how well our previous assertions match the new data.
+
+This is data from 758 markers for the five Rrr populaitons:
+```{r importpackages, echo=FALSE, message=FALSE, warning=FALSE}
+rm(list = ls())
+
+# Install function for packages    
+packages<-function(x){
+  x<-as.character(match.call()[[2]])
+  if (!require(x,character.only=TRUE)){
+    install.packages(pkgs=x,repos="http://cran.r-project.org")
+    require(x,character.only=TRUE)
+  }
+}
+packages(dplyr)
+packages(tidyr)
+packages(RColorBrewer)
+packages(ggplot2)
+packages(knitr)
+```
+
+```{r ImportFiles, echo=FALSE, message=FALSE, warning=FALSE}
+
+biallele <- read.table("../../SS_Analysis/SmartPCA/20170804_biallele.csv", sep = ",", header = T)
+SSmeta <- read.csv("../../Metadata/SS_data.pop", sep = "\t", header = F)
+meta <- read.csv("../../Metadata/SigSelectionMeta.csv")
+
+ind <- select(biallele, SSR)
+ind$SSR <- as.factor(ind$SSR)
+ind <- left_join(ind, SSmeta, by=c("SSR"="V1"))
+ind$U <- "U"
+ind <- select(ind, SSR, U, V2)
+
+#STRUCTURE format data from STACKS
+structuredata <- data.table::fread("../../output/batch_20170804.structure.tsv")
+
+evanno <- data.table::fread("../STRUCTURE/raw_output/SS_1042/evannoTable.tab")
+colnames(evanno) <- c("K", "Reps",	"Mean_LnP_K", "Stdev_LnP_K", "Ln_K",	"abs_Ln_K", "Delta_K")
+
+#Original SmartPCA run
+PCA.dat <- data.table::fread("../../SS_Analysis/SmartPCA/20170804.pca.evec")
+
+PCA.eigen <- as.data.frame(data.table::fread("../../SS_Analysis/SmartPCA/20170804.eval"))
+
+
+```
+
+```{r STRUCTURErunMetadata, echo=F}
+ALLTHEFILES <- dir("../STRUCTURE/parsed_data/")
+
+File_Num <- length(ALLTHEFILES)
+
+File_list <- data.frame(matrix(unlist(strsplit(ALLTHEFILES, "\\_|\\-")), ncol = 4, byrow = T))
+File_list$runname <- ALLTHEFILES
+colnames(File_list) <- c("randomization", "structure", "K", "f.parsed", "runname")
+File_list$K <- as.numeric(levels(File_list$K))[File_list$K]
+File_list$randomization <- as.numeric(levels(File_list$randomization))[File_list$randomization]
+File_list <- select(File_list, K, randomization, runname)
+File_list <- arrange(File_list, randomization, K)
+
+
+```
+
+##STRUCTURE Analysis
+
+STRUCTURE is not designed to tell you how many 'real' groups exist in your data, however that is how most people use it. The original authors suggested that, if you were going to try to guess K (the number of groups) from the data, that you should use the likelihood. This wasn't for any apriori reason, rather just that the log likelihood correlated well with the true K in their (3) test datasets. Later, Evanno et. al. tested a handful of other datasets and found that likelihood did *not* predict the true K, but that the K just prior to the K that showed the largest change in log likelihood did. In the last year, Puechmaille found that neither the likelihood or delta likelihood predicted their K's and suggested four additional methods that correlated with K in their hands. In short, predicting K is not an exact science. 
+
+I took the SNP data from STACKS, and randomized it in 20 different orders. I used each of these randomizations to run STRUCTURE with a K from 3 to 22. While this should have resulted in 400 STRUCTURE plots, the actual number is somewhat less. This is expected. The reason for running randomizations of the data before inputing it into STRUCTURE, is because the algorithm is sensitive to the order of individuals. That is, it can give different groupings based on input order. This also means that some input orders are more difficult to group. In this set, STRUCTURE had particular trouble finding an answer for K= 6, 7, and numbers above 15. Obviously, this can generally be fixed with longer run times, however at high K (above 12 or so), it's impossible to give the HPC enough time to attempt the algorithm. 
+
+As previously, I used the correlated allele frequencies (or F) model, which has more power to detect subtle structure. This model computes values similar to Fst to model genetic similarities, and does not require genetic linkage information. Our populations were not constrained to a single Fst, and alpha (the degree of admixture) was inferred for the dataset, but not allowed to vary by population, as suggested in the manual (v. 2.3) (Pritchard et al. 2010). We used the default settings for all priors. I used a burn-in of 50000 and 200000 MCMC iterations, which is substantially smaller than I used for the previous dataset, however the estimates appear stable. 
+
+
+```{r Kcount, echo=FALSE, out.height=3, include=FALSE}
+kable(count(File_list, K))
+```
+
+Given this data, the original method of determining K would suggest using a very high K:
+
+```{r Likeli, echo=FALSE, warning=FALSE}
+ggplot(evanno, aes(x = K, y = Mean_LnP_K)) + geom_point() + 
+  geom_errorbar(aes(x=K, ymax=Mean_LnP_K+Stdev_LnP_K, ymin=Mean_LnP_K-Stdev_LnP_K),
+                width=0, color="blue") + ggtitle("Replicate Mean Likelihood and sd")
+```
+
+However, although the highest K's have the lowest -log likelihood, they also have huge standard deviations. The Evanno method suggests we go with K=4. That is, the K before the largest change in log likelihood:
+
+```{r DeltaK, echo=FALSE, warning=FALSE}
+ggplot(evanno, aes(x = K, y = Delta_K)) + geom_point() + geom_line(color="blue")
+```
+
+Neither of these is particularly satisfiying, because both methods seem be be choosing high-variance K. As you can see in the first plot the change in K from 4 to 5 is not particularly large, it's just got a huge sd. So, if I run a new set of 20 randomizations, we may get a different answer. 
+
+It has been suggested by Puechmaille, Evanno, and perhaps others, that different numbers correlating with the correct K may be a feature rather than a bug: in some cases the disparate numbers seem to correlate with different true aspects of the data. Some authors have found that the Evanno method tends to pick out the uppermost hierarchical level of the data, whereas the original method chooses a K consistant with the lowest level. Both methods are prone to getting the wrong answer due to biased sampling among populations or hierarchical levels. 
+
+In these respects, this new dataset is much more convincing. Recall that in the previous dataset, the Evanno method predicted K=19, while the traditional method predicted either 2 or 19, the exact opposite of what would be predicted by previous authors. While this new data is still somewhat skewed, the sampling is much more even at all levels, and the different methods are predicting K in the correct directions. It can be interpreted then, that our low-level K is high, possibly as high as the total number of populations we sampled (21), but that they can be considered as 4 meta-populations.
+
+There are four main outcomes with K=4, all of which can be differentiated by how they treat the landra population from Algeria. 
+
+In the 20 runs:
+
+- 2 place Algeria as being indistinguishable from the other landra
+- 12 place Algeria in it's own group
+- 5 make Algeria approximately half landra and half native R.r. raphanistrum
+- 1 splits the landra populations into PBFR/SAES and the RAs
+
+A representitive plot of each is shown below.
+
+```{r STRUCTURE4, echo=FALSE, message=FALSE, fig.width=8, fig.height=8}
+
+ALLTHEFILES <- dir("../STRUCTURE/parsed_data/", pattern = "*_STRUCTURE-4_f.parsed")
+
+File_Num <- length(ALLTHEFILES)
+
+File_list <- data.frame(matrix(unlist(strsplit(ALLTHEFILES, "\\_|\\-")), ncol = 4, byrow = T))
+File_list$runname <- ALLTHEFILES
+colnames(File_list) <- c("randomization", "structure", "K", "f.parsed", "runname")
+File_list$K <- as.numeric(levels(File_list$K))[File_list$K]
+File_list$randomization <- as.numeric(levels(File_list$randomization))[File_list$randomization]
+File_list <- select(File_list, K, randomization, runname)
+File_list <- arrange(File_list, randomization, K)
+
+
+for( strrun in c(1, 2, 4, 5)){
+    dataset <- File_list[strrun, 3]
+    str.data <- 0
+    str.data <- read.csv(paste("../STRUCTURE/parsed_data/",dataset, sep=""), header=F)
+    K <- File_list[strrun, 1] # Find out what K is
+    str.data <- str.data[,c(2,3,5:ncol(str.data))] # Get only useful columns from STRUCTURE
+    colnames(str.data) <- c( "Individual", "%missing",1:K)
+    str.data$ID <- unlist(strsplit(as.character(str.data$Individual), "_QTL.+"))
+    
+    #Get the label/metadata about each individual from a seperate file. Join to remove all the "RA" and "NZIL" individuals
+    
+    labels <- read.csv("../../Metadata/SigSelectionMeta.csv" )
+    labels$ID <- as.character(labels$ID)
+
+    all.data <- left_join(str.data, labels)
+
+#For prettier plotting, lump all of the different species together. Later you'll plot each
+#species seperately in a divided plotting screen
+    crop.data <- all.data[all.data$Species=="sativus",]
+    weed.data <- all.data[all.data$locals=="raphNN",]
+    native.data <- all.data[all.data$locals=="landra",]
+    raphNatW.data <- all.data[all.data$locals=="raphNatW",]
+    pugi.data <- all.data[all.data$locals=="pugiformis",]
+    daikon.data <- all.data[all.data$Taxon=="daikon",]
+    european.data <- all.data[all.data$Taxon=="european",]
+    oilrat.data <- all.data[all.data$Taxon=="caudatus" | all.data$Taxon=="oleifera",]
+    
+    crop.table <- t(crop.data[3:(2+K)][order(crop.data$Order),])
+    daikon.table <- t(daikon.data[3:(2+K)][order(daikon.data$Order),])
+    weed.table <- t(weed.data[3:(2+K)][order(weed.data$Order),])
+    native.table <- t(native.data[3:(2+K)][order(native.data$Order),])
+    raphNatW.table <- t(raphNatW.data[3:(2+K)][order(raphNatW.data$Order),])
+    pugi.table <- t(pugi.data[3:(2+K)][order(pugi.data$Order),])
+    european.table <- t(european.data[3:(2+K)][order(european.data$Order),])
+    oilrat.table <- t(oilrat.data[3:(2+K)][order(oilrat.data$Order),])
+    
+    colnames(crop.table) <- crop.data$Pop[order(crop.data$Order)]
+    colnames(native.table) <- native.data$Pop[order(native.data$Order)]
+    colnames(weed.table) <- weed.data$Pop[order(weed.data$Order)]
+    colnames(raphNatW.table) <- raphNatW.data$Pop[order(raphNatW.data$Order)]
+    colnames(pugi.table) <- pugi.data$Pop[order(pugi.data$Order)]
+    colnames(daikon.table) <- daikon.data$Pop[order(daikon.data$Order)]
+    colnames(european.table) <- european.data$Pop[order(european.data$Order)]
+    colnames(oilrat.table) <- oilrat.data$Pop[order(oilrat.data$Order)]
+    
+    
+    col_pal1 = brewer.pal(12, "Set3")
+    col_pal2 = brewer.pal(8, "Dark2")
+    col_pal3 = brewer.pal(12, "Paired")
+    col_pal = c(col_pal1, col_pal2, col_pal3)
+    
+    K_text <- paste("STRUCTURE Plot K=", K, sep="")
+    #SPEU is now SPNK; NELO now NEJS; RACA now RAJS. -JKC 
+    par(mfrow=c(1,1), mar=c(0,0,0,0))
+    par(fig=c(0,1,.8,.9))
+    barplot(native.table, col=col_pal[1:K], xaxt="n", yaxt="n", 
+            space=c(rep(0,16),1, rep(0,15), 1, rep(0,15), 1,rep(0,15), 1,rep(0,15), 1,rep(0,15)))
+    axis(side=3, at=50, labels=c(K_text), cex=5, tick=F, line=.8)
+    axis(side=3, at=50, labels=expression(italic("R.r. landra")), cex=2, tick=F, line=-1)
+    axis(side=1, at=c(8,25,42,59,76,93), labels=c("France (PBFR)",
+                                                  "Spain (SAES)",
+                                                  "Algeria (RA226)", 
+                                                  "Italy (RA444)",
+                                                  "Turkey (RA761)",
+                                                  "Turkey (RA808)"), tick=F, line=-1, cex.axis=.9)
+    
+    
+    par(fig=c(0,.6,.63,.73), new=TRUE)
+    barplot(raphNatW.table, col=col_pal[1:K],  xaxt="n", yaxt="n", 
+            space=c(rep(0,16), 1, rep(0,15), 1, rep(0,15)))
+    axis(side=3, at=25, labels=expression(paste(italic("R.r. raphanistrum")," inside native range")), cex=1.2, tick=F, line=-1)
+    axis(side=1, at=c(8,25,42), tick=F, labels=c("France (AFFR)", "Spain (DEES)", "Spain (MAES)"), line=-1, cex.axis=.9)
+    
+    
+    par(fig=c(.6,1,.63,.73), new=TRUE)
+    barplot(weed.table, col=col_pal[1:K],  xaxt="n", yaxt="n", 
+            space=c(rep(0,16), 1, rep(0,15)))
+    axis(side=3, at=17, labels=expression(paste(italic("R.r. raphanistrum")," outside native range")), cex=1.2, tick=F, line=-1)
+    axis(side=1, at=c(8, 25), tick=F, labels=c("New York (BINY)","Australia (NAAU)"), line=-1, cex.axis=.9)
+    
+    
+    
+    par(fig=c(.3,.7,.46,.56), new=TRUE)
+    barplot(pugi.table, col=col_pal[1:K],  xaxt="n", yaxt="n", 
+            space=c(rep(0,16), 1, rep(0,15)))
+    axis(side=3, at=16, labels=expression(italic("R. pugionformis")), cex=1.2, tick=F, line=-1)
+    axis(side=1, at=c(8, 25), tick=F, labels=c("Israel (GMIL)","Israel (YEIL_CLNC)"), line=-1, cex.axis=.9)
+  
+    
+    par(fig=c(0.1,.5,.29,.39), new=TRUE)
+    barplot(daikon.table, col=col_pal[1:K], xaxt="n", yaxt="n",
+            space=c(rep(0,7), 1, rep(0,5)))
+    axis(side=3, at=22, labels="Daikon Crops", cex=1.2, tick=F, line=-1)
+    axis(side=1, at=c(3.5,11), tick=F, labels=c("New Crown (NEJS)", #SPEU is now SPNK; NELO now NEJS; RACA now RAJS. -JKC 
+                                                "Tokinashi (TOBG)"), line=-1, cex.axis=.9)
+    
+    
+    par(fig=c(.5,.9,.29,.39), new=TRUE)
+    barplot(european.table, col=col_pal[1:K], xaxt="n", yaxt="n", 
+            space=c(rep(0,7),1, rep(0,6)) )
+    axis(side=3, at=22, labels="European Crops", cex=1.2, tick=F, line=-1)
+    axis(side=1, at=c(4,11.5), tick=F, labels=c("Early S.G. (ESNK)", 
+                                                "Sparkler (SPNK)" ), line=-1, cex.axis=.9)
+    
+    par(fig=c(.1,.9,.12,.22), new=TRUE)
+    barplot(oilrat.table, col=col_pal[1:K],  xaxt="n", yaxt="n", 
+            space=c(rep(0,6),1, rep(0,5), 3, rep(0,5), 1,rep(0,4)) )
+    axis(side=3, at=c(7,22), labels=c("Rattail Crops", "Oilseed Crops" ), cex=1.2, tick=F, line=-1)
+    axis(side=1, at=c(3,10,19,25.5), tick=F, labels=c("Rattail (RABG)", "Rattail (RAJS)", 
+                                                      "Arena (AROL)", "GRA (OIBG)" ), line=-1, cex.axis=.9)
+    
+}
+```
+
+Taken together, this would suggest that the second plot in the series is the most likely. This largely agrees with the data from the 21 marker set.
+
+
+##SmartPCA Analysis
+
+SmartPCA is designed to work on human data, and so is coded to have a hard cap of 23 chromosomes. This analysis worked previously, because we had both linkage groups for those markers, and a small number of them. However, now we have a very large number of markers, and no linkage information. SmartPCA *cannot* be run with without chromosome/linkage information. Recall that SmartPCA can also only run on biallelic data. Although STACKS only outputs biallelic data, it outputs the alleles in a format that is incompatible with SmartPCA.
+
+So, I've used a script to turn the STACKS output that is in STRUCTURE format into SmartPCA format, which fixes the incompatible biallelic format. As a hack, I've had R haphazardly assign markers to chromosomes by having it use each chromosome number 104 times (1092*2/104 = 21 chromosomes). Doing so, gives the following PCA:
+
+```{r PlotSmartPCA, echo=FALSE, fig.keep='last', message=FALSE, warning=FALSE}
+
+ggplot(PCA.dat, aes(V2, V3)) + geom_point(aes(col=V12)) + xlab("PC1") + ylab("PC2")
+
+```
+
+The user instructions for SmartPCA give very little indication of what it uses the chromosomes for. So, it's difficult to say whether this my hack is a reasonable fix, or if it is changing the outcome.
+
+I've run a couple of tests the validity of the plot. 
+
+###Principle Components Analysis in R of SmartPCA data
+First, I've run prcomp on the exact dataframe I fed into SmartPCA, using the same color scheme for ease of comparison.
+
+```{r PRcomp, echo=FALSE, fig.keep='last', message=FALSE, warning=FALSE}
+JustPCA <- prcomp(as.data.frame(select(biallele, -SSR)))
+
+JustPCAX <- as.data.frame(JustPCA$x)
+JustPCAX$UniqID <- ind$SSR
+JustPCAX <- left_join(JustPCAX, meta)
+
+
+ggplot(JustPCAX, aes(PC1, PC2)) + geom_point(aes(col=Pop)) + xlab("PC1") + ylab("PC2")
+
+```
+
+This gives a reasonably similar, but not identical graph. Although any individual point is in a different location, the overall wishbone shape of the data is maintained, just mirrored and shifted several degrees counter-clockwise. The overall clustering of populations is also consistant. That is, the same groups of populations appear in both, and the relative posistions of sets of groups are consistant. 
+
+Since these both use the same dataset, I expected them to give similar, if not identical, results. This close, but not exact, match suggests that SmartPCA may be using the positional information to some extent, but it could also be due to other internal algorithms of SmartPCA. 
+
+To check this, I did a second run of SmartPCA, with a different set of fake chromosome numbers, such that the linkage would now be completely different.
+
+##SmartPCA rerun, new chromosomes
+```{r SmartPCArep, echo=FALSE, fig.keep='last', message=FALSE, warning=FALSE}
+
+
+ggplot(repPCA.dat, aes(V2, V3)) + geom_point(aes(col=V260)) + xlab("PC1") + ylab("PC2")
+```
+
+This plot is exactly the same as the original SmartPCA plot, which suggests that although the program requires information about chromosome number, location and linkage, it doesn't actually use them. It appears the differences between the PRcomps and SmartPCA results are due entirely to the 'optimization for genetic data' that is part of SmartPCA, and is likely something that we want.
+
+So, although this data doesn't fit the techinical requirements for SmartPCA, feeding it fake data for chromosome location doesn't seem to compromise the algorithm.
+
+###Principle Components Analysis in R of original STACKS output (STRUCTURE format)
+
+As a final check, I've run prcomp on the data that STACKS outputs in STRUCTURE format. Since the STRUCTURE format has two entries per individual per locus (one for each allele), I've simply added the values of the alleles for each locus. So, a individual that was the genotype 1, 1 is now 2. All of the genotypes output by STACKS are < 5, so this shouldn't cause too many problems with scaling, and should give a dataframe similar to the one that SmartPCA requires, just not constrained to be biallelic.
+
+```{r strPRcomps, echo=F, warning=F}
+str_A <- structuredata[seq(1, length(structuredata$V1), by = 2),]
+str_B <- structuredata[seq(2, length(structuredata$V1), by = 2),]
+
+colnames(str_A) <- paste(colnames(str_A), "_A", sep = "")
+colnames(str_B) <- paste(colnames(str_B), "_B", sep = "")
+
+strAB <- select(str_A, -V1_A) + select(str_B, -V1_B)
+
+strPCA <- prcomp(strAB)
+
+strPCAx <- as.data.frame(strPCA$x)
+
+strPCAx$Indiv <- str_A$V1_A
+
+metaPCAx <- left_join(strPCAx, SSmeta, by=c("Indiv"="V1"))
+
+ggplot(metaPCAx, aes(PC1, PC2*-1)) + geom_point(aes(col=V2)) + xlab("PC1") + ylab("PC2")
+
+```
+
+Here, the overall population placements are still quite similar to the output from SmartPCA and PRcomps, however the wishbone shape has morphed into more of a circle. Given that the SmartPCA program seems to ignore chromosome data anyway, I think sticking with the SmartPCA data will be the most informative. However, it's useful to see that changing the intrinsic meaning of the allele information fed into various PCA programs doesn't make huge changes to the result, and puts populations in largely the same places relative to each other. 
+
+###SmartPCA, Finalized plot
+
+
+
+```{r GetPlotColors, echo=FALSE, message=FALSE, warning=FALSE}
+#Set up plotting colors
+
+## Add an alpha value to a colour
+add.alpha <- function(col, alpha=.7){
+  if(missing(col))
+    stop("Please provide a vector of colours.")
+  apply(sapply(col, col2rgb)/255, 2, 
+        function(x) 
+          rgb(x[1], x[2], x[3], alpha=alpha))  
+}
+
+col_pal <- brewer.pal(9, "Set1")
+col6 <- brewer.pal(6, "Set2")
+col_pal <- c(col_pal[c(1:5)], col6[6], col_pal[c(8,9)], "gray20", "black")
+
+ALLTHECOLORS <- add.alpha(col_pal)
+
+CropD.col <- ALLTHECOLORS[6]
+CropE.col <- ALLTHECOLORS[1]
+CropO.col <- ALLTHECOLORS[3]
+CropR.col <- ALLTHECOLORS[8]
+
+lanmar.col <- ALLTHECOLORS[7]
+raphNN.col <- ALLTHECOLORS[5]
+raphNatW.col <- ALLTHECOLORS[4]
+rost.col <-  ALLTHECOLORS[10]
+
+```
+
+
+```{r MakeParsedData, echo=FALSE, message=FALSE, warning=FALSE}
+PCA.dat <- left_join(PCA.dat, meta, by=c("V1"="UniqID"))
+
+raphNN.data <- PCA.dat[PCA.dat$locals=="raphNN",]
+lanmar.data <- PCA.dat[PCA.dat$locals=="landra",]
+CropD.data <- PCA.dat[PCA.dat$locals=="daikon",]
+CropE.data <- PCA.dat[PCA.dat$locals=="european",]
+CropO.data <- PCA.dat[PCA.dat$locals=="oleifera",]
+CropR.data <- PCA.dat[PCA.dat$local=="caudatus",]
+rost.data <-  PCA.dat[PCA.dat$locals=="pugiformis",]
+raphNatW.data <- PCA.dat[PCA.dat$locals=="raphNatW",]
+
+raphNN.sym <- c(1:length(levels(droplevels(raphNN.data$Pop))))
+lanmar.sym <- c(1:length(levels(droplevels(lanmar.data$Pop))))
+CropD.sym <- c(1:length(levels(droplevels(CropD.data$Pop))))
+CropE.sym <- c(1:length(levels(droplevels(CropE.data$Pop))))
+CropO.sym <- c(1:length(levels(droplevels(CropO.data$Pop))))
+CropR.sym <- c(1:length(levels(droplevels(CropR.data$Pop))))
+rost.sym <- c(1:length(levels(droplevels(rost.data$Pop))))
+raphNatW.sym <- c(1:length(levels(droplevels(raphNatW.data$Pop))))
+
+```
+
+```{r, PlotSmartPCAFinal, echo=FALSE, fig.keep='last', message=FALSE, warning=FALSE, fig.path="../figures/", fig.height=6, fig.width=8}
+par( xpd=TRUE, mar=c(6,6,1,9))
+
+PC1 <- (PCA.eigen$V1[1]/sum(PCA.eigen$V1))*100
+PC2 <- (PCA.eigen$V1[2]/sum(PCA.eigen$V1))*100
+
+minpc1 <- min(PCA.dat$V2)
+maxpc1 <- max(PCA.dat$V2)
+minpc2 <- min(PCA.dat$V3)
+maxpc2 <- max(PCA.dat$V3)
+
+
+plot((PCA.dat$V2 ), 
+     (PCA.dat$V3 ),
+     type="n", 
+     xlab=paste("Eigenvector 1\n",round(PC1, digits = 1),"% of variance", sep=""), ylab=paste("Eigenvector 2\n",round(PC2, digits = 1),"% of variance", sep = ""),
+     cex.lab=1.1, xlim=c(-.1, .2), ylim=c(-.2, .20))
+
+par(new=TRUE)
+plot((raphNN.data$V2 ), 
+     (raphNN.data$V3 ), 
+     pch=raphNN.sym[droplevels(raphNN.data$Pop)], 
+     col=raphNN.col, 
+     lwd=2.5,
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)
+
+par(new=TRUE)	
+plot((lanmar.data$V2 ), 
+     (lanmar.data$V3 ), 
+     pch=lanmar.sym[droplevels(lanmar.data$Pop)], 
+     col=lanmar.col,
+     lwd=2.5,
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)
+
+par(new=TRUE)
+plot((CropD.data$V2 ), 
+     (CropD.data$V3 ), 
+     pch=CropD.sym[droplevels(CropD.data$Pop)], 
+     lwd=2.5,
+     col=CropD.col, 
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)
+
+par(new=TRUE)
+plot((CropE.data$V2 ), 
+     (CropE.data$V3 ), 
+     pch=CropE.sym[droplevels(CropE.data$Pop)], 
+     lwd=2.5,
+     col=CropE.col, 
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)
+
+par(new=TRUE)
+plot((CropO.data$V2 ), 
+     (CropO.data$V3 ), 
+     pch=CropO.sym[droplevels(CropO.data$Pop)], 
+     lwd=2.5,
+     col=CropO.col, 
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)
+
+par(new=TRUE)
+plot((CropR.data$V2 ), 
+     (CropR.data$V3 ), 
+     pch=CropR.sym[droplevels(CropR.data$Pop)], 
+     lwd=2.5,
+     col=CropR.col, 
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)
+
+par(new=TRUE)
+plot((raphNatW.data$V2 ), 
+     (raphNatW.data$V3 ), 
+     pch=raphNatW.sym[droplevels(raphNatW.data$Pop)], 
+     col=raphNatW.col, 
+     lwd=2.5,
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)	
+
+par(new=TRUE)
+plot((rost.data$V2 ), 
+     (rost.data$V3 ), 
+     pch=rost.sym[droplevels(rost.data$Pop)], 
+     col=rost.col,
+     lwd=2.5,
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.5)		
+
+# Landra and maritimus
+
+rect(.081, .045, .1655, .11, col="white")
+text(.124, .102, expression( "Native" ), cex=.9)
+legend(.085, .1, legend=levels(droplevels(lanmar.data$Pop)), 
+       pch=lanmar.sym, col=col_pal[7], title=expression(italic("R.r. landra")),
+       cex=.9, ncol = 2, bty="n", pt.lwd = 2.5)
+
+# Non Natives
+rect(-.17, .03, -.08, .11, col="white")
+text(-.125, .095, "Non-native" , cex=.9)
+legend( -.155, .09, legend=levels(droplevels(raphNN.data$Pop)), 
+        pch=raphNN.sym, col=raphNN.col, 
+        title = expression( italic("R.r. raphanistrum")), cex=.9, 
+       bty="n", pt.lwd = 2.5)
+
+
+## R. pugioniformis
+rect(.081, -.17, .1655, -.08, col="white")
+text(.123, -.095, expression( "Native" ), cex=.9)
+legend(.125, -.1, legend=levels(droplevels(rost.data$Pop)), 
+       pch=rost.sym, xjust = .5,
+       col=rost.col, title=expression(italic("R. pugioniformis")), cex=.9,
+       bty="n", pt.lwd = 2.5)
+
+# Native RRR
+rect(-.17, -.17, -.08, -.08, col="white")
+text(-.125, -.095, expression( "Native" ), cex=.9)
+legend(-.155, -.1, legend=levels(droplevels(raphNatW.data$Pop)), 
+       pch=raphNatW.sym, col=raphNatW.col,
+       title = expression( italic("R.r. raphanistrum")), cex=.9, 
+       bty="n", pt.lwd = 2.5)
+
+# Crops
+rect(.081, -.04, .1655, .04, col="white")
+text(.124, .03, expression( "Crops" ), cex=.9)
+text(.124, .02, expression(italic("R. sativus")), cex=.9)
+
+legend(.122, .02, legend=levels(droplevels(CropD.data$Pop)), 
+       pch=CropD.sym, col=CropD.col, cex=.9, 
+       bty="n", pt.lwd = 2.5)
+
+legend(.122, -.001, legend=levels(droplevels(CropE.data$Pop)), 
+       pch=CropE.sym, col=CropE.col, cex=.9,
+       bty="n", pt.lwd = 2.5)
+
+legend(.085, .02, legend=levels(droplevels(CropO.data$Pop)), 
+       pch=CropO.sym, col=CropO.col, cex=.9, 
+       bty="n", pt.lwd = 2.5)
+
+legend(.085, -.001, legend=levels(droplevels(CropR.data$Pop)), 
+       pch=CropR.sym, col=CropR.col, cex=.9,
+       bty="n", pt.lwd = 2.5)
+
+```
+
+Excitingly, this plot looks largely the same as the one done with 21 markers for the last paper. The crops all cluster together, landra and native R.r. raphanistrum populations flank the weeds, and R. pugioniformis is off on it's own. This plot is a little cleaner, however, and much more strongly suggests that the weeds are a landra/raphanistrum hybrid. It also much more clearly shows that the crops could be hybrids of pugioniformis and landra. 
+
+Overall, these plots agree with our current data, and support all of our major points in the previous paper.
+
+
