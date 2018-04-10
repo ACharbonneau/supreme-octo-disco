@@ -177,7 +177,7 @@ ForStacksAEUniq <- unique(ForStacksAEUniq)
 
 ForStacksAEUniq$UniqID <- paste(ForStacksAEUniq$UniqID, ".fq_q20", sep = "")
 
-write.table(x = select(ForStacksAEUniq, UniqID, Cross, Type_Year), file = "../Metadata/AE_data.pop",
+write.table(x = select(ForStacksAEUniq, UniqID, Cross.x, Type_Year.x), file = "../Metadata/AE_data.pop",
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 
@@ -246,7 +246,7 @@ ForStacksSSUniq <- droplevels(ForStacksSSUniq)
 
 ForStacksSSUniq$UniqID <- paste(ForStacksSSUniq$UniqID, ".fq_q20", sep = "")
 
-write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Metadata/SS_data.pop",
+write.table(x = select(ForStacksSSUniq, UniqID, Cross.x, Species.x), file = "../Metadata/SS_data.pop",
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 # Just RRR data
@@ -360,21 +360,23 @@ OrderList <- c(AFFR=1, AROL=7, BINY=2, DEES=3,
                RA761=5, RA808=6, RABG=5, RACA=6, SAES=2,
                SPNK=2, TOBG=4, YEIL=2)
 
-FullSSUniq$Geo <- as.factor(GeographyList[FullSSUniq$Cross])
-FullSSUniq$Taxon <- as.factor(TaxonomyList[FullSSUniq$Cross])
-FullSSUniq$Habit <- as.factor(HabitatList[FullSSUniq$Cross])
-FullSSUniq$locals <- as.factor(LocationList[FullSSUniq$Cross])
-FullSSUniq$Species <- as.factor(SpeciesList[FullSSUniq$Cross])
-FullSSUniq$Order <- as.factor(OrderList[FullSSUniq$Cross])
+FullSSUniq$Geo <- as.factor(GeographyList[FullSSUniq$Cross.x])
+FullSSUniq$Taxon <- as.factor(TaxonomyList[FullSSUniq$Cross.x])
+FullSSUniq$Habit <- as.factor(HabitatList[FullSSUniq$Cross.x])
+FullSSUniq$locals <- as.factor(LocationList[FullSSUniq$Cross.x])
+FullSSUniq$Species <- as.factor(SpeciesList[FullSSUniq$Cross.x])
+FullSSUniq$Order <- as.factor(OrderList[FullSSUniq$Cross.x])
 FullSSUniq$Order <- as.numeric(FullSSUniq$Order)
 
-FullSSUniq <- select(FullSSUniq, -Pedigree, -Population, -SeedLot, -Species.y)
+FullSSUniq <- select(FullSSUniq, -Pedigree, -Population, -SeedLot, -Type_Year.y,
+                    -Cross.y, -Indiv.y, -Date.y, -Prep.y, -Species.x) 
 
 colnames(FullSSUniq) <- c("ID","Type_Year","STACKSspecies","Pop","Indiv","Date",
                                "Prep","Flowcell","Lane","Barcode","LibraryPlate",
                                "Row","Col","LibraryPrepID","LibraryPlateID","Enzyme",
                                "BarcodeWell","DNA_Plate","SampleDNA_Well","Genus",
-                               "FullSampleName","UniqID","Geo","Taxon","Habit","locals",
-                               "Species","Order")
+                               "FullSampleName","UniqID", "Species","Geo","Taxon","Habit",
+                               "locals", "Order")
 
 write.csv(FullSSUniq, "../Metadata/SigSelectionMeta.csv")
+
