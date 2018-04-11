@@ -52,7 +52,7 @@ fi
 runs=$(cat FilesMapped.txt | wc -l)
 
 if [ -f ${indiv}_q20.sam ]
-  echo ${bsname} >> FilesMapped.txt
+  then echo ${bsname} >> FilesMapped.txt
 fi
 # Calculate next job to run
 NEXT=$(( ${PBS_ARRAYID} + 200 ))
