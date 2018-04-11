@@ -4,7 +4,6 @@
 
 BATCH=${1}
 popmin=${2}
-depth=${3}
 
 #Randomize Input files
 tail -n +2 ../${BATCH} | head -1 > nohead_${BATCH} || exit
@@ -16,11 +15,7 @@ INDIVIDS=`expr ${NLINES} / 2`
 
 MARKERS=$(head -2 ../${BATCH} | tail -1 | wc -w)
 
-if [ ${depth} == 4 ]; then
-	sed s/INDIVIDUALSGOHERE/${INDIVIDS}/ ../../../../supreme-octo-disco/3.2_mainparams4h > mainparams
-else
-	sed s/INDIVIDUALSGOHERE/${INDIVIDS}/ ../../../supreme-octo-disco/3.2_mainparams4h > mainparams
-fi
+sed s/INDIVIDUALSGOHERE/${INDIVIDS}/ ../../../supreme-octo-disco/3.2_mainparams4h > mainparams
 
 sed -i s/MARKERSGOHERE/${MARKERS}/ mainparams
 
@@ -39,9 +34,4 @@ head -1 nohead_${BATCH} > ${rep}_${BATCH}
 
 	done
 
-	if [ ${depth} == 4 ]; then
-    	qsub ../../../../supreme-octo-disco/3.1_Random_STRUCTURE.qsub -N ${rep}_STRUCTURE -t 3-${popmin} -v thisfile=${rep}_${BATCH}
-		else
-			qsub ../../../supreme-octo-disco/3.1_Random_STRUCTURE.qsub -N ${rep}_STRUCTURE -t 3-${popmin} -v thisfile=${rep}_${BATCH}
-		fi
-done
+qsub ../../../supreme-octo-disco/3.1_Random_STRUCTURE.qsub -N ${rep}_STRUCTURE -t 3-${popmin} -v thisfile=${rep}_${BATCH},depth=${depth}

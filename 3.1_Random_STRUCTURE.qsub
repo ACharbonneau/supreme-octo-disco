@@ -33,7 +33,4 @@ then
   echo "Running for the first time"
 fi
 
-if [ ${depth} == 4 ]
-then longjob structure -K ${PBS_ARRAYID} -i ${thisfile} -o ${PBS_JOBNAME} -m mainparams -e ../../../../supreme-octo-disco/3.2_extraparams
-else longjob structure -K ${PBS_ARRAYID} -i ${thisfile} -o ${PBS_JOBNAME} -m mainparams -e ../../../supreme-octo-disco/3.2_extraparams
-fi
+longjob structure -K ${PBS_ARRAYID} -i ${thisfile} -o ${PBS_JOBNAME} -m mainparams -e ../../../supreme-octo-disco/3.2_extraparams

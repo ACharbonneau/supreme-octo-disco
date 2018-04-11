@@ -21,7 +21,8 @@
 cd ${PBS_O_WORKDIR} || exit
 
 source ~/.bash_profile
-
+module load GNU/4.9
+module load GMAP/20160609
 module load SAMTools/1.2
 
 
@@ -31,31 +32,28 @@ indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
 bsname=${PBS_ARRAYID}_${indiv}
 
-
-cd ${MapFolder}/ || exit
-
 echo bsname="${bsname}"
 
 if [ ! -f ${indiv}_q20.sam ]
- then gsnap -t 6 -d ${index} --force-single-end -m 5 -i 2 -k 15 \
- --min-coverage=0.95 -o ${indiv}.sam -A sam ../${indiv}
+ then gsnap -t 6 -d ${index} -D Indicies/ --force-single-end -m 5 -i 2 -k 15 \
+ --min-coverage=0.95 -o ${indiv}.sam -A sam ${indiv}
  samtools view -q 20 -T ${genome} ${indiv}.sam > ${indiv}_q20.sam
- echo ${bsname} >> FilesMapped.txt
- echo "I finished mapping"
 fi
 
 
 if [ ! -f ${indiv}_q20.sam ]
-  then cd ${PBS_O_WORKDIR} || exit
-  qsub ../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${PBS_ARRAYID}\
+  then qsub ../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${PBS_ARRAYID}\
   -v genome="${genome}",gff="${gff}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",\
   MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
   echo "I broke during mapping"
-  cd - || exit
 fi
+
 
 runs=$(cat FilesMapped.txt | wc -l)
 
+if [ -f ${indiv}_q20.sam ]
+  echo ${bsname} >> FilesMapped.txt
+fi
 # Calculate next job to run
 NEXT=$(( ${PBS_ARRAYID} + 200 ))
 
@@ -63,19 +61,16 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 #Check to see if next job is past the maximum job id
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
-    cd ${PBS_O_WORKDIR} || exit
     echo "I want to run job" ${NEXT}
     qsub ../supreme-octo-disco/1.2_GSMap.qsub -N ${MapFolder} -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="${gffi}",exon="${exon}",stranded="${stranded}",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
     echo "I started the next job"
-    cd - || exit
 fi
 
 #Launch first step of STACKS if all the mapping is done
 
 
 if [ ${runs} = ${MAXJOBID} ]
-then cd ${MapFolder} || exit
-bash ../../supreme-octo-disco/2_Submit_P_STACKS.sh
+then bash ../supreme-octo-disco/2_Submit_P_STACKS.sh
 fi
 
 #Then launch metadata collector, once per reference per dataset
