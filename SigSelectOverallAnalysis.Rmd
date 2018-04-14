@@ -84,7 +84,7 @@ ind$U <- "U"
 ind <- select(ind, SSR, U, V2)
 
 #STRUCTURE format data from STACKS
-structuredata <- data.table::fread("../../output/batch_20170804.structure.tsv")
+structuredata <- data.table::fread("../ProcessRadtags/SS_20180325_U_Pop20_Ind.80_m5_M7_n7/STRUCTURE/1_batch_20180325.structure.tsv")
 
 evanno <- data.table::fread("../STRUCTURE/raw_output/SS_1042/evannoTable.tab")
 colnames(evanno) <- c("K", "Reps",	"Mean_LnP_K", "Stdev_LnP_K", "Ln_K",	"abs_Ln_K", "Delta_K")
