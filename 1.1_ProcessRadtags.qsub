@@ -31,7 +31,7 @@ PBS_JOBNAME=${PBS_JOBNAME}_${lane} #rename job to job_indiv
 
 mkdir ../ProcessRadtags/${lane}
 
-process_radtags -f ${lane} -i gzfastq -o ../ProcessRadtags/${lane}/ -b ../Metadata/PlateInfoSeq/${barcode} -c -q -e ‘pstI’ –adapter_1 ‘AGATCGGAAGAGCGGTTCAGCAGGAATGCCGAG’ –retain_header -y fastq --filter_illumina
+process_radtags -f ${lane} -i gzfastq -o ../ProcessRadtags/${lane}/ -b ../Metadata/PlateInfoSeq/${barcode} -c -q -e ‘pstI’ -D -–adapter_1 ‘AGATCGGAAGAGCGGTTCAGCAGGAATGCCGAG’ –retain_header -y fastq --filter_illumina
 
 cd ../ProcessRadtags/ || exit
 
@@ -44,7 +44,8 @@ fqT=`ls *.fq | wc -w`
 fqT=`expr ${fqT} - 1`
 
 if [[ ${fqT} = 1439 ]]
-then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJOBID=${fqT}
+then
+#qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJOBID=${fqT}
 #bash ../supreme-octo-disco/2_Submit_U_STACKS.sh
 rm FilesMapped.txt
 qsub ../supreme-octo-disco/1.2_GSMap.qsub -N MogheMap -t 0-${fqT} -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Moghe2014_GS
