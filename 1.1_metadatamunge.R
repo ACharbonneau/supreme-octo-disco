@@ -251,7 +251,7 @@ write.table(x = select(ForStacksSSUniq, UniqID, Cross.x, Species.x), file = "../
 
 # Just RRR data
 Just_Rrr <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rrr"]
-write.table(paste( " -s ../", Just_Rrr, sep=""), file = "../Metadata/SS_Rrr_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ./", Just_Rrr, sep=""), file = "../Metadata/SS_Rrr_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 Just_Rrr <- paste(Just_Rrr, ".sam", sep = "")
 write.table(Just_Rrr, file = "../Metadata/SS_Rrr_stacks_list", quote = F, col.names = F, row.names = F)
 Just_Rrr <- gsub("_q20.sam","", Just_Rrr )
