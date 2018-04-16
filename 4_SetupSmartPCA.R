@@ -17,7 +17,7 @@ args <- commandArgs(trailingOnly=TRUE)
 #print(args[1])
 
 #args="NameOfStructureFile" "path to .pop file" "path to 4.1_bi-winning_allele.py"
-#args=c("batch_20170804.structure.tsv", "../temppopfile", "../../../supreme-octo-disco/4.1_bi-winning_allele.py")
+#args=c("batch_20180415.structure.tsv", "../../../Metadata/SS_data.pop", "../../../supreme-octo-disco/4.1_bi-winning_allele.py")
 
 metadata <- read.csv(args[2], header = F, sep="\t")
 stacksgenotypes <- data.table::fread(paste("../", args[1], sep = ""), header = F, sep="\t")
@@ -55,7 +55,7 @@ write.table(ind, paste(newbasename,".ind", sep = ""), sep = "\t", col.names = F,
 
 snp <- colnames(biallele)
 snp <- as.data.frame(snp[2:length(snp)])
-ifelse( length(snp[,1]) %% 2 == 0,  snp$FakeChromo <- c(1, 2, 3, 4), snp$FakeChromo <- c(1, 2, 3))
+snp$FakeChromo <- floor(runif(length(snp[,1]), 1,9))
 snp$zero1 <- 0
 snp$zero2 <- 0
 
