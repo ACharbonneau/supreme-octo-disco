@@ -33,5 +33,5 @@ head -1 nohead_${BATCH} > ${rep}_${BATCH}
 		sed "${next}q;d" nohead_${BATCH} >> ${rep}_${BATCH}
 
 	done
-
+done
 qsub ../../../supreme-octo-disco/3.1_Random_STRUCTURE.qsub -N ${rep}_STRUCTURE -t 3-${popmin} -v thisfile=${rep}_${BATCH},depth=${depth}
