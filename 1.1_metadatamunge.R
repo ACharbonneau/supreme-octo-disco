@@ -251,7 +251,7 @@ write.table(x = select(ForStacksSSUniq, UniqID, Cross.x, Species.x), file = "../
 
 # Just RRR data
 Just_Rrr <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rrr"]
-write.table(paste( " -s ./", Just_Rrr, sep=""), file = "../Metadata/SS_Rrr_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ../", Just_Rrr, sep=""), file = "../Metadata/SS_Rrr_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 Just_Rrr <- paste(Just_Rrr, ".sam", sep = "")
 write.table(Just_Rrr, file = "../Metadata/SS_Rrr_stacks_list", quote = F, col.names = F, row.names = F)
 Just_Rrr <- gsub("_q20.sam","", Just_Rrr )
@@ -259,7 +259,7 @@ write.table(Just_Rrr, file = "../Metadata/SS_Rrr_stacks_fastqs", quote = F, col.
 
 #Just landra
 Just_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rrl"]
-write.table(paste( " -s ./", Just_landra, sep=""), file = "../Metadata/SS_Rrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ../", Just_landra, sep=""), file = "../Metadata/SS_Rrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 Just_landra <- paste(Just_landra, ".sam", sep = "")
 write.table(Just_landra, file = "../Metadata/SS_Rrl_stacks_list", quote = F, col.names = F, row.names = F)
 Just_landra <- gsub("_q20.sam","", Just_landra )
@@ -267,7 +267,7 @@ write.table(Just_landra, file = "../Metadata/SS_Rrl_stacks_fastqs", quote = F, c
 
 #Just crops
 Just_Rsat <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rsat"]
-write.table(paste( " -s ./", Just_Rsat, sep=""), file = "../Metadata/SS_Rsat_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ../", Just_Rsat, sep=""), file = "../Metadata/SS_Rsat_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 Just_Rsat <- paste(Just_Rsat, ".sam", sep = "")
 write.table(Just_Rsat, file = "../Metadata/SS_Rsat_stacks_list", quote = F, col.names = F, row.names = F)
 Just_Rsat <- gsub("_q20.sam","", Just_Rsat )
@@ -275,7 +275,7 @@ write.table(Just_Rsat, file = "../Metadata/SS_Rsat_stacks_fastqs", quote = F, co
 
 #RRR and landra
 Rrr_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rrr" | ForStacksSSUniq$Species.x == "Rrl"]
-write.table(paste( " -s ./", Rrr_landra, sep=""), file = "../Metadata/SS_RrrRrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ../", Rrr_landra, sep=""), file = "../Metadata/SS_RrrRrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 Rrr_landra <- paste(Rrr_landra, ".sam", sep = "")
 write.table(Rrr_landra, file = "../Metadata/SS_RrrRrl_stacks_list", quote = F, col.names = F, row.names = F)
 Rrr_landra <- gsub("_q20.sam","", Rrr_landra )
@@ -287,7 +287,7 @@ write.table(Rrr_landra, file = "../Metadata/SS_RrrRrl_stacks_fastqs", quote = F,
 #All signature of selection
 All_SS <- ForStacksSSUniq$UniqID
 
-write.table(paste( " -s ./", All_SS, sep=""), file = "../Metadata/SS_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " -s ../", All_SS, sep=""), file = "../Metadata/SS_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 
 All_SS <- paste(All_SS, ".sam", sep = "")
 
