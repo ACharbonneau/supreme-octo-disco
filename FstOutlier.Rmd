@@ -35,6 +35,7 @@ packages(tidyr)
 packages(RColorBrewer)
 packages(ggplot2)
 packages(knitr)
+source("../supreme-octo-disco/R functions/plot_R.r")
 
 ```
 
@@ -53,6 +54,7 @@ colnames(File_list) <- c("batch", "Date", "fst", "Pop1", "Pop2", "tsv", "runname
 File_list <- select(File_list, runname, Date, Pop1, Pop2)
 
 
+
 for( fst_file in c(1:length(File_list$runname))){
   #fst_file <- 2
   dataset <- File_list[fst_file, 1]
@@ -61,15 +63,18 @@ for( fst_file in c(1:length(File_list$runname))){
                              dataset, sep=""), sep = "\t")
 
   fst_comp$sigFisherP <- fst_comp$Fisher.s.P < .05
-
-  ggplot(fst_comp, aes(Locus.ID, Smoothed.Fst, col= Odds.Ratio, shape=sigFisherP )) + geom_point() +
-      scale_colour_gradientn(colours= c("Black", "Red")) + 
-      ggtitle(paste("Fst ", File_list$Pop1[fst_file], " vs ", File_list$Pop2[fst_file], sep=""))
+  print(ggplot(fst_comp, aes(Locus.ID, Smoothed.Fst, col= LOD, shape=sigFisherP )) + 
+          geom_point() + scale_colour_gradientn(colours= c("Black", "Red")) + 
+    ggtitle(paste("Fst ", File_list$Pop1[fst_file], " vs ", File_list$Pop2[fst_file], sep="")))
 
  
 
 }
 
 dev.off()
+```
+
+```{r}
+plot_bayescan("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/SS_20180415_P_Pop20_Ind.80_m2_n7_Baye_fst.txt",FDR=0.05)
 ```
 

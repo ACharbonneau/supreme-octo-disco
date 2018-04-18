@@ -17,4 +17,18 @@ module load BayeScan/2.1
 
 cd ${PBS_O_WORKDIR} || exit
 
-bayescan SS_20180415_P_Pop20_Ind.80_m2_n7_BayeScan -threads 10 -out_pilot pilot_output -out_freq alleleFreqBayes
+#bayescan SS_20180415_P_Pop20_Ind.80_m2_n7_BayeScan -threads 10 -out_pilot pilot_output -out_freq alleleFreqBayes
+
+bayescan BINY_AFFR -threads 10 -out_pilot pilot_BINY_AFFR -out_freq alleleFreq_BINY_AFFR
+bayescan BINY_DEES -threads 10 -out_pilot pilot_BINY_DEES -out_freq alleleFreq_BINY_DEES
+bayescan BINY_MAES -threads 10 -out_pilot pilot_BINY_MAES -out_freq alleleFreq_BINY_MAES
+bayescan BINY_NAAU -threads 10 -out_pilot pilot_BINY_NAAU -out_freq alleleFreq_BINY_NAAU
+bayescan BINY_PBFR -threads 10 -out_pilot pilot_BINY_PBFR -out_freq alleleFreq_BINY_PBFR
+bayescan BINY_SAES -threads 10 -out_pilot pilot_BINY_SAES -out_freq alleleFreq_BINY_SAES
+bayescan NAAU_AFFR -threads 10 -out_pilot pilot_NAAU_AFFR -out_freq alleleFreq_NAAU_AFFR
+bayescan NAAU_DEES -threads 10 -out_pilot pilot_NAAU_DEES -out_freq alleleFreq_NAAU_DEES
+bayescan NAAU_MAES -threads 10 -out_pilot pilot_NAAU_MAES -out_freq alleleFreq_NAAU_MAES
+bayescan NAAU_PBFR -threads 10 -out_pilot pilot_NAAU_PBFR -out_freq alleleFreq_NAAU_PBFR
+bayescan NAAU_SAES -threads 10 -out_pilot pilot_NAAU_SAES -out_freq alleleFreq_NAAU_SAES
+
+bayescan Weed_Nrrr -threads 10 -out_pilot pilot_Weed_Nrrr -out_freq alleleFreq_Weed_Nrrr
