@@ -31,8 +31,8 @@ mkdir treemix
 cd treemix || exit
 
 cp ../batch_20180415.treemix .
-tail -n +2 batch_20180415.treemix > batch_20180415.treemix_nohead
-gzip batch_20180415.treemix_nohead
+tail -n +2 batch_20180415.treemix > ../batch_20180415.treemix_nohead
+gzip ../batch_20180415.treemix_nohead
 
 #### Not using K flag because SNPs aren't ordered
 
