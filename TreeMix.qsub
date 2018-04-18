@@ -1,0 +1,81 @@
+#!/bin/bash -login
+
+### define resources needed:
+### walltime - how long you expect the job to run
+#PBS -l walltime=4:00:00
+
+### nodes:ppn - how many nodes & cores per node (ppn) that you require
+#PBS -l nodes=1:ppn=1
+### mem: amount of memory that the job will need
+#PBS -l mem=64gb
+
+#PBS -N notset
+if [ "$PBS_JOBNAME" == "notset" ]
+then
+    echo "please set the job name"
+    exit 1
+fi
+
+#setnumber=`echo ${PBS_JOBNAME} | sed s/(\d+)*+/\1/`
+#echo ${setnumber}
+# change to the working directory where your code is located
+cd ${PBS_O_WORKDIR}
+
+
+### call your executable
+module load treemix/1.12
+module load Python/2.7.2
+module load DendroPy/3.12.0
+
+mkdir treemix
+cd treemix || exit
+
+cp ../batch_20180415.treemix .
+tail -n +2 batch_20180415.treemix > batch_20180415.treemix_nohead
+gzip batch_20180415.treemix_nohead
+
+#### Not using K flag because SNPs aren't ordered
+
+cd nomigration
+
+rm SS_tree.tre SS_tree_Sumtree.tre
+
+treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL,YEIL -o SS_tree -global > SS_tree.log
+
+zcat SS_tree.treeout.gz > SS_tree_org.tre
+
+for i in `seq 1 1000`
+    do treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL,YEIL -global -bootstrap -o SS_tree_${i} > SS_tree_${i}.log
+    zcat SS_tree_${i}.treeout.gz >> SS_tree.tre
+done
+
+sumtrees.py --rooted --percentages -t SS_tree_org.tre -o SS_tree_Sumtree.tre SS_tree.tre > SS_tree_Sumtree.log
+
+cd ../onemigration || exit
+
+rm SS_tree_M1.tre SS_tree_M1_Sumtree.tre
+
+treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL,YEIL -o SS_tree_M1 -global -m 1 > SS_tree_M1.log
+zcat SS_tree_M1.treeout.gz > SS_tree_M1_org.tre
+
+for i in `seq 1 1000`
+	do treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL,YEIL -global -bootstrap -o SS_tree_M1_${i} -m 1 > SS_tree_M1_${i}.log
+	zcat SS_tree_M1_${i}.treeout.gz >> SS_tree_M1.tre
+done
+
+sumtrees.py --rooted --percentages -t SS_tree_M1_org.tre -o SS_tree_M1_Sumtree.tre SS_tree_M1.tre > SS_tree_M1_Sumtree.log
+
+cd ../twomigration  || exit
+
+
+rm SS_tree_M2.tre SS_tree_M2_Sumtree.tre
+
+treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL,YEIL -o SS_tree_M2 -global -m 2 > SS_tree_M2.log
+zcat SS_tree_M2.treeout.gz > SS_tree_M2_org.tre
+
+for i in `seq 1 1000`
+	do treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL,YEIL -global -bootstrap -o SS_tree_M2_${i} -m 2 > SS_tree_M2_${i}.log
+	zcat SS_tree_M2_${i}.treeout.gz >> SS_tree_M2.tre
+done
+
+sumtrees.py --rooted --percentages -t SS_tree_M2_org.tre -o SS_tree_M2_Sumtree.tre SS_tree_M2.tre > SS_tree_M2_Sumtree.log
