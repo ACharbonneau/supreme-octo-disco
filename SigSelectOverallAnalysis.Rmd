@@ -72,7 +72,7 @@ packages(knitr)
 
 ```{r ImportFiles, echo=FALSE, message=FALSE, warning=FALSE}
 
-biallele <- read.table("../ProcessRadtags/SS_20180325_U_Pop20_Ind.80_m5_M7_n7/SmartPCA/20180325_biallele.csv", sep = ",", header = T)
+biallele <- read.table("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/SmartPCA/20180415_biallele.csv", sep = ",", header = T)
 
 SSmeta <- read.csv("../Metadata/SS_data.pop", sep = "\t", header = F)
 meta <- read.csv("../Metadata/SigSelectionMeta.csv")
@@ -84,21 +84,25 @@ ind$U <- "U"
 ind <- select(ind, SSR, U, V2)
 
 #STRUCTURE format data from STACKS
-structuredata <- data.table::fread("../ProcessRadtags/SS_20180325_U_Pop20_Ind.80_m5_M7_n7/STRUCTURE/1_batch_20180325.structure.tsv")
+structuredata <- data.table::fread("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/1_batch_20180415.structure.tsv")
 
-evanno <- data.table::fread("../STRUCTURE/raw_output/SS_1042/evannoTable.tab")
+evanno <- data.table::fread("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/STRUCTUREharvester/evannoTable.tab")
 colnames(evanno) <- c("K", "Reps",	"Mean_LnP_K", "Stdev_LnP_K", "Ln_K",	"abs_Ln_K", "Delta_K")
 
 #Original SmartPCA run
-PCA.dat <- data.table::fread("../../SS_Analysis/SmartPCA/20170804.pca.evec")
+PCA.dat <- data.table::fread("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/SmartPCA/20180415.pca.evec")
 
-PCA.eigen <- as.data.frame(data.table::fread("../../SS_Analysis/SmartPCA/20170804.eval"))
+PCA.eigen <- as.data.frame(data.table::fread("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/SmartPCA/20180415.eval"))
+
+ALLTHEFILES <- dir("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/parsed_data/")
+
+#ALLTHEFILES <- dir("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/parsed_data/", pattern = "*_STRUCTURE-8_f.parsed")
 
 
 ```
 
 ```{r STRUCTURErunMetadata, echo=F}
-ALLTHEFILES <- dir("../STRUCTURE/parsed_data/")
+
 
 File_Num <- length(ALLTHEFILES)
 
@@ -159,7 +163,6 @@ A representitive plot of each is shown below.
 
 ```{r STRUCTURE4, echo=FALSE, message=FALSE, fig.width=8, fig.height=8}
 
-ALLTHEFILES <- dir("../STRUCTURE/parsed_data/", pattern = "*_STRUCTURE-4_f.parsed")
 
 File_Num <- length(ALLTHEFILES)
 
@@ -172,32 +175,33 @@ File_list <- select(File_list, K, randomization, runname)
 File_list <- arrange(File_list, randomization, K)
 
 
-for( strrun in c(1, 2, 4, 5)){
-    dataset <- File_list[strrun, 3]
-    str.data <- 0
-    str.data <- read.csv(paste("../STRUCTURE/parsed_data/",dataset, sep=""), header=F)
-    K <- File_list[strrun, 1] # Find out what K is
-    str.data <- str.data[,c(2,3,5:ncol(str.data))] # Get only useful columns from STRUCTURE
-    colnames(str.data) <- c( "Individual", "%missing",1:K)
-    str.data$ID <- unlist(strsplit(as.character(str.data$Individual), "_QTL.+"))
-    
-    #Get the label/metadata about each individual from a seperate file. Join to remove all the "RA" and "NZIL" individuals
-    
-    labels <- read.csv("../../Metadata/SigSelectionMeta.csv" )
-    labels$ID <- as.character(labels$ID)
+for( strrun in c(1:File_Num)){
+  #strrun <- 1
+  dataset <- File_list[strrun, 3]
+  str.data <- 0
+  str.data <- read.csv(paste("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/parsed_data/",dataset, sep=""), header=F)
+  K <- File_list[strrun, 1] # Find out what K is
+  str.data <- str.data[,c(2,3,5:ncol(str.data))] # Get only useful columns from STRUCTURE
+  colnames(str.data) <- c( "Individual", "%missing",1:K)
+  str.data$ID <- gsub(".", "", fixed = T, as.character(str.data$Individual))
+  str.data$ID <- gsub(".+_(.+)", "\\1", as.character(str.data$ID) )
+  
+  #Get the label/metadata about each individual from a seperate file.
 
-    all.data <- left_join(str.data, labels)
+  meta$ID <- as.character(meta$ID)
+
+  all.data <- left_join(str.data, meta, by=c("ID"="ID"))
 
 #For prettier plotting, lump all of the different species together. Later you'll plot each
 #species seperately in a divided plotting screen
-    crop.data <- all.data[all.data$Species=="sativus",]
-    weed.data <- all.data[all.data$locals=="raphNN",]
-    native.data <- all.data[all.data$locals=="landra",]
-    raphNatW.data <- all.data[all.data$locals=="raphNatW",]
-    pugi.data <- all.data[all.data$locals=="pugiformis",]
-    daikon.data <- all.data[all.data$Taxon=="daikon",]
-    european.data <- all.data[all.data$Taxon=="european",]
-    oilrat.data <- all.data[all.data$Taxon=="caudatus" | all.data$Taxon=="oleifera",]
+    crop.data <- filter(all.data, Species=="Rsat")
+    weed.data <- filter(all.data, locals=="raphNN")
+    native.data <- filter(all.data, locals=="landra" )
+    raphNatW.data <- filter(all.data, locals=="raphNatW")
+    pugi.data <- filter(all.data, locals=="pugiformis")
+    daikon.data <- filter(all.data, locals=="daikon")
+    european.data <- filter(all.data, locals=="european")
+    oilrat.data <- filter(all.data, locals=="oleifera" | locals=="caudatus")
     
     crop.table <- t(crop.data[3:(2+K)][order(crop.data$Order),])
     daikon.table <- t(daikon.data[3:(2+K)][order(daikon.data$Order),])
@@ -228,7 +232,7 @@ for( strrun in c(1, 2, 4, 5)){
     par(mfrow=c(1,1), mar=c(0,0,0,0))
     par(fig=c(0,1,.8,.9))
     barplot(native.table, col=col_pal[1:K], xaxt="n", yaxt="n", 
-            space=c(rep(0,16),1, rep(0,15), 1, rep(0,15), 1,rep(0,15), 1,rep(0,15), 1,rep(0,15)))
+            space=c(rep(0,16), 1, rep(0,15), 1, rep(0,15), 1,rep(0,15), 1,rep(0,15), 1,rep(0,15)))
     axis(side=3, at=50, labels=c(K_text), cex=5, tick=F, line=.8)
     axis(side=3, at=50, labels=expression(italic("R.r. landra")), cex=2, tick=F, line=-1)
     axis(side=1, at=c(8,25,42,59,76,93), labels=c("France (PBFR)",
@@ -293,7 +297,7 @@ Taken together, this would suggest that the second plot in the series is the mos
 
 SmartPCA is designed to work on human data, and so is coded to have a hard cap of 23 chromosomes. This analysis worked previously, because we had both linkage groups for those markers, and a small number of them. However, now we have a very large number of markers, and no linkage information. SmartPCA *cannot* be run with without chromosome/linkage information. Recall that SmartPCA can also only run on biallelic data. Although STACKS only outputs biallelic data, it outputs the alleles in a format that is incompatible with SmartPCA.
 
-So, I've used a script to turn the STACKS output that is in STRUCTURE format into SmartPCA format, which fixes the incompatible biallelic format. As a hack, I've had R haphazardly assign markers to chromosomes by having it use each chromosome number 104 times (1092*2/104 = 21 chromosomes). Doing so, gives the following PCA:
+So, I've used a script to turn the STACKS output that is in STRUCTURE format into SmartPCA format, which fixes the incompatible biallelic format. As a hack, I've had R randomly assign markers to chromosomes by having it choose a number from 1-9 for each marker. I've tested this a bunch of times, SmartPCA doesn't use the chromosome numbers for anything, it just demands them.
 
 ```{r PlotSmartPCA, echo=FALSE, fig.keep='last', message=FALSE, warning=FALSE}
 
@@ -301,10 +305,7 @@ ggplot(PCA.dat, aes(V2, V3)) + geom_point(aes(col=V12)) + xlab("PC1") + ylab("PC
 
 ```
 
-The user instructions for SmartPCA give very little indication of what it uses the chromosomes for. So, it's difficult to say whether this my hack is a reasonable fix, or if it is changing the outcome.
-
-I've run a couple of tests the validity of the plot. 
-
+T
 ###Principle Components Analysis in R of SmartPCA data
 First, I've run prcomp on the exact dataframe I fed into SmartPCA, using the same color scheme for ease of comparison.
 
@@ -312,8 +313,8 @@ First, I've run prcomp on the exact dataframe I fed into SmartPCA, using the sam
 JustPCA <- prcomp(as.data.frame(select(biallele, -SSR)))
 
 JustPCAX <- as.data.frame(JustPCA$x)
-JustPCAX$UniqID <- ind$SSR
-JustPCAX <- left_join(JustPCAX, meta)
+JustPCAX$UniqID <- gsub(".fq_q20", "", biallele$SSR, fixed = T)
+JustPCAX <- left_join(JustPCAX, meta, by=c("UniqID"="UniqID"))
 
 
 ggplot(JustPCAX, aes(PC1, PC2)) + geom_point(aes(col=Pop)) + xlab("PC1") + ylab("PC2")
@@ -324,49 +325,7 @@ This gives a reasonably similar, but not identical graph. Although any individua
 
 Since these both use the same dataset, I expected them to give similar, if not identical, results. This close, but not exact, match suggests that SmartPCA may be using the positional information to some extent, but it could also be due to other internal algorithms of SmartPCA. 
 
-To check this, I did a second run of SmartPCA, with a different set of fake chromosome numbers, such that the linkage would now be completely different.
-
-##SmartPCA rerun, new chromosomes
-```{r SmartPCArep, echo=FALSE, fig.keep='last', message=FALSE, warning=FALSE}
-
-
-ggplot(repPCA.dat, aes(V2, V3)) + geom_point(aes(col=V260)) + xlab("PC1") + ylab("PC2")
-```
-
-This plot is exactly the same as the original SmartPCA plot, which suggests that although the program requires information about chromosome number, location and linkage, it doesn't actually use them. It appears the differences between the PRcomps and SmartPCA results are due entirely to the 'optimization for genetic data' that is part of SmartPCA, and is likely something that we want.
-
-So, although this data doesn't fit the techinical requirements for SmartPCA, feeding it fake data for chromosome location doesn't seem to compromise the algorithm.
-
-###Principle Components Analysis in R of original STACKS output (STRUCTURE format)
-
-As a final check, I've run prcomp on the data that STACKS outputs in STRUCTURE format. Since the STRUCTURE format has two entries per individual per locus (one for each allele), I've simply added the values of the alleles for each locus. So, a individual that was the genotype 1, 1 is now 2. All of the genotypes output by STACKS are < 5, so this shouldn't cause too many problems with scaling, and should give a dataframe similar to the one that SmartPCA requires, just not constrained to be biallelic.
-
-```{r strPRcomps, echo=F, warning=F}
-str_A <- structuredata[seq(1, length(structuredata$V1), by = 2),]
-str_B <- structuredata[seq(2, length(structuredata$V1), by = 2),]
-
-colnames(str_A) <- paste(colnames(str_A), "_A", sep = "")
-colnames(str_B) <- paste(colnames(str_B), "_B", sep = "")
-
-strAB <- select(str_A, -V1_A) + select(str_B, -V1_B)
-
-strPCA <- prcomp(strAB)
-
-strPCAx <- as.data.frame(strPCA$x)
-
-strPCAx$Indiv <- str_A$V1_A
-
-metaPCAx <- left_join(strPCAx, SSmeta, by=c("Indiv"="V1"))
-
-ggplot(metaPCAx, aes(PC1, PC2*-1)) + geom_point(aes(col=V2)) + xlab("PC1") + ylab("PC2")
-
-```
-
-Here, the overall population placements are still quite similar to the output from SmartPCA and PRcomps, however the wishbone shape has morphed into more of a circle. Given that the SmartPCA program seems to ignore chromosome data anyway, I think sticking with the SmartPCA data will be the most informative. However, it's useful to see that changing the intrinsic meaning of the allele information fed into various PCA programs doesn't make huge changes to the result, and puts populations in largely the same places relative to each other. 
-
 ###SmartPCA, Finalized plot
-
-
 
 ```{r GetPlotColors, echo=FALSE, message=FALSE, warning=FALSE}
 #Set up plotting colors
@@ -400,6 +359,9 @@ rost.col <-  ALLTHECOLORS[10]
 
 
 ```{r MakeParsedData, echo=FALSE, message=FALSE, warning=FALSE}
+
+PCA.dat$V1 <- gsub(".fq_q20", "", PCA.dat$V1, fixed = T)
+
 PCA.dat <- left_join(PCA.dat, meta, by=c("V1"="UniqID"))
 
 raphNN.data <- PCA.dat[PCA.dat$locals=="raphNN",]
@@ -423,6 +385,10 @@ raphNatW.sym <- c(1:length(levels(droplevels(raphNatW.data$Pop))))
 ```
 
 ```{r, PlotSmartPCAFinal, echo=FALSE, fig.keep='last', message=FALSE, warning=FALSE, fig.path="../figures/", fig.height=6, fig.width=8}
+
+#pdf(file="../figures/PlotSmartPCA", height=6, width=8)
+
+
 par( xpd=TRUE, mar=c(6,6,1,9))
 
 PC1 <- (PCA.eigen$V1[1]/sum(PCA.eigen$V1))*100
@@ -514,57 +480,58 @@ plot((rost.data$V2 ),
 
 # Landra and maritimus
 
-rect(.081, .045, .1655, .11, col="white")
-text(.124, .102, expression( "Native" ), cex=.9)
-legend(.085, .1, legend=levels(droplevels(lanmar.data$Pop)), 
-       pch=lanmar.sym, col=col_pal[7], title=expression(italic("R.r. landra")),
+rect(.05, -.2, .15, -.1, col="white")
+text(.1, -.115, expression( "Native" ), cex=.9)
+legend(.05, -.12, legend=levels(droplevels(lanmar.data$Pop)), 
+       pch=lanmar.sym, col=lanmar.col, title=expression(italic("R.r. landra")),
        cex=.9, ncol = 2, bty="n", pt.lwd = 2.5)
 
 # Non Natives
-rect(-.17, .03, -.08, .11, col="white")
-text(-.125, .095, "Non-native" , cex=.9)
-legend( -.155, .09, legend=levels(droplevels(raphNN.data$Pop)), 
+rect(.07, .09, .16, .17, col="white")
+text(.115, .16, "Non-native" , cex=.9)
+legend( .075, .155, legend=levels(droplevels(raphNN.data$Pop)), 
         pch=raphNN.sym, col=raphNN.col, 
         title = expression( italic("R.r. raphanistrum")), cex=.9, 
        bty="n", pt.lwd = 2.5)
 
 
 ## R. pugioniformis
-rect(.081, -.17, .1655, -.08, col="white")
-text(.123, -.095, expression( "Native" ), cex=.9)
-legend(.125, -.1, legend=levels(droplevels(rost.data$Pop)), 
+rect(-.03, .11, .051, .2, col="white")
+text(.01, .19, expression( "Native" ), cex=.9)
+legend(.01, .18, legend=levels(droplevels(rost.data$Pop)), 
        pch=rost.sym, xjust = .5,
        col=rost.col, title=expression(italic("R. pugioniformis")), cex=.9,
        bty="n", pt.lwd = 2.5)
 
 # Native RRR
-rect(-.17, -.17, -.08, -.08, col="white")
-text(-.125, -.095, expression( "Native" ), cex=.9)
-legend(-.155, -.1, legend=levels(droplevels(raphNatW.data$Pop)), 
+rect(.152, -.07, .24, 0.03, col="white")
+text(.195, .02, expression( "Native" ), cex=.9)
+legend(.155, .013, legend=levels(droplevels(raphNatW.data$Pop)), 
        pch=raphNatW.sym, col=raphNatW.col,
        title = expression( italic("R.r. raphanistrum")), cex=.9, 
        bty="n", pt.lwd = 2.5)
 
 # Crops
-rect(.081, -.04, .1655, .04, col="white")
-text(.124, .03, expression( "Crops" ), cex=.9)
-text(.124, .02, expression(italic("R. sativus")), cex=.9)
+rect(-.1, -.21, .0, -.1, col="white")
+text(-.05, -.11, expression( "Crops" ), cex=.9)
+text(-.05, -.125, expression(italic("R. sativus")), cex=.9)
 
-legend(.122, .02, legend=levels(droplevels(CropD.data$Pop)), 
+legend(-.1, -.13, legend=levels(droplevels(CropD.data$Pop)), 
        pch=CropD.sym, col=CropD.col, cex=.9, 
        bty="n", pt.lwd = 2.5)
 
-legend(.122, -.001, legend=levels(droplevels(CropE.data$Pop)), 
+legend(-.1, -.165, legend=levels(droplevels(CropE.data$Pop)), 
        pch=CropE.sym, col=CropE.col, cex=.9,
        bty="n", pt.lwd = 2.5)
 
-legend(.085, .02, legend=levels(droplevels(CropO.data$Pop)), 
+legend(-.05, -.13, legend=levels(droplevels(CropO.data$Pop)), 
        pch=CropO.sym, col=CropO.col, cex=.9, 
        bty="n", pt.lwd = 2.5)
 
-legend(.085, -.001, legend=levels(droplevels(CropR.data$Pop)), 
+legend(-.05, -.165, legend=levels(droplevels(CropR.data$Pop)), 
        pch=CropR.sym, col=CropR.col, cex=.9,
        bty="n", pt.lwd = 2.5)
+dev.off()
 
 ```
 

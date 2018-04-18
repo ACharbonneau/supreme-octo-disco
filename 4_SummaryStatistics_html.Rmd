@@ -1,0 +1,577 @@
+---
+title: "PopGenGBS"
+author: "Amanda Charbonneau"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    code_folding: hide
+    collapsed: no
+    df_print: paged
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_depth: 5
+    toc_float: yes
+  html_notebook:
+    toc: yes
+    toc_depth: 5
+---
+
+
+```{r, echo=FALSE, message=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.path="../figures/", fig.keep="last")
+
+# Install function for packages    
+packages<-function(x){
+  x<-as.character(match.call()[[2]])
+  if (!require(x,character.only=TRUE)){
+    install.packages(pkgs=x,repos="http://cran.r-project.org")
+    require(x,character.only=TRUE)
+  }
+}
+packages("phangorn")
+packages("adegenet")
+packages("hierfstat")
+packages("pegas")
+packages("pheatmap")
+packages("RColorBrewer")
+packages("poppr")
+packages("plyr")
+packages("dplyr")
+packages("ggplot2")
+packages("shiny")
+packages("StatMatch")
+
+amovaReps <- 500
+
+```
+
+```{r}
+#Set up plotting colors
+
+## Add an alpha value to a colour
+add.alpha <- function(col, alpha=.7){
+  if(missing(col))
+    stop("Please provide a vector of colours.")
+  apply(sapply(col, col2rgb)/255, 2,
+        function(x)
+          rgb(x[1], x[2], x[3], alpha=alpha))  
+}
+
+col_pal <- brewer.pal(9, "Set1")
+col6 <- brewer.pal(6, "Set2")
+col_pal <- c(col_pal[c(1:5)], col6[6], col_pal[c(8,9)], "gray20", "black")
+
+ALLTHECOLORS <- add.alpha(col_pal)
+
+NonNatives <- ALLTHECOLORS[5]
+Daikon <- ALLTHECOLORS[6]
+European <- ALLTHECOLORS[1]
+lanmar <- ALLTHECOLORS[7]
+Oilseed <- ALLTHECOLORS[3]
+raphNatW <- ALLTHECOLORS[4]
+Rattail <- ALLTHECOLORS[8]
+Pugiformis <-  ALLTHECOLORS[10]
+```
+
+
+This script uses the input for STRUCTURE to do some population genetics.
+
+```{r, echo=FALSE, message=FALSE}
+
+#has population names and group names
+
+ALLTHEALLELES <- read.structure(file = "../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/nohead_batch_20180415.structure.stru", n.ind = 258, n.loc = 1116, onerowperind = F, col.lab = 1, col.pop = 0, row.marknames = 1, NA.char = "-9", col.others = FALSE )
+
+adegenet::strata(ALLTHEALLELES) <- read.csv("../Metadata/PopStructureAmova.csv", header = FALSE) 
+
+adegenet::splitStrata(ALLTHEALLELES) <- ~Species/Group/Pop/Ind
+
+ALLTHEALLELES@pop <- ALLTHEALLELES@strata$Pop
+#groupcov <- read.csv("../Figures/GroupCoV.csv")
+#expcov <- read.csv("../Figures/ExpCoV.csv")
+#popcov <- read.csv("../Figures/PopCoV.csv")
+
+#goodloci <- c( "DWRD_124", "DWRD_112", "DWRD_61", "DWRD_177", "DWRD_107",
+#"DWRD_123", "DWRD_121", "DWRD_158", "DWRD_48", "DWRD_180",
+#"DWRD_97", "DWRD_205", "DWRD_27", "Bn26a", "BRMS005",
+#"Ra1H08", "Ra2E11", "Bn35d", "Na12E05" )
+```
+
+
+```{r, echo=FALSE,message=FALSE}
+#Genind has only individual information, genpop has population level info as well
+
+poplevel <- genind2genpop(ALLTHEALLELES)
+
+poplevelfreq <- tab(poplevel, freq=T)
+
+write.csv(poplevelfreq, "../figures/PopulationLevelAlleleFreq.csv")
+
+grouplevel <- genind2genpop(x = ALLTHEALLELES, pop = ALLTHEALLELES@strata$Group)
+grouplevelfreq <- tab(grouplevel, freq=T)
+
+write.csv(grouplevelfreq, "../figures/GroupLevelAlleleFreq.csv")
+```
+# Summary of the marker data
+
+## Individuals per Group
+
+```{r, echo=FALSE}
+
+table(adegenet::strata(ALLTHEALLELES, ~Group))
+
+
+```
+
+
+## Data missingness.
+
+No missing data in the STRUCTURE markers
+
+
+## Comparing expected and observed heterozygosity per marker
+```{r, echo=FALSE, message=FALSE}
+
+#summary(ALLTHEALLELES)
+
+ALLSUM <- adegenet::summary(ALLTHEALLELES)
+
+stats::bartlett.test( list( ALLSUM$Hexp, ALLSUM$Hobs ) )
+
+stats::t.test(ALLSUM$Hexp,ALLSUM$Hobs,pair=T,var.equal=TRUE,alter="greater")
+
+```
+
+
+
+
+```{r, echo=FALSE, message=FALSE, eval=FALSE}
+## Summary stats per population
+
+inputPanel(
+  selectInput("popname", "Population:", choices = c("ADOL"=1,"AFFR"=2,"AROL"=3,"AUFI"=4,"BINY"=5,"CBBG"=6,"CBES"=7,"COAU"=8,"COOL"=9,"DAJO"=10,"DEES"=11,"ESNK"=12,"GHIL"=13,"GMIL"=14,"HCES"=15,"HMES"=16,"HZIL"=17,"IMES"=18,"MABG"=19,"MAES"=20,"MYJO"=21,"NCDE"=22,"NELO"=23,"PBFR"=24,"RABG"=25,"RACA"=26,"REIL"=27,"SAES"=28,"SPEU"=29,"TOBG"=30,"TYIL"=31,"WEAU"=32,"WMBG"=33,"ZYIL"=34)))
+
+renderPrint({ adegenet::summary(seppop(ALLTHEALLELES)[[ as.numeric(input$popname) ]]) })
+
+```
+
+
+```{r, echo=FALSE}
+## Summary stats for all markers
+
+
+write.csv( basic.stats(ALLTHEALLELES)$perloc, "../figures/MarkerSummaryStats.csv")
+
+```
+
+
+```{r, echo=FALSE, eval=FALSE}
+## Do markers appear to be in HWE across dataset?
+
+hw.test(ALLTHEALLELES, res='matrix', B=1000)
+
+```
+
+
+## Do markers appear to be in HWE by population?
+
+Blue is population in departure from HWE at marker at a p < .05
+
+```{r HWE_pop_marker, echo=FALSE, message=FALSE, warning=FALSE}
+
+#https://grunwaldlab.github.io/Population_Genetics_in_R/Locus_Stats.html
+
+nanhwe.pop <- seppop(ALLTHEALLELES) %>% lapply(hw.test, B = 0)
+
+nanhwe.mat <- sapply(nanhwe.pop, "[", i = TRUE, j = 3) # Take the third column with all rows
+
+alpha  <- 0.05
+newmat <- nanhwe.mat
+newmat[newmat > alpha] <- 1
+
+pheatmap(newmat, show_rownames = F)
+```
+
+## Comparing expected heterozygosity per population and per group
+
+```{r, echo=FALSE}
+Hs(poplevel)
+
+Hs(grouplevel)
+
+hspop <- as.data.frame(as.matrix(Hs(poplevel)))
+colnames(hspop) <- "ExpHet"
+hspop$Pop <- rownames(hspop)
+
+hspop$Pop <- plyr::revalue(hspop$Pop, c(
+                               "NELO" = "NEJS",
+                               "RACA" = "RAJS"
+                               ))
+
+
+
+
+hsgroup <- as.data.frame(as.matrix(Hs(grouplevel)))
+colnames(hsgroup) <- "ExpHet"
+hsgroup$locals <- rownames(hsgroup)
+
+hsgroup$locals <- revalue(hsgroup$locals, c(
+                               "European" = "european",
+                               "Oilseed"   = "oleifera",
+                               "Rattail"  = "caudatus",
+                               "Daikon" = "daikon"))
+
+
+```
+
+
+## PCA
+
+A fun little pca that tries to make boundries around pops (using the dudi.pca function from ade4). Labels seem unmoveable though, so I can't get it to format nicely for use. Looks essentially the same as the paper one, even though it's using the dataset in a completely different format/program/etc. So that's nice.
+
+```{r dudiPCA, echo=FALSE}
+testpca <- scaleGen(ALLTHEALLELES, NA.method="mean")
+dim(testpca)
+
+pca1 <- dudi.pca(testpca,cent=FALSE,scale=FALSE,scannf=FALSE,nf=3)
+#barplot(pca1$eig[1:50],main="PCA eigenvalues", col=heat.colors(50))
+
+
+col <- funky(34)
+s.class(pca1$li, pop(ALLTHEALLELES),xax=1,yax=2, col=transp(col,.6), axesell=FALSE,
+        cstar=1, cpoint=1, grid=FALSE, clabel = .5)
+
+
+#colorplot(pca1$li, pca1$li, transp=TRUE, cex=3, xlab="PC 1", ylab="PC 2")
+#title("PCA of microbov dataset\naxes 1-2")
+#abline(v=0,h=0,col="grey", lty=2)
+```
+
+
+```{r, echo=FALSE, eval=FALSE}
+
+#Playing with adegnet tutorial: An introduction to adegenet 2.1.0 6/14/2017
+
+ca1 <- dudi.coa(tab(poplevel),scannf=FALSE,nf=3)
+barplot(ca1$eig,main="Correspondance Analysis eigenvalues",
+        col=heat.colors(length(ca1$eig)))
+
+ s.label(ca1$li, sub="CA 1-2",csub=2)
+
+
+set.seed(1)
+s.label(ca1$li*1.2, sub="CA 1-2",csub=2, clab=0, cpoint="")
+textplot(ca1$li[,1], ca1$li[,2], words=popNames(poplevel),
+         cex=1.4, new=FALSE, xpd=TRUE)
+add.scatter.eig(ca1$eig,nf=3,xax=1,yax=2,posi="bottomright")
+```
+
+## Populations clustered by genetic distance. Euclidean method.
+
+
+```{r GenDist_Pop, echo=FALSE}
+sampleDists <- dist.genpop(poplevel, method = 1, diag = T, upper = T)
+sampleDistMatrix <- as.matrix(sampleDists)
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows="euclidean",
+         clustering_distance_cols="euclidean",
+         cluster_rows = T,
+         cluster_cols = T,
+         col=colors)
+```
+
+## Same clustering method, just using groups instead of pops.
+
+
+```{r GenDist_Group, echo=FALSE}
+sampleDists <- dist.genpop(grouplevel, method = 1, diag = T, upper = T)
+sampleDistMatrix <- as.matrix(sampleDists)
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows="euclidean",
+         clustering_distance_cols="euclidean",
+         cluster_rows = T,
+         cluster_cols = T,
+         col=colors)
+```
+
+## Fstatistics
+
+These are the three Fstatistics for the overall dataset. You are supposed to read each value as 'column/row'. These are calculated as Nei's pairwise Fst between all pairs of populations using a genind object. Heretozygosities are weighted by group sizes. 
+
+```{r, echo=FALSE}
+fstat(ALLTHEALLELES)
+```
+
+Pairwise Fst for all populations. This is output as a csv file, which is much easier to read.
+
+This is the Fst numbers, just as a clustered heatmap so you can see patterns more easily.
+
+```{r, echo=FALSE, warning=FALSE}
+
+popfst <- pairwise.fst(ALLTHEALLELES)#[ loc=goodloci ])
+
+attr(popfst, "Labels") <- unique(as.character(ALLTHEALLELES$pop))
+
+write.csv(as.data.frame(as.matrix(popfst)), "../Figures/PairwiseFst.csv", sep = "'", quote = F, row.names = TRUE, col.names = TRUE )
+
+```
+
+
+
+```{r FstPop, echo=FALSE}
+
+pheatmap(as.matrix(popfst), cluster_rows = T, cluster_cols = T,
+         clustering_distance_rows = "euclidean",
+         clustering_distance_cols = "euclidean" )
+```
+
+```{r FstPopGroup, echo=FALSE}
+grouppopfst <- as.data.frame(as.matrix(popfst))
+
+grouppopfst$group <- unique(as.character(ALLTHEALLELES$pop))
+#grouppopfst$pop <- unique(as.character(ALLTHEALLELES$pop))
+
+grouppopfst$group <- as.factor(plyr::revalue(grouppopfst$group, c( "PBFR"="Rrlandra", 
+                               "SAES"="Rrlandra", "BINY"="WeedRrr", "GMIL"="Pugiformis",
+                               "MAES"="NativeRrrW", "NELO"="Daikon", "TOBG"="Daikon", 
+                               "ESNK"="European", "SPNK"="European", "RACA"="Rattail",
+                               "RABG"="Rattail", "AROL"="Oilseed",  "OIBG"="Oilseed",
+                               "AFFR"="NativeRrrW", "DEES"="NativeRrrW", "NAAU"="WeedRrr",
+                               "RA808"="Rrlandra", "YEIL"="Pugiformis", "RA761"="Rrlandra",
+                               "RA226"="Rrlandra", "RA444"="Rrlandra" )))
+  
+groupnames <- data.frame(grouppopfst$group)
+rownames(groupnames) <- unique(as.character(ALLTHEALLELES$pop))
+colnames(groupnames) <- "group"
+  
+groupcolors <- list( group = c(Daikon=paste(Daikon), European=paste(European), 
+          NativeRrrW=paste(raphNatW), 
+          Oilseed=paste(Oilseed), Rattail=paste(Rattail), Pugiformis=paste(Pugiformis),
+          Rrlandra=paste(lanmar), WeedRrr=paste(NonNatives)))
+
+pheatmap( as.matrix( grouppopfst[,1:21] ), annotation_col = groupnames, 
+          annotation_row = groupnames , cluster_cols = T, cluster_rows = T,
+          annotation_colors = groupcolors)
+
+```
+
+## Allele by Pop
+
+I don't remember why I made this, but it's a clustered heatmap of the population level allele frequencies. The columns are alleles. A lot of alleles are at low frequency, and then a handful at very high frequency. Columns where it's all blue with one red or yellow row indicate private alleles. Mostly red/yellow columns indicate alleles that are common. Columns that are mostly blue indicate low frequency alleles.
+
+
+```{r AllelePop, echo=FALSE}
+pheatmap(poplevelfreq, cluster_rows=TRUE, show_rownames=TRUE, cluster_cols=T, show_colnames = F)
+```
+##Allele by Group
+
+Again, same type of plot, just using groups instead of populations. There are a few alleles private to groups, and a lot of very low frequency alleles.
+
+```{r AlleleGroup, echo=FALSE}
+pheatmap(grouplevelfreq, cluster_rows=TRUE, show_rownames=TRUE, cluster_cols=T, show_colnames = F)
+```
+
+
+```{r, echo=FALSE, eval=FALSE}
+
+## K means clustering
+
+#Just to see what happens. I have no idea what this figure means.
+
+disana <- dapc(ALLTHEALLELES, pop=ALLTHEALLELES@other$X[,2], n.pca=40, n.da=15, scale=FALSE,
+          truenames=TRUE, var.contrib=TRUE, var.loadings=FALSE, pca.info=TRUE,
+          pca.select=c("nbEig","percVar"), perc.pca=NULL)
+
+
+scatter(disana, cell=2, pch="")
+
+
+kmeans <- find.clusters(ALLTHEALLELES, n.pca=40, n.clust=NULL,
+              stat="BIC", choose.n.clust=FALSE,
+              criterion="diffNgroup",
+              max.n.clust=20, n.iter=1e5,
+              n.start=10, scale=FALSE, truenames=TRUE)
+
+
+```
+
+# AMOVA
+
+### Overall group AMOVA
+
+#### Ignore missing data
+
+For the basic AMOVA, I tried both dropping the two worst microsats entirely, and leaving them in. There is basically no difference between the results, so I am ignoring all missingness. (To remove 2 bad markers, uncomment "[ loc=goodloci ]" throughout the script, and uncomment the list of "goodloci" in the thrid code chunk). 
+
+I am looking for difference ~Groups/Pop. Groups are: landra, western raphanistrum, eastern raphanistrum, weeds, European, Daikon, Rattail, Oilseed, and rostratus.
+
+In the results "sample" always refers to the smallest unit of the population hierarchy, which is population here.
+
+```{r AmovaAll, message=T, error=TRUE, warning=TRUE, fig.height=8}
+
+#Defaults to ADE4 AMOVA implementation
+
+FilterATA <- ALLTHEALLELES#[ loc=goodloci ]
+
+Allpops_filter_ATA <- as.genclone( FilterATA )
+
+Allpopsamova <- poppr.amova( Allpops_filter_ATA, ~Group/Pop, filter = T, 
+                             missing = "ignore", within = FALSE )
+
+Allpopsamova
+
+amova.test <- randtest( Allpopsamova, nrepet = amovaReps) # Test for significance
+plot(amova.test)
+amova.test
+
+## The genetic differentiation components measured in AMOVA are really covariances among alleles, not variances, and negative values should be interpreted in that context.  That said, such strongly negative values for between-population differentiation are problematic.  However, obligately outcrossing organisms, or those that suffer from severely reduced viability due to inbreeding, can have substantially negative values for the within-population inbreeding coefficient.  If your analysis isn't estimating the inbreeding coefficient separately, or is estimating it incorrectly (e.g. inflated estimates of inbreeding due to the presence of null alleles), I wonder if these effects could be masquerading as negative allelic covariances between populations in the absence of population structure.
+
+```
+
+This is the distribution of N for groups that AMOVA was using. It's not super balanced, but it's not the worst.
+
+```{r}
+
+table(adegenet::strata(ALLTHEALLELES, ~Group))
+#filterstrata <- adegenet::strata(Allpops_filter_ATA) %>%     
+#  group_by(Species, Group) %>%
+#  summarize(Count = n())
+#
+#filterstrata 
+```
+
+### Hypothesis testing AMOVAs
+
+```{r}
+
+RRR_Native_West <- c("AFFR", "MAES", "DEES")
+RRR_Weed <- c("BINY", "NAAU")
+Rr_Landra <- c("SAES", "PBFR", "RA808", "RA761", "RA226", "RA444")
+RS_Daikon <- c("NELO", "TOBG")
+RS_European <- c("ESNK", "SPNK")
+RS_Oilseed <- c("AROL", "OIBG")
+RS_Rattail <- c("RABG", "RACA")
+R_Pugiformis <- c("GMIL", "YEIL")
+
+```
+
+The paper has three main hypotheses about weed origin: The weeds could come from the crops, either directly or as hybrids; the weeds could be direct decendants of R.r. raphanistrum natives; or the weeds could be a hybrid of landra and R.r. raphanistrum natives.
+
+#### Weeds from crops (In Paper)
+
+If the weeds are feral crops, then they should be similar (not distinguishable by AMOVA).
+This is comparing all crops as one group to all weeds as one group.
+
+
+
+```{r AmovaWeedCrop_InPaper}
+
+goodgroups <- c(RRR_Weed, RS_Daikon, RS_European, RS_Oilseed, RS_Rattail)
+poppr_filter_ATA <- popsub(Allpops_filter_ATA, sublist = goodgroups)
+
+Allpopsamova <- poppr.amova(poppr_filter_ATA, ~Species/Pop, filter = T, 
+                            missing = "ignore", within = FALSE)
+
+Allpopsamova
+amova.test <- randtest( Allpopsamova, nrepet = amovaReps) # Test for significance
+plot(amova.test)
+amova.test
+
+```
+
+
+#### Weeds from Native R.r. raphanistrum
+
+If the weeds are most closely related to the native R.r. raphanistrum (this is the hypothesis we favor), then they shouldn't be significantly different from each other.
+
+
+##### Weed - West
+
+Here I'm comparing all weeds as one group, to native western R. r. raphanistrum as one group.
+
+
+```{r AmovaWeedWest}
+
+goodgroups <- c(RRR_Weed, RRR_Native_West)
+poppr_filter_ATA <- popsub(Allpops_filter_ATA, sublist = goodgroups)
+
+Allpopsamova <- poppr.amova(poppr_filter_ATA, ~Group/Pop, filter = T, 
+                            missing = "ignore", within = FALSE)
+Allpopsamova
+amova.test <- randtest( Allpopsamova, nrepet = amovaReps) # Test for significance
+plot(amova.test)
+amova.test
+
+```
+
+
+
+#### Weeds from hybridization of landra and native R.r. raphanistrum; In paper
+
+If the weeds are hybrids of landra and native R.r. raphanistrum, then it should group with either in a paired analysis, however landra and native R.r. raphanistrum should be significantly different from one another.
+
+Here I'm comparing all weeds as one group, to native western R. r. landra as one group.
+Weed vs landra
+(Weed vs native R.r. raphanistrum is above)
+
+```{r AmovaWeedLandra_InPaper}
+
+goodgroups <- c(RRR_Weed, Rr_Landra)
+poppr_filter_ATA <- popsub(Allpops_filter_ATA, sublist = goodgroups)
+Allpopsamova <- poppr.amova(poppr_filter_ATA, ~Group/Pop, filter = T, 
+                            missing = "ignore", within = FALSE )
+Allpopsamova
+amova.test <- randtest( Allpopsamova, nrepet = amovaReps) # Test for significance
+plot(amova.test)
+amova.test
+
+
+
+
+```
+
+##### Native R.r. raphanistrum vs landra
+
+Here I'm comparing all R.r. landra as one group, to native R. r. raphanistrum as one group.
+
+```{r AmovaLandraRRR}
+
+goodgroups <- c(RRR_Native_West, Rr_Landra)
+poppr_filter_ATA <- popsub(Allpops_filter_ATA, sublist = goodgroups)
+
+
+Allpopsamova <- poppr.amova(poppr_filter_ATA, ~Group/Pop, filter = T, 
+                             missing = "ignore", within = FALSE)
+Allpopsamova
+amova.test <- randtest( Allpopsamova, nrepet = amovaReps) # Test for significance
+plot(amova.test)
+amova.test
+
+
+
+
+```
+
+##### Weed - East and West together; In paper
+
+Here I'm comparing all weeds as one group, to native  R. r. raphanistrum, treated as a single group.
+
+```{r AmovaWeedRRR_InPaper}
+
+goodgroups <- c(RRR_Weed, RRR_Native_West)
+
+poppr_filter_ATA <- popsub(Allpops_filter_ATA, sublist = goodgroups)
+
+Allpopsamova <- poppr.amova(poppr_filter_ATA, ~Group/Pop, filter = T, 
+                            missing = "ignore", within = FALSE )
+Allpopsamova
+amova.test <- randtest( Allpopsamova, nrepet = amovaReps ) # Test for significance
+plot(amova.test)
+amova.test
+
+```
+
