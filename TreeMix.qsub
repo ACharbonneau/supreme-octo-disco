@@ -31,12 +31,16 @@ mkdir treemix
 cd treemix || exit
 
 cp ../batch_20180415.treemix .
-tail -n +2 batch_20180415.treemix > ../batch_20180415.treemix_nohead
-gzip ../batch_20180415.treemix_nohead
+tail -n +2 batch_20180415.treemix > batch_20180415.treemix_nohead
+gzip batch_20180415.treemix_nohead
 
 #### Not using K flag because SNPs aren't ordered
 
-cd nomigration
+mkdir nomigration
+mkdir onemigration
+mkdir twomigration
+
+cd nomigration || exit
 
 rm SS_tree.tre SS_tree_Sumtree.tre
 
@@ -66,7 +70,6 @@ done
 sumtrees.py --rooted --percentages -t SS_tree_M1_org.tre -o SS_tree_M1_Sumtree.tre SS_tree_M1.tre > SS_tree_M1_Sumtree.log
 
 cd ../twomigration  || exit
-
 
 rm SS_tree_M2.tre SS_tree_M2_Sumtree.tre
 
