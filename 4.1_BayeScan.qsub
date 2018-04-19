@@ -17,7 +17,6 @@ module load BayeScan/2.1
 
 cd ${PBS_O_WORKDIR} || exit
 
-#bayescan SS_20180415_P_Pop20_Ind.80_m2_n7_BayeScan -threads 10 -out_pilot pilot_output -out_freq alleleFreqBayes
 
 bayescan BINY_AFFR -threads 10 -out_pilot pilot_BINY_AFFR -out_freq alleleFreq_BINY_AFFR
 bayescan BINY_DEES -threads 10 -out_pilot pilot_BINY_DEES -out_freq alleleFreq_BINY_DEES

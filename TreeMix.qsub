@@ -44,12 +44,12 @@ cd nomigration || exit
 
 rm SS_tree.tre SS_tree_Sumtree.tre
 
-treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL,YEIL -o SS_tree -global > SS_tree.log
+treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL -o SS_tree -global > SS_tree.log
 
 zcat SS_tree.treeout.gz > SS_tree_org.tre
 
-for i in `seq 1 1000`
-    do treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL,YEIL -global -bootstrap -o SS_tree_${i} > SS_tree_${i}.log
+for i in `seq 1 500`
+    do treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL -global -bootstrap -o SS_tree_${i} > SS_tree_${i}.log
     zcat SS_tree_${i}.treeout.gz >> SS_tree.tre
 done
 
@@ -59,11 +59,11 @@ cd ../onemigration || exit
 
 rm SS_tree_M1.tre SS_tree_M1_Sumtree.tre
 
-treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL,YEIL -o SS_tree_M1 -global -m 1 > SS_tree_M1.log
+treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL -o SS_tree_M1 -global -m 1 > SS_tree_M1.log
 zcat SS_tree_M1.treeout.gz > SS_tree_M1_org.tre
 
-for i in `seq 1 1000`
-	do treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL,YEIL -global -bootstrap -o SS_tree_M1_${i} -m 1 > SS_tree_M1_${i}.log
+for i in `seq 1 500`
+	do treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL -global -bootstrap -o SS_tree_M1_${i} -m 1 > SS_tree_M1_${i}.log
 	zcat SS_tree_M1_${i}.treeout.gz >> SS_tree_M1.tre
 done
 
@@ -73,11 +73,11 @@ cd ../twomigration  || exit
 
 rm SS_tree_M2.tre SS_tree_M2_Sumtree.tre
 
-treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL,YEIL -o SS_tree_M2 -global -m 2 > SS_tree_M2.log
+treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL -o SS_tree_M2 -global -m 2 > SS_tree_M2.log
 zcat SS_tree_M2.treeout.gz > SS_tree_M2_org.tre
 
-for i in `seq 1 1000`
-	do treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL,YEIL -global -bootstrap -o SS_tree_M2_${i} -m 2 > SS_tree_M2_${i}.log
+for i in `seq 1 500`
+	do treemix -i ../batch_20180415.treemix_nohead.gz -root GMIL -global -bootstrap -o SS_tree_M2_${i} -m 2 > SS_tree_M2_${i}.log
 	zcat SS_tree_M2_${i}.treeout.gz >> SS_tree_M2.tre
 done
 

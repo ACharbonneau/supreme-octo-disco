@@ -61,13 +61,20 @@ for( fst_file in c(1:length(File_list$runname))){
   fst_comp <- 0
   fst_comp <- read.csv(paste("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/", 
                              dataset, sep=""), sep = "\t")
-
-  fst_comp$sigFisherP <- fst_comp$Fisher.s.P < .05
-  print(ggplot(fst_comp, aes(Locus.ID, Smoothed.Fst, col= LOD, shape=sigFisherP )) + 
+  fst_comp$BHfisherP <- p.adjust(fst_comp$Fisher.s.P, method = "BH")
+  fst_comp$sigBHFisherP <- fst_comp$BHfisherP < .05
+  fst_comp$row <- 1:length(fst_comp$X..Batch.ID)
+  print(ggplot(fst_comp, aes(row, Smoothed.Fst, col= LOD, shape=sigBHFisherP )) + 
           geom_point() + scale_colour_gradientn(colours= c("Black", "Red")) + 
     ggtitle(paste("Fst ", File_list$Pop1[fst_file], " vs ", File_list$Pop2[fst_file], sep="")))
 
- 
+  print(ggplot(fst_comp, aes(row, Overall.Pi)) + 
+          geom_point() + 
+    ggtitle(paste("Fst ", File_list$Pop1[fst_file], " vs ", File_list$Pop2[fst_file], sep="")))
+   
+  print(ggplot(fst_comp, aes(Overall.Pi, Smoothed.Fst, col= LOD, shape=sigBHFisherP  )) + 
+          geom_point() + scale_colour_gradientn(colours= c("Black", "Red")) + 
+    ggtitle(paste("Fst ", File_list$Pop1[fst_file], " vs ", File_list$Pop2[fst_file], sep="")))
 
 }
 
@@ -75,6 +82,9 @@ dev.off()
 ```
 
 ```{r}
-plot_bayescan("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/SS_20180415_P_Pop20_Ind.80_m2_n7_Baye_fst.txt",FDR=0.05)
+
+
+
+plot_bayescan("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/BayesScanFiles/Weed_Nrrr_fst.txt",FDR=0.05)
 ```
 
