@@ -41,13 +41,14 @@ mv ${lane}/*.fq .
 
 ## Expect 1425 individuals after processing plus 15 blanks
 
-fqT=`ls *.fq | wc -w`
-fqT=`expr ${fqT} - 1`
-
-if [[ ${fqT} = 1439 ]]
-then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJOBID=${fqT}
-#bash ../supreme-octo-disco/2_Submit_U_STACKS.sh
-rm FilesMapped.txt
-qsub ../supreme-octo-disco/1.2_GSMap.qsub -N MogheMap -t 0-${fqT} -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Moghe2014_GS
-qsub ../supreme-octo-disco/1.2_kmerfilter.qsub
-fi
+#fqT=`ls *.fq | wc -w`
+#fqT=`expr ${fqT} - 1`
+#
+#if [[ ${fqT} = 1439 ]]
+#then qsub ../supreme-octo-disco/1.2_FastQC_trimmed.qsub -N TrimmedFastQC -v MAXJOBID=${fqT}
+##bash ../supreme-octo-disco/2_Submit_U_STACKS.sh
+#rm FilesMapped.txt
+#qsub ../supreme-octo-disco/1.2_GSMap.qsub -N MogheMap -t 0-${fqT} -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Moghe2014_GS
+#qsub ../supreme-octo-disco/1.2_kmerfilter.qsub
+#fi
+#

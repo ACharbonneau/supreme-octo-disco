@@ -83,8 +83,19 @@ dev.off()
 
 ```{r}
 
+plot_bayescan("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/BayesScanFiles/Weed_Nrrr_fst.txt")
+
+protobayes <- read.csv("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/BayesScanFiles/Weed_Nrrr_fst.txt", sep = " ")
+
+bayes <- select(protobayes, X.2, X.3, prob, X.4, log10.PO.)
+
+colnames(bayes) <- c("prob", "log10PO", "qval", "alpha", "fst")
+bayes$sigQ <- bayes$qval < .05
+
+ggplot(bayes, aes(fst, log10PO, col=sigQ)) + geom_point()
+
+outliers= as.integer(row.names(bayes[bayes$qval<=.05,]))
 
 
-plot_bayescan("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/BayesScanFiles/Weed_Nrrr_fst.txt",FDR=0.05)
 ```
 
