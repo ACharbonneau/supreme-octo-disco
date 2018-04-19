@@ -35,8 +35,8 @@ bsname=${PBS_ARRAYID}_${indiv}
 echo bsname="${bsname}"
 
 if [ ! -f ${indiv}_q20.sam ]
- then gsnap -t 6 -d ${index} -D Indicies/ --force-single-end -i 2 -k 15 \
- --min-coverage=0.95 --terminal-threshold=10 -o ${indiv}.sam -A sam ${indiv}
+ then gsnap -t 6 -d ${index} -D Indicies/${index}/ --force-single-end -i 2 -k 15 \
+ --min-coverage=0.95 -o ${indiv}.sam -A sam ${indiv}
  samtools view -q 20 -T ${genome} ${indiv}.sam > ${indiv}_q20.sam
 fi
 

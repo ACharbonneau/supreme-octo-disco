@@ -82,7 +82,7 @@ This script uses the input for STRUCTURE to do some population genetics.
 
 #has population names and group names
 
-ALLTHEALLELES <- read.structure(file = "../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/nohead_batch_20180415.structure.stru", n.ind = 258, n.loc = 1116, onerowperind = F, col.lab = 1, col.pop = 2, row.marknames = 1, NA.char = "-9", col.others = FALSE )
+ALLTHEALLELES <- read.structure(file = "../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/nohead_batch_20180415.structure.stru", n.ind = 258, n.loc = 1116, onerowperind = F, col.lab = 1, col.pop = 2, row.marknames = 1, NA.char = "-9", col.others = 1 )
 
 adegenet::strata(ALLTHEALLELES) <- read.csv("../Metadata/PopStructureAmova.csv", header = FALSE) 
 

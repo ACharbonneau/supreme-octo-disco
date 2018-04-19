@@ -53,7 +53,7 @@ File_list$runname <- ALLTHEFILES
 colnames(File_list) <- c("batch", "Date", "fst", "Pop1", "Pop2", "tsv", "runname")
 File_list <- select(File_list, runname, Date, Pop1, Pop2)
 
-
+Outliers <- data.frame()
 
 for( fst_file in c(1:length(File_list$runname))){
   #fst_file <- 2
@@ -64,6 +64,8 @@ for( fst_file in c(1:length(File_list$runname))){
   fst_comp$BHfisherP <- p.adjust(fst_comp$Fisher.s.P, method = "BH")
   fst_comp$sigBHFisherP <- fst_comp$BHfisherP < .05
   fst_comp$row <- 1:length(fst_comp$X..Batch.ID)
+  sigrows <- filter(fst_comp, sigBHFisherP == TRUE)
+  Outliers <- cbind(Outliers)
   print(ggplot(fst_comp, aes(row, Smoothed.Fst, col= LOD, shape=sigBHFisherP )) + 
           geom_point() + scale_colour_gradientn(colours= c("Black", "Red")) + 
     ggtitle(paste("Fst ", File_list$Pop1[fst_file], " vs ", File_list$Pop2[fst_file], sep="")))
