@@ -22,12 +22,12 @@ bayescan BINY_AFFR -threads 10 -out_pilot pilot_BINY_AFFR -out_freq alleleFreq_B
 bayescan BINY_DEES -threads 10 -out_pilot pilot_BINY_DEES -out_freq alleleFreq_BINY_DEES -pr_odds 3
 bayescan BINY_MAES -threads 10 -out_pilot pilot_BINY_MAES -out_freq alleleFreq_BINY_MAES -pr_odds 3
 #bayescan BINY_NAAU -threads 10 -out_pilot pilot_BINY_NAAU -out_freq alleleFreq_BINY_NAAU -pr_odds 3
-bayescan BINY_PBFR -threads 10 -out_pilot pilot_BINY_PBFR -out_freq alleleFreq_BINY_PBFR -pr_odds 3
-bayescan BINY_SAES -threads 10 -out_pilot pilot_BINY_SAES -out_freq alleleFreq_BINY_SAES -pr_odds 3
+#bayescan BINY_PBFR -threads 10 -out_pilot pilot_BINY_PBFR -out_freq alleleFreq_BINY_PBFR -pr_odds 3
+#bayescan BINY_SAES -threads 10 -out_pilot pilot_BINY_SAES -out_freq alleleFreq_BINY_SAES -pr_odds 3
 bayescan NAAU_AFFR -threads 10 -out_pilot pilot_NAAU_AFFR -out_freq alleleFreq_NAAU_AFFR -pr_odds 3
 bayescan NAAU_DEES -threads 10 -out_pilot pilot_NAAU_DEES -out_freq alleleFreq_NAAU_DEES -pr_odds 3
 bayescan NAAU_MAES -threads 10 -out_pilot pilot_NAAU_MAES -out_freq alleleFreq_NAAU_MAES -pr_odds 3
-bayescan NAAU_PBFR -threads 10 -out_pilot pilot_NAAU_PBFR -out_freq alleleFreq_NAAU_PBFR -pr_odds 3
-bayescan NAAU_SAES -threads 10 -out_pilot pilot_NAAU_SAES -out_freq alleleFreq_NAAU_SAES -pr_odds 3
+#bayescan NAAU_PBFR -threads 10 -out_pilot pilot_NAAU_PBFR -out_freq alleleFreq_NAAU_PBFR -pr_odds 3
+#bayescan NAAU_SAES -threads 10 -out_pilot pilot_NAAU_SAES -out_freq alleleFreq_NAAU_SAES -pr_odds 3
 
 bayescan Weed_NRRR -threads 10 -out_pilot pilot_Weed_NRRR -out_freq alleleFreq_Weed_NRRR  -pr_odds 3
