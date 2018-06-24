@@ -44,7 +44,8 @@ source("../supreme-octo-disco/R functions/plot_R.r")
 
 pdf(file="../figures/PairwiseFstAll.pdf")
 
-ALLTHEFILES <- dir("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/", pattern = ".*fst_.*-.*")
+ALLTHEFILES <- dir("../ProcessRadtags/SS_20180420_P_Pop20_Ind.80_m2_n7/", pattern = ".*fst_.*-.*")
+
 
 File_Num <- length(ALLTHEFILES)
 
@@ -59,13 +60,13 @@ for( fst_file in c(1:length(File_list$runname))){
   #fst_file <- 2
   dataset <- File_list[fst_file, 1]
   fst_comp <- 0
-  fst_comp <- read.csv(paste("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/", 
+  fst_comp <- read.csv(paste("../ProcessRadtags/SS_20180420_P_Pop20_Ind.80_m2_n7/", 
                              dataset, sep=""), sep = "\t")
   fst_comp$BHfisherP <- p.adjust(fst_comp$Fisher.s.P, method = "BH")
   fst_comp$sigBHFisherP <- fst_comp$BHfisherP < .05
   fst_comp$row <- 1:length(fst_comp$X..Batch.ID)
   sigrows <- filter(fst_comp, sigBHFisherP == TRUE)
-  Outliers <- cbind(Outliers)
+  Outliers <- rbind(Outliers, sigrows)
   print(ggplot(fst_comp, aes(row, Smoothed.Fst, col= LOD, shape=sigBHFisherP )) + 
           geom_point() + scale_colour_gradientn(colours= c("Black", "Red")) + 
     ggtitle(paste("Fst ", File_list$Pop1[fst_file], " vs ", File_list$Pop2[fst_file], sep="")))
@@ -81,23 +82,52 @@ for( fst_file in c(1:length(File_list$runname))){
 }
 
 dev.off()
+head(Outliers)
+write.csv(Outliers, "../ProcessRadtags/JustRRRs/StacksOutliers.csv", col.names = T )
 ```
 
 ```{r}
 
-plot_bayescan("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/BayesScanFiles/Weed_Nrrr_fst.txt")
+pdf(file="../figures/BayesFst.pdf")
 
-protobayes <- read.csv("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/BayesScanFiles/Weed_Nrrr_fst.txt", sep = " ")
+ALLTHEFILES <- dir("../ProcessRadtags/JustRRRs/BayeScan/", pattern = ".*_fst.txt")
 
-bayes <- select(protobayes, X.2, X.3, prob, X.4, log10.PO.)
+hits <- list()
 
-colnames(bayes) <- c("prob", "log10PO", "qval", "alpha", "fst")
-bayes$sigQ <- bayes$qval < .05
+File_Num <- length(ALLTHEFILES)
 
-ggplot(bayes, aes(fst, log10PO, col=sigQ)) + geom_point()
+for (i in 1:length(ALLTHEFILES)) {
+  results <- plot_bayescan(paste("../ProcessRadtags/JustRRRs/BayeScan/", ALLTHEFILES[i], sep = ""),
+                FDR = .05, add_text = T)
+  title(ALLTHEFILES[i])
+  hits <- c(hits, results$outliers)
 
-outliers= as.integer(row.names(bayes[bayes$qval<=.05,]))
+}
 
+dev.off()
 
+hits
 ```
 
+```{r}
+
+pdf(file="../figures/BayesFst_05.pdf")
+
+ALLTHEFILES <- dir("../ProcessRadtags/JustRRRs/BayeScan_05/", pattern = ".*_fst.txt")
+
+File_Num <- length(ALLTHEFILES)
+
+hits_05 <- list()
+
+for (i in 1:length(ALLTHEFILES)) {
+  results <- plot_bayescan(paste("../ProcessRadtags/JustRRRs/BayeScan_05/", ALLTHEFILES[i], 
+                sep = ""), FDR = .05, add_text = T)
+  title(ALLTHEFILES[i])
+  hits_05 <- c(hits_05, results$outliers)
+}
+
+dev.off()
+
+hits_05
+
+```

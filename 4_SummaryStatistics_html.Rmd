@@ -76,13 +76,16 @@ Pugiformis <-  ALLTHECOLORS[10]
 ```
 
 
+
+
+
 This script uses the input for STRUCTURE to do some population genetics.
 
 ```{r, echo=FALSE, message=FALSE}
 
 #has population names and group names
 
-ALLTHEALLELES <- read.structure(file = "../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/nohead_batch_20180415.structure.stru", n.ind = 258, n.loc = 1116, onerowperind = F, col.lab = 1, col.pop = 2, row.marknames = 1, NA.char = "-9", col.others = 1 )
+ALLTHEALLELES <- read.structure(file = "../ProcessRadtags/SS_20180420_P_Pop20_Ind.80_m2_n7/STRUCTURE/nohead_batch_20180420.structure.stru", n.ind = 258, n.loc = 1069, onerowperind = F, col.lab = 1, col.pop = 2, row.marknames = 1, NA.char = "-9", col.others = 1 )
 
 adegenet::strata(ALLTHEALLELES) <- read.csv("../Metadata/PopStructureAmova.csv", header = FALSE) 
 
@@ -99,20 +102,71 @@ ALLTHEALLELES@pop <- ALLTHEALLELES@strata$Pop
 #"Ra1H08", "Ra2E11", "Bn35d", "Na12E05" )
 ```
 
+```{r}
+
+
+ALLTHEALLELES_05 <- read.structure(file = "../ProcessRadtags/SS_20180420_P_Pop20_Ind.80_m2_n7/Structure_05.stru", n.ind = 258, n.loc = 331, onerowperind = F, col.lab = 1, col.pop = 2, row.marknames = 1, NA.char = "-9", col.others = 1 )
+
+adegenet::strata(ALLTHEALLELES_05) <- read.csv("../Metadata/PopStructureAmova.csv", header = FALSE) 
+
+adegenet::splitStrata(ALLTHEALLELES_05) <- ~Species/Group/Pop/Ind
+
+ALLTHEALLELES_05@pop <- ALLTHEALLELES_05@strata$Pop
+
+
+```
+
+
+```{r MappingRates}
+
+seqpass <- read.csv("../ProcessRadtags/SeqPass.csv")
+
+mapping <- read.csv("../ProcessRadtags/mappingrates.txt")
+
+mapping$Pop <- gsub(pattern = "_.*", "", mapping$Indiv)
+
+mapping$Ind <- gsub(pattern = ".*_(\\d+)\\.\\d\\d.*", "\\1", mapping$Indiv)
+  
+mapping <- left_join(mapping, adegenet::strata(ALLTHEALLELES)) 
+mapping$Ind <- as.numeric(mapping$Ind )
+mapping <- left_join(mapping, seqpass, by=c("Ind"="SampleID"))
+
+mapping$Date <- "2015"
+mapping$Date[mapping$Pop=="RA226"] <- "2010"
+mapping$Date[mapping$Pop=="RA444"] <- "2010"
+mapping$Date[mapping$Pop=="RA761"] <- "2009"
+
+  
+mapping %>% filter(mapping$OrigReads > 0) %>%
+  ggplot(aes(OrigReads, MappedReads, col=MappedReads/Pass_Count)) +
+  geom_point() + facet_wrap(~Date) 
+```
 
 ```{r, echo=FALSE,message=FALSE}
 #Genind has only individual information, genpop has population level info as well
 
 poplevel <- genind2genpop(ALLTHEALLELES)
 
+poplevel_05 <- genind2genpop(ALLTHEALLELES_05)
+
 poplevelfreq <- tab(poplevel, freq=T)
 
+poplevelfreq_05 <- tab(poplevel_05, freq=T)
+
 write.csv(poplevelfreq, "../figures/PopulationLevelAlleleFreq.csv")
+write.csv(poplevelfreq_05, "../figures/PopulationLevelAlleleFreq_05.csv")
+
 
 grouplevel <- genind2genpop(x = ALLTHEALLELES, pop = ALLTHEALLELES@strata$Group)
 grouplevelfreq <- tab(grouplevel, freq=T)
 
 write.csv(grouplevelfreq, "../figures/GroupLevelAlleleFreq.csv")
+
+grouplevel_05 <- genind2genpop(x = ALLTHEALLELES_05, pop = ALLTHEALLELES_05@strata$Group)
+grouplevelfreq_05 <- tab(grouplevel_05, freq=T)
+
+write.csv(grouplevelfreq_05, "../figures/GroupLevelAlleleFreq_05.csv")
+
 ```
 # Summary of the marker data
 
@@ -144,18 +198,6 @@ stats::t.test(ALLSUM$Hexp,ALLSUM$Hobs,pair=T,var.equal=TRUE,alter="greater")
 
 ```
 
-
-
-
-```{r, echo=FALSE, message=FALSE, eval=FALSE}
-## Summary stats per population
-
-inputPanel(
-  selectInput("popname", "Population:", choices = c("ADOL"=1,"AFFR"=2,"AROL"=3,"AUFI"=4,"BINY"=5,"CBBG"=6,"CBES"=7,"COAU"=8,"COOL"=9,"DAJO"=10,"DEES"=11,"ESNK"=12,"GHIL"=13,"GMIL"=14,"HCES"=15,"HMES"=16,"HZIL"=17,"IMES"=18,"MABG"=19,"MAES"=20,"MYJO"=21,"NCDE"=22,"NELO"=23,"PBFR"=24,"RABG"=25,"RACA"=26,"REIL"=27,"SAES"=28,"SPEU"=29,"TOBG"=30,"TYIL"=31,"WEAU"=32,"WMBG"=33,"ZYIL"=34)))
-
-renderPrint({ adegenet::summary(seppop(ALLTHEALLELES)[[ as.numeric(input$popname) ]]) })
-
-```
 
 
 ```{r, echo=FALSE}
@@ -313,8 +355,11 @@ This is the Fst numbers, just as a clustered heatmap so you can see patterns mor
 ```{r, echo=FALSE, warning=FALSE}
 
 popfst <- pairwise.fst(ALLTHEALLELES)#[ loc=goodloci ])
+popfst_05 <- pairwise.fst(ALLTHEALLELES_05)#[ loc=goodloci ])
 
 attr(popfst, "Labels") <- unique(as.character(ALLTHEALLELES$pop))
+attr(popfst_05, "Labels") <- unique(as.character(ALLTHEALLELES_05$pop))
+
 
 write.csv(as.data.frame(as.matrix(popfst)), "../Figures/PairwiseFst.csv", sep = "'", quote = F, row.names = TRUE, col.names = TRUE )
 
@@ -325,6 +370,13 @@ write.csv(as.data.frame(as.matrix(popfst)), "../Figures/PairwiseFst.csv", sep = 
 ```{r FstPop, echo=FALSE}
 
 pheatmap(as.matrix(popfst), cluster_rows = T, cluster_cols = T,
+         clustering_distance_rows = "euclidean",
+         clustering_distance_cols = "euclidean" )
+```
+
+```{r FstPop_05, echo=FALSE}
+
+pheatmap(as.matrix(popfst_05), cluster_rows = T, cluster_cols = T,
          clustering_distance_rows = "euclidean",
          clustering_distance_cols = "euclidean" )
 ```
@@ -359,6 +411,44 @@ pheatmap( as.matrix( grouppopfst[,1:21] ), annotation_col = groupnames,
 
 ```
 
+```{r FstPopGroup_05, echo=FALSE}
+grouppopfst_05 <- as.data.frame(as.matrix(popfst_05))
+
+grouppopfst_05$group <- unique(as.character(ALLTHEALLELES_05$pop))
+#grouppopfst$pop <- unique(as.character(ALLTHEALLELES$pop))
+
+grouppopfst_05$group <- as.factor(plyr::revalue(grouppopfst_05$group, c( "PBFR"="Rrlandra", 
+                               "SAES"="Rrlandra", "BINY"="WeedRrr", "GMIL"="Pugiformis",
+                               "MAES"="NativeRrrW", "NELO"="Daikon", "TOBG"="Daikon", 
+                               "ESNK"="European", "SPNK"="European", "RACA"="Rattail",
+                               "RABG"="Rattail", "AROL"="Oilseed",  "OIBG"="Oilseed",
+                               "AFFR"="NativeRrrW", "DEES"="NativeRrrW", "NAAU"="WeedRrr",
+                               "RA808"="Rrlandra", "YEIL"="Pugiformis", "RA761"="Rrlandra",
+                               "RA226"="Rrlandra", "RA444"="Rrlandra" )))
+  
+groupnames_05 <- data.frame(grouppopfst_05$group)
+rownames(groupnames_05) <- unique(as.character(ALLTHEALLELES_05$pop))
+colnames(groupnames_05) <- "group"
+  
+groupcolors <- list( group = c(Daikon=paste(Daikon), European=paste(European), 
+          NativeRrrW=paste(raphNatW), 
+          Oilseed=paste(Oilseed), Rattail=paste(Rattail), Pugiformis=paste(Pugiformis),
+          Rrlandra=paste(lanmar), WeedRrr=paste(NonNatives)))
+
+pheatmap( as.matrix( grouppopfst_05[,1:21] ), annotation_col = groupnames_05, 
+          annotation_row = groupnames_05 , cluster_cols = T, cluster_rows = T,
+          annotation_colors = groupcolors)
+
+```
+
+```{r STACKS_fst}
+bob <- as.data.frame(read.csv("../ProcessRadtags/SS_20180420_P_Pop20_Ind.80_m2_n7/batch_20180420.fst_summaryDouble.txt", sep="\t"))
+
+pheatmap(bob[,2:22])
+```
+
+
+
 ## Allele by Pop
 
 I don't remember why I made this, but it's a clustered heatmap of the population level allele frequencies. The columns are alleles. A lot of alleles are at low frequency, and then a handful at very high frequency. Columns where it's all blue with one red or yellow row indicate private alleles. Mostly red/yellow columns indicate alleles that are common. Columns that are mostly blue indicate low frequency alleles.
@@ -367,12 +457,21 @@ I don't remember why I made this, but it's a clustered heatmap of the population
 ```{r AllelePop, echo=FALSE}
 pheatmap(poplevelfreq, cluster_rows=TRUE, show_rownames=TRUE, cluster_cols=T, show_colnames = F)
 ```
+
+```{r AllelePop_05, echo=FALSE}
+pheatmap(poplevelfreq_05, cluster_rows=TRUE, show_rownames=TRUE, cluster_cols=T, show_colnames = F)
+
+```
 ##Allele by Group
 
 Again, same type of plot, just using groups instead of populations. There are a few alleles private to groups, and a lot of very low frequency alleles.
 
 ```{r AlleleGroup, echo=FALSE}
 pheatmap(grouplevelfreq, cluster_rows=TRUE, show_rownames=TRUE, cluster_cols=T, show_colnames = F)
+```
+
+```{r AlleleGroup_05, echo=FALSE}
+pheatmap(grouplevelfreq_05, cluster_rows=TRUE, show_rownames=TRUE, cluster_cols=T, show_colnames = F)
 ```
 
 

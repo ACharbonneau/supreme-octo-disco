@@ -72,7 +72,7 @@ packages(knitr)
 
 ```{r ImportFiles, echo=FALSE, message=FALSE, warning=FALSE}
 
-biallele <- read.table("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/SmartPCA/20180415_biallele.csv", sep = ",", header = T)
+biallele <- read.table("../ProcessRadtags/SS_20180420_P_Pop20_Ind.80_m2_n7/SmartPCA/20180420_biallele.csv", sep = ",", header = T)
 
 SSmeta <- read.csv("../Metadata/SS_data.pop", sep = "\t", header = F)
 meta <- read.csv("../Metadata/SigSelectionMeta.csv")
@@ -84,35 +84,21 @@ ind$U <- "U"
 ind <- select(ind, SSR, U, V2)
 
 #STRUCTURE format data from STACKS
-structuredata <- data.table::fread("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/1_batch_20180415.structure.tsv")
+structuredata <- data.table::fread("../ProcessRadtags/SS_20180420_P_Pop20_Ind.80_m2_n7/STRUCTURE_05/1_batch_20180420.structure.tsv")
 
-evanno <- data.table::fread("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/STRUCTUREharvester/evannoTable.tab")
-colnames(evanno) <- c("K", "Reps",	"Mean_LnP_K", "Stdev_LnP_K", "Ln_K",	"abs_Ln_K", "Delta_K")
+
+
+evanno <- data.table::fread("../ProcessRadtags/SS_20180420_P_Pop20_Ind.80_m2_n7/STRUCTURE_05/StructureHarvester/evannoTable.tab")
+colnames(evanno) <- c("K", "Reps", "Mean_LnP_K", "Stdev_LnP_K", "Ln_K",	"abs_Ln_K", "Delta_K")
 
 #Original SmartPCA run
-PCA.dat <- data.table::fread("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/SmartPCA/20180415.pca.evec")
+PCA.dat <- data.table::fread("../ProcessRadtags/SS_20180420_P_Pop20_Ind.80_m2_n7/SmartPCA/20180420.pca.evec")
 
-PCA.eigen <- as.data.frame(data.table::fread("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/SmartPCA/20180415.eval"))
+PCA.eigen <- as.data.frame(data.table::fread("../ProcessRadtags/SS_20180420_P_Pop20_Ind.80_m2_n7/SmartPCA/20180420.eval"))
 
-ALLTHEFILES <- dir("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/parsed_data/")
+ALLTHEFILES <- dir("../ProcessRadtags/SS_20180420_P_Pop20_Ind.80_m2_n7/STRUCTURE_05/parsed_data/")
 
 #ALLTHEFILES <- dir("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/parsed_data/", pattern = "*_STRUCTURE-8_f.parsed")
-
-
-```
-
-```{r STRUCTURErunMetadata, echo=F}
-
-
-File_Num <- length(ALLTHEFILES)
-
-File_list <- data.frame(matrix(unlist(strsplit(ALLTHEFILES, "\\_|\\-")), ncol = 4, byrow = T))
-File_list$runname <- ALLTHEFILES
-colnames(File_list) <- c("randomization", "structure", "K", "f.parsed", "runname")
-File_list$K <- as.numeric(levels(File_list$K))[File_list$K]
-File_list$randomization <- as.numeric(levels(File_list$randomization))[File_list$randomization]
-File_list <- select(File_list, K, randomization, runname)
-File_list <- arrange(File_list, randomization, K)
 
 
 ```
@@ -163,8 +149,8 @@ A representitive plot of each is shown below.
 
 ```{r STRUCTURE4, echo=FALSE, message=FALSE, fig.width=8, fig.height=8}
 
+pdf("../figures/AllSTRUCTURE_5_05.pdf")
 
-File_Num <- length(ALLTHEFILES)
 
 File_list <- data.frame(matrix(unlist(strsplit(ALLTHEFILES, "\\_|\\-")), ncol = 4, byrow = T))
 File_list$runname <- ALLTHEFILES
@@ -173,13 +159,16 @@ File_list$K <- as.numeric(levels(File_list$K))[File_list$K]
 File_list$randomization <- as.numeric(levels(File_list$randomization))[File_list$randomization]
 File_list <- select(File_list, K, randomization, runname)
 File_list <- arrange(File_list, randomization, K)
+File_list <- filter(File_list, K==5)
+
+File_Num <- length(File_list$K)
 
 
 for( strrun in c(1:File_Num)){
   #strrun <- 1
   dataset <- File_list[strrun, 3]
   str.data <- 0
-  str.data <- read.csv(paste("../ProcessRadtags/SS_20180415_P_Pop20_Ind.80_m2_n7/STRUCTURE/parsed_data/",dataset, sep=""), header=F)
+  str.data <- read.csv(paste("../ProcessRadtags/SS_20180420_P_Pop20_Ind.80_m2_n7/STRUCTURE_05/parsed_data/",dataset, sep=""), header=F)
   K <- File_list[strrun, 1] # Find out what K is
   str.data <- str.data[,c(2,3,5:ncol(str.data))] # Get only useful columns from STRUCTURE
   colnames(str.data) <- c( "Individual", "%missing",1:K)
@@ -240,21 +229,21 @@ for( strrun in c(1:File_Num)){
                                                   "Algeria (RA226)", 
                                                   "Italy (RA444)",
                                                   "Turkey (RA761)",
-                                                  "Turkey (RA808)"), tick=F, line=-1, cex.axis=.9)
+                                                  "Turkey (RA808)"), tick=F, line=-1, cex.axis=.8)
     
     
     par(fig=c(0,.6,.63,.73), new=TRUE)
     barplot(raphNatW.table, col=col_pal[1:K],  xaxt="n", yaxt="n", 
             space=c(rep(0,16), 1, rep(0,15), 1, rep(0,15)))
     axis(side=3, at=25, labels=expression(paste(italic("R.r. raphanistrum")," inside native range")), cex=1.2, tick=F, line=-1)
-    axis(side=1, at=c(8,25,42), tick=F, labels=c("France (AFFR)", "Spain (DEES)", "Spain (MAES)"), line=-1, cex.axis=.9)
+    axis(side=1, at=c(8,25,42), tick=F, labels=c("France (AFFR)", "Spain (DEES)", "Spain (MAES)"), line=-1, cex.axis=.8)
     
     
     par(fig=c(.6,1,.63,.73), new=TRUE)
     barplot(weed.table, col=col_pal[1:K],  xaxt="n", yaxt="n", 
             space=c(rep(0,16), 1, rep(0,15)))
-    axis(side=3, at=17, labels=expression(paste(italic("R.r. raphanistrum")," outside native range")), cex=1.2, tick=F, line=-1)
-    axis(side=1, at=c(8, 25), tick=F, labels=c("New York (BINY)","Australia (NAAU)"), line=-1, cex.axis=.9)
+    axis(side=3, at=15, labels=expression(paste(italic("R.r. raphanistrum")," outside native range")), cex=1.2, tick=F, line=-1)
+    axis(side=1, at=c(8, 25), tick=F, labels=c("New York (BINY)","Australia (NAAU)"), line=-1, cex.axis=.8)
     
     
     
@@ -262,32 +251,34 @@ for( strrun in c(1:File_Num)){
     barplot(pugi.table, col=col_pal[1:K],  xaxt="n", yaxt="n", 
             space=c(rep(0,16), 1, rep(0,15)))
     axis(side=3, at=16, labels=expression(italic("R. pugionformis")), cex=1.2, tick=F, line=-1)
-    axis(side=1, at=c(8, 25), tick=F, labels=c("Israel (GMIL)","Israel (YEIL_CLNC)"), line=-1, cex.axis=.9)
+    axis(side=1, at=c(8, 25), tick=F, labels=c("Israel (GMIL)","Israel (YEIL_CLNC)"), line=-1, cex.axis=.8)
   
     
     par(fig=c(0.1,.5,.29,.39), new=TRUE)
     barplot(daikon.table, col=col_pal[1:K], xaxt="n", yaxt="n",
             space=c(rep(0,7), 1, rep(0,5)))
-    axis(side=3, at=22, labels="Daikon Crops", cex=1.2, tick=F, line=-1)
+    axis(side=3, at=8, labels="Daikon Crops", cex=1.2, tick=F, line=-1)
     axis(side=1, at=c(3.5,11), tick=F, labels=c("New Crown (NEJS)", #SPEU is now SPNK; NELO now NEJS; RACA now RAJS. -JKC 
-                                                "Tokinashi (TOBG)"), line=-1, cex.axis=.9)
+                                                "Tokinashi (TOBG)"), line=-1, cex.axis=.8)
     
     
     par(fig=c(.5,.9,.29,.39), new=TRUE)
     barplot(european.table, col=col_pal[1:K], xaxt="n", yaxt="n", 
             space=c(rep(0,7),1, rep(0,6)) )
-    axis(side=3, at=22, labels="European Crops", cex=1.2, tick=F, line=-1)
+    axis(side=3, at=8, labels="European Crops", cex=1.2, tick=F, line=-1)
     axis(side=1, at=c(4,11.5), tick=F, labels=c("Early S.G. (ESNK)", 
-                                                "Sparkler (SPNK)" ), line=-1, cex.axis=.9)
+                                                "Sparkler (SPNK)" ), line=-1, cex.axis=.8)
     
     par(fig=c(.1,.9,.12,.22), new=TRUE)
     barplot(oilrat.table, col=col_pal[1:K],  xaxt="n", yaxt="n", 
             space=c(rep(0,6),1, rep(0,5), 3, rep(0,5), 1,rep(0,4)) )
     axis(side=3, at=c(7,22), labels=c("Rattail Crops", "Oilseed Crops" ), cex=1.2, tick=F, line=-1)
     axis(side=1, at=c(3,10,19,25.5), tick=F, labels=c("Rattail (RABG)", "Rattail (RAJS)", 
-                                                      "Arena (AROL)", "GRA (OIBG)" ), line=-1, cex.axis=.9)
+                                                      "Arena (AROL)", "GRA (OIBG)" ), line=-1, cex.axis=.8)
     
 }
+
+dev.off()
 ```
 
 Taken together, this would suggest that the second plot in the series is the most likely. This largely agrees with the data from the 21 marker set.
@@ -318,6 +309,10 @@ JustPCAX <- left_join(JustPCAX, meta, by=c("UniqID"="UniqID"))
 
 
 ggplot(JustPCAX, aes(PC1, PC2)) + geom_point(aes(col=Pop)) + xlab("PC1") + ylab("PC2")
+
+JustPCAr <- as.data.frame(JustPCA$rotation)
+
+ggplot(JustPCAr, aes( PC1, PC2)) + geom_point()
 
 ```
 
@@ -384,9 +379,9 @@ raphNatW.sym <- c(1:length(levels(droplevels(raphNatW.data$Pop))))
 
 ```
 
-```{r, PlotSmartPCAFinal, echo=FALSE, fig.keep='last', message=FALSE, warning=FALSE, fig.path="../figures/", fig.height=6, fig.width=8}
+```{r, PlotSmartPCAFinal_1v2, echo=FALSE, fig.keep='last', message=FALSE, warning=FALSE, fig.path="../figures/", fig.height=6, fig.width=8}
 
-#pdf(file="../figures/PlotSmartPCA", height=6, width=8)
+#pdf(file="../figures/PlotSmartPCA.pdf", height=6, width=8)
 
 
 par( xpd=TRUE, mar=c(6,6,1,9))
@@ -531,7 +526,7 @@ legend(-.05, -.13, legend=levels(droplevels(CropO.data$Pop)),
 legend(-.05, -.165, legend=levels(droplevels(CropR.data$Pop)), 
        pch=CropR.sym, col=CropR.col, cex=.9,
        bty="n", pt.lwd = 2.5)
-dev.off()
+#dev.off()
 
 ```
 
@@ -540,3 +535,155 @@ Excitingly, this plot looks largely the same as the one done with 21 markers for
 Overall, these plots agree with our current data, and support all of our major points in the previous paper.
 
 
+
+
+```{r, PlotSmartPCAFinal_3v4, echo=FALSE, fig.keep='last', message=FALSE, warning=FALSE, fig.path="../figures/", fig.height=6, fig.width=8}
+
+#pdf(file="../figures/PlotSmartPCA_3v4.pdf", height=6, width=8)
+
+
+par( xpd=TRUE, mar=c(6,6,1,9))
+
+PC1 <- (PCA.eigen$V1[3]/sum(PCA.eigen$V1))*100
+PC2 <- (PCA.eigen$V1[4]/sum(PCA.eigen$V1))*100
+
+minpc1 <- min(PCA.dat$V4)
+maxpc1 <- max(PCA.dat$V4)
+minpc2 <- min(PCA.dat$V5)
+maxpc2 <- max(PCA.dat$V5)
+
+
+plot((PCA.dat$V4 ), 
+     (PCA.dat$V5 ),
+     type="n", 
+     xlab=paste("Eigenvector 3\n",round(PC1, digits = 1),"% of variance", sep=""), ylab=paste("Eigenvector 4\n",round(PC2, digits = 1),"% of variance", sep = ""),
+     cex.lab=1.1, xlim=c(-.1, .2), ylim=c(-.2, .20))
+
+par(new=TRUE)
+plot((raphNN.data$V4 ), 
+     (raphNN.data$V5 ), 
+     pch=raphNN.sym[droplevels(raphNN.data$Pop)], 
+     col=raphNN.col, 
+     lwd=2.5,
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)
+
+par(new=TRUE)	
+plot((lanmar.data$V4 ), 
+     (lanmar.data$V5 ), 
+     pch=lanmar.sym[droplevels(lanmar.data$Pop)], 
+     col=lanmar.col,
+     lwd=2.5,
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)
+
+par(new=TRUE)
+plot((CropD.data$V4 ), 
+     (CropD.data$V5 ), 
+     pch=CropD.sym[droplevels(CropD.data$Pop)], 
+     lwd=2.5,
+     col=CropD.col, 
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)
+
+par(new=TRUE)
+plot((CropE.data$V4 ), 
+     (CropE.data$V5 ), 
+     pch=CropE.sym[droplevels(CropE.data$Pop)], 
+     lwd=2.5,
+     col=CropE.col, 
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)
+
+par(new=TRUE)
+plot((CropO.data$V4 ), 
+     (CropO.data$V5 ), 
+     pch=CropO.sym[droplevels(CropO.data$Pop)], 
+     lwd=2.5,
+     col=CropO.col, 
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)
+
+par(new=TRUE)
+plot((CropR.data$V4 ), 
+     (CropR.data$V5 ), 
+     pch=CropR.sym[droplevels(CropR.data$Pop)], 
+     lwd=2.5,
+     col=CropR.col, 
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)
+
+par(new=TRUE)
+plot((raphNatW.data$V4 ), 
+     (raphNatW.data$V5 ), 
+     pch=raphNatW.sym[droplevels(raphNatW.data$Pop)], 
+     col=raphNatW.col, 
+     lwd=2.5,
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.7)	
+
+par(new=TRUE)
+plot((rost.data$V4 ), 
+     (rost.data$V5 ), 
+     pch=rost.sym[droplevels(rost.data$Pop)], 
+     col=rost.col,
+     lwd=2.5,
+     xlim=c(-.1, .2), ylim=c(-.2, .20),
+     axes=FALSE, xlab="", ylab="", cex=1.5)		
+
+# Landra and maritimus
+
+rect(.15, -.2, .25, -.1, col="white")
+text(.2, -.115, expression( "Native" ), cex=.9)
+legend(.15, -.12, legend=levels(droplevels(lanmar.data$Pop)), 
+       pch=lanmar.sym, col=lanmar.col, title=expression(italic("R.r. landra")),
+       cex=.9, ncol = 2, bty="n", pt.lwd = 2.5)
+
+# Non Natives
+rect(-.11, .14, -.026, 0.22, col="white")
+text(-.07, .21, "Non-native" , cex=.9)
+legend( -.11, .2, legend=levels(droplevels(raphNN.data$Pop)), 
+        pch=raphNN.sym, col=raphNN.col, 
+        title = expression( italic("R.r. raphanistrum")), cex=.9, 
+       bty="n", pt.lwd = 2.5)
+
+
+## R. pugioniformis
+rect(.152, -.07, .24, 0.03, col="white")
+text(.195, .02, expression( "Native" ), cex=.9)
+legend(.195, .013, legend=levels(droplevels(rost.data$Pop)), 
+       pch=rost.sym, xjust = .5,
+       col=rost.col, title=expression(italic("R. pugioniformis")), cex=.9,
+       bty="n", pt.lwd = 2.5)
+
+# Native RRR
+rect(.07, .07, .16, .17, col="white")
+text(.115, .16, expression( "Native" ), cex=.9)
+legend(.075, .155, legend=levels(droplevels(raphNatW.data$Pop)), 
+       pch=raphNatW.sym, col=raphNatW.col,
+       title = expression( italic("R.r. raphanistrum")), cex=.9, 
+       bty="n", pt.lwd = 2.5)
+
+# Crops
+rect(.025, -.21, .135, -.1, col="white")
+text(.08, -.11, expression( "Crops" ), cex=.9)
+text(.08, -.125, expression(italic("R. sativus")), cex=.9)
+
+legend(.08, -.13, legend=levels(droplevels(CropD.data$Pop)), 
+       pch=CropD.sym, col=CropD.col, cex=.9, 
+       bty="n", pt.lwd = 2.5)
+
+legend(.08, -.165, legend=levels(droplevels(CropE.data$Pop)), 
+       pch=CropE.sym, col=CropE.col, cex=.9,
+       bty="n", pt.lwd = 2.5)
+
+legend(.03, -.13, legend=levels(droplevels(CropO.data$Pop)), 
+       pch=CropO.sym, col=CropO.col, cex=.9, 
+       bty="n", pt.lwd = 2.5)
+
+legend(.03, -.165, legend=levels(droplevels(CropR.data$Pop)), 
+       pch=CropR.sym, col=CropR.col, cex=.9,
+       bty="n", pt.lwd = 2.5)
+#dev.off()
+
+```
